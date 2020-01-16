@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  description: ""
+  version: 1.0.0
+  title: "Management of Accounts and Licensing Tool for Dynamics/Sharepoint api"
+  contact:
+    email: apiteam@example.org
+    name: API Team
+    url: https://github.com/bcgov/maltd
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: project
+    description: Access to projects
+  - name: user
+    description: Operations about user
+    externalDocs:
+      description: Find out more about our project
+      url: https://github.com/bcgov/maltd
+paths:
+  /users:
+    get:
+      tags:
+        - user
+      summary: Search for a user
+      description: ""
+      operationId: searchUser
+      parameters:
+        - in: query
+          name: q
+          description: The exact query value to search for
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/User"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+  "/users/{username}":
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      description: ""
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: "The name that needs to be fetched. Use user1 for testing. "
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/User"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        description: Updated user object
+        required: true
+      responses:
+        "400":
+          description: Invalid user supplied
+        "404":
+          description: User not found
+  /projects:
+    get:
+      tags:
+        - project
+      summary: Lists the projects
+      description: ""
+      operationId: getProjects
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Project"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://maltd-api.gov.bc.ca/v1
+components:
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://petstore.swagger.io/oauth/dialog
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        userStatus:
+          type: integer
+          format: int32
+          description: User Status
+      xml:
+        name: User
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
