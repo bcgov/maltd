@@ -1,167 +1,209 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
-  description: ""
-  version: 1.0.0
-  title: "Management of Accounts and Licensing Tool for Dynamics/Sharepoint api"
+  title: Dynamics Account Management API
   contact:
-    email: apiteam@example.org
     name: API Team
     url: https://github.com/bcgov/maltd
+    email: apiteam@example.org
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-tags:
-  - name: project
-    description: Access to projects
-  - name: user
-    description: Operations about user
-    externalDocs:
-      description: Find out more about our project
-      url: https://github.com/bcgov/maltd
+  version: v1
 paths:
-  /users:
+  /api/projects:
     get:
       tags:
-        - user
-      summary: Search for a user
-      description: ""
-      operationId: searchUser
-      parameters:
-        - in: query
-          name: q
-          description: The exact query value to search for
-          schema:
-            type: string
+        - Projects
+      summary: Gets the list of available projects.
       responses:
         "200":
-          description: successful operation
+          description: Success
           content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/User"
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          description: User not found
-  "/users/{username}":
+                $ref: "#/components/schemas/Project"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+  /api/users:
     get:
       tags:
-        - user
-      summary: Get user by user name
-      description: ""
-      operationId: getUserByName
+        - Users
+      summary: Searches for a user.
       parameters:
-        - name: username
-          in: path
-          description: "The name that needs to be fetched. Use user1 for testing. "
+        - name: q
+          in: query
+          description: The username to search for.
           required: true
           schema:
             type: string
       responses:
         "200":
-          description: successful operation
+          description: Success
           content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/User"
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
         "400":
-          description: Invalid username supplied
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
         "404":
-          description: User not found
-    put:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+  "/api/users/{username}":
+    get:
       tags:
-        - user
-      summary: Updated user
-      description: This can only be done by the logged in user.
-      operationId: updateUser
+        - Users
+      summary: Gets a user
       parameters:
         - name: username
           in: path
-          description: name that need to be updated
+          description: The username to get
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-        description: Updated user object
-        required: true
-      responses:
-        "400":
-          description: Invalid user supplied
-        "404":
-          description: User not found
-  /projects:
-    get:
-      tags:
-        - project
-      summary: Lists the projects
-      description: ""
-      operationId: getProjects
       responses:
         "200":
-          description: successful operation
+          description: Success
           content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Project"
             application/json:
               schema:
-                $ref: "#/components/schemas/Project"
-externalDocs:
-  description: Find out more about Swagger
-  url: http://swagger.io
-servers:
-  - url: https://maltd-api.gov.bc.ca/v1
+                $ref: "#/components/schemas/DetailedUser"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
 components:
-  securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: http://petstore.swagger.io/oauth/dialog
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
   schemas:
     Project:
       type: object
       properties:
         id:
           type: string
+          description: The id of the project
+          nullable: true
         name:
           type: string
+          description: The name of the project
+          nullable: true
+        type:
+          type: string
+          description: The type of project, ie Dynamics or SharePoint
+          nullable: true
+      additionalProperties: false
+      description: Represents a project that a user can be granted access to.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties:
+        type: object
+        additionalProperties: false
     User:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
+          description: ""
+          nullable: true
         username:
           type: string
-        userStatus:
-          type: integer
-          format: int32
-          description: User Status
-      xml:
-        name: User
-    ApiResponse:
+          description: ""
+          nullable: true
+        enabled:
+          type: boolean
+          description: ""
+          nullable: true
+        firstName:
+          type: string
+          description: ""
+          nullable: true
+        lastName:
+          type: string
+          description: ""
+          nullable: true
+        email:
+          type: string
+          description: ""
+          nullable: true
+      additionalProperties: false
+      description: Represents a KeyCloak user
+    DetailedUser:
       type: object
       properties:
-        code:
-          type: integer
-          format: int32
-        type:
+        projects:
+          type: array
+          items:
+            type: string
+          description: ""
+          nullable: true
+        id:
           type: string
-        message:
+          description: ""
+          nullable: true
+        username:
           type: string
+          description: ""
+          nullable: true
+        enabled:
+          type: boolean
+          description: ""
+          nullable: true
+        firstName:
+          type: string
+          description: ""
+          nullable: true
+        lastName:
+          type: string
+          description: ""
+          nullable: true
+        email:
+          type: string
+          description: ""
+          nullable: true
+      additionalProperties: false
+      description: Represents a user with the currently assigned projects
