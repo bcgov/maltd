@@ -8,10 +8,9 @@ namespace BcGov.Malt.Web.Models
     public class DetailedUser : User
     {
         /// <summary>
-        /// 
+        /// The projects the user is assigned to.
         /// </summary>
         [JsonPropertyName("projects")]
-        public string[] Projects { get; set; }
-
+        public Project[] Projects { get; set; }
     }
 }

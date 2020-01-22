@@ -7,39 +7,33 @@ namespace BcGov.Malt.Web.Models
     /// </summary>
     public class User
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Gets or sets the identifier.</summary>
+        /// <value>The identifier.</value>
         [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Gets or sets the name of the user.</summary>
+        /// <value>The name of the user.</value>
         [JsonPropertyName("username")]
         public string UserName { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Gets or sets the enabled flag of the user.</summary>
+        /// <value>The enabled.</value>
         [JsonPropertyName("enabled")]
         public bool? Enabled { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Gets or sets the first name.</summary>
+        /// <value>The first name.</value>
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Gets or sets the last name.</summary>
+        /// <value>The last name.</value>
         [JsonPropertyName("lastName")]
         public string LastName { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Gets or sets the email.</summary>
+        /// <value>The email.</value>
         [JsonPropertyName("email")]
         public string Email { get; set; }
 

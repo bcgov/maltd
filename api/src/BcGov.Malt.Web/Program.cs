@@ -4,12 +4,12 @@ using Microsoft.Extensions.Hosting;
 namespace BcGov.Malt.Web
 {
     /// <summary>
-    /// 
+    /// The Program class represents the main entry point to the API.
     /// </summary>
     public class Program
     {
         /// <summary>
-        /// 
+        /// The main entry point.
         /// </summary>
 
         public static void Main(string[] args)
@@ -18,7 +18,7 @@ namespace BcGov.Malt.Web
         }
 
         /// <summary>
-        /// 
+        /// Creates the host builder.
         /// </summary>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
