@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -11,13 +12,14 @@ export const inputField = {
   placeholder: 'IDIR/username',
   valid: false,
   invalid: false,
-  value: ''
+  value: '',
 };
 
 export const actions = {
   onUpdate: action('onUpdate'),
 };
 
+/* eslint-disable react/jsx-props-no-spreading */
 storiesOf('InputField', module)
   .add('default', () => <InputField inputField={inputField} {...actions} />)
   .add('valid', () => <InputField inputField={{ ...inputField, valid: true, value: 'IDIR/testuser' }} {...actions} />)
