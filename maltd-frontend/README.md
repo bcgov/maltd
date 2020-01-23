@@ -10,10 +10,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br />
@@ -32,10 +28,32 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## ESLint and Prettier
+
+This project uses ESLint and Prettier to ensure that the code being written follows standard guidelines and standards, and that the code styling is kept consistent throughout the application.
+
+### `npx eslint .`
+
+Runs the linter on the entire frontend codebase and reports any errors or warnings that may be present.
+
+### `prettier [opts] [filename ...]`
+
+Runs prettier and formats your file. This has been setup by Husky to run on every commit, so prettier will check all the files within the directory and format them on every commit.
+
 ## Storybook
 
 This project uses component-driven development and storybook in order to create stories for frontend components. In order to run the storybook locally, you can run:
 
 ### `npm run storybook`
 
-Storybook should start, on a random open port in dev-mode. Now you can develop your components and write stories and see the changes in Storybook immediately since it uses Webpack’s hot module reloading.
+Storybook should start, on a random open port in dev-mode. Now you can develop your components and write stories and see the changes in Storybook immediately since it uses Webpack’s hot module reloading.<br />
+
+Open [http://localhost:9009](http://localhost:9009) to view it in the browser.
+
+## Jest
+
+This project uses Jest for snapshot component testing. Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly. A typical snapshot test case renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.
+
+### `npm run test`
+
+Launches the test runner in the interactive watch mode.
