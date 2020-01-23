@@ -1,14 +1,11 @@
 /* eslint-disable react/jsx-filename-extension */
-import React from 'react';
-import { Input } from 'reactstrap';
-import PropTypes from 'prop-types';
-import './InputField.css';
+import React from "react";
+import { Input } from "reactstrap";
+import PropTypes from "prop-types";
+import "./InputField.css";
 
 export default function InputField({
-  inputField: {
-    name, type, placeholder, valid, invalid, value,
-  },
-  onUpdate,
+  inputField: { name, type, placeholder, valid, invalid, value }
 }) {
   return (
     <Input
@@ -19,7 +16,6 @@ export default function InputField({
       valid={valid}
       invalid={invalid}
       value={value}
-      onChange={() => onUpdate()}
     />
   );
 }
@@ -31,7 +27,6 @@ InputField.propTypes = {
     name: PropTypes.string.isRequired,
     valid: PropTypes.bool.isRequired,
     invalid: PropTypes.bool.isRequired,
-    value: PropTypes.string.isRequired,
-  }).isRequired,
-  onUpdate: PropTypes.func.isRequired,
+    value: PropTypes.string.isRequired
+  }).isRequired
 };
