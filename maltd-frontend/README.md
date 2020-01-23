@@ -36,6 +36,10 @@ This project uses ESLint and Prettier to ensure that the code being written foll
 
 Runs the linter on the entire frontend codebase and reports any errors or warnings that may be present.
 
+### `prettier [opts] [filename ...]`
+
+Runs prettier and formats your file. This has been setup by Husky to run on every commit, so prettier will check all the files within the directory and format them on every commit.
+
 ## Storybook
 
 This project uses component-driven development and storybook in order to create stories for frontend components. In order to run the storybook locally, you can run:

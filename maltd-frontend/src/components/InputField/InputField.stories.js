@@ -13,7 +13,6 @@ const inputField = {
   value: ""
 };
 
-/* eslint-disable react/jsx-props-no-spreading */
 storiesOf("InputField", module)
   .add("default", () => <InputField inputField={inputField} />)
   .add("valid", () => (
