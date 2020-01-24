@@ -6,12 +6,13 @@ import GeneralButton from "./GeneralButton";
 
 const generalButton = {
   type: "submit",
-  color: "success",
+  color: "primary",
   disabled: true,
   block: false,
   active: false,
   outline: false,
-  label: "Find"
+  label: "Find",
+  styling: "general-button"
 };
 
 storiesOf("GeneralButton", module)
