@@ -2,14 +2,14 @@
 import React from "react";
 import { Button } from "reactstrap";
 import PropTypes from "prop-types";
-import "./SearchBox.css";
+import "./GeneralButton.css";
 
-export default function SearchBox({
-  searchBox: { type, color, disabled, block, active, outline }
+export default function GeneralButton({
+  generalButton: { type, color, disabled, block, active, outline, placeholder }
 }) {
   return (
     <Button
-      className="search-box"
+      className="general-button"
       type={type}
       color={color}
       disabled={disabled}
@@ -17,18 +17,19 @@ export default function SearchBox({
       active={active}
       outline={outline}
     >
-      Search
+      {placeholder}
     </Button>
   );
 }
 
-SearchBox.propTypes = {
-  searchBox: PropTypes.shape({
+GeneralButton.propTypes = {
+  generalButton: PropTypes.shape({
     type: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
     block: PropTypes.bool.isRequired,
     active: PropTypes.bool.isRequired,
-    outline: PropTypes.bool.isRequired
+    outline: PropTypes.bool.isRequired,
+    placeholder: PropTypes.string.isRequired
   }).isRequired
 };

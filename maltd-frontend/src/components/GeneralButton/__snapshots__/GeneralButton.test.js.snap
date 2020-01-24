@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`General Button General button component renders as expected 1`] = `
+<button
+  aria-label={null}
+  className="general-button btn btn-success disabled"
+  disabled={true}
+  onClick={[Function]}
+  type="submit"
+>
+  GeneralButton
+</button>
+`;
+
 exports[`Input Field Input field component renders as expected 1`] = `
 <input
   className="input-field form-control"

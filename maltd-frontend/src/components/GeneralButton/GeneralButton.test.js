@@ -1,19 +1,20 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import renderer from "react-test-renderer";
-import SearchBox from "./SearchBox";
+import GeneralButton from "./GeneralButton";
 
-describe("Search Box", () => {
-  test("Search box component renders as expected", () => {
+describe("General Button", () => {
+  test("General button component renders as expected", () => {
     const component = renderer.create(
-      <SearchBox
-        searchBox={{
+      <GeneralButton
+        generalButton={{
           type: "submit",
           color: "success",
           disabled: true,
           block: false,
           active: false,
-          outline: false
+          outline: false,
+          placeholder: "GeneralButton"
         }}
       />
     );
