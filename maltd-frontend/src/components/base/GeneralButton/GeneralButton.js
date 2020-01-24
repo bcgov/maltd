@@ -40,6 +40,6 @@ GeneralButton.propTypes = {
     block: PropTypes.bool.isRequired,
     active: PropTypes.bool.isRequired,
     outline: PropTypes.bool.isRequired,
-    label: PropTypes.any.isRequired
+    label: PropTypes.string.isRequired
   }).isRequired
 };
