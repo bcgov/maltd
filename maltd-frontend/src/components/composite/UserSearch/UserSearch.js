@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Container, Row, Col, Spinner } from "reactstrap";
 import InputField from "../../base/InputField/InputField";
 import GeneralButton from "../../base/GeneralButton/GeneralButton";
+import "./UserSearch.css";
 
 export default function UserSearch({
   userSearch: { state },
@@ -38,15 +39,9 @@ export default function UserSearch({
                 <InputField inputField={inputField} />
                 <p />
                 <div>
-                  <div style={{ float: "left" }}>
-                    <p style={{ float: "left" }}>Loading...</p>
-                    <Spinner
-                      style={{
-                        width: "2rem",
-                        height: "2rem",
-                        marginLeft: "20px"
-                      }}
-                    />
+                  <div className="align-left">
+                    <p className="align-left">Loading...</p>
+                    <Spinner className="spinner" />
                   </div>
                   <GeneralButton generalButton={generalButton} />
                 </div>
