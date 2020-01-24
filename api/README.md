@@ -1,6 +1,3 @@
-
-
-
 # Management of Accounts and Licensing Tool for Dynamics/Sharepoint API
 
 Get the OAS3 Swagger GUI page

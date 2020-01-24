@@ -6,19 +6,18 @@ using System.Threading.Tasks;
 namespace BcGov.Malt.Web.Services
 {
     /// <summary>
-    /// 
+    /// An interface for searching for users.
     /// </summary>
     public interface IUserSearchService
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Searches for a user asynchronously.</summary>
+        /// <param name="query">The username to query for</param>
+        /// <returns>The found user or null if not found.</returns>
         Task<User> SearchAsync(string query);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>Represents a class that searches from a hard coded list of users.</summary>
+    /// <seealso cref="BcGov.Malt.Web.Services.IUserSearchService" />
     public class UserSearchService : IUserSearchService
     {
         private static readonly User[] _users = new []
@@ -31,9 +30,9 @@ namespace BcGov.Malt.Web.Services
             new User { UserName = "sdevalapurkar", Id = Guid.NewGuid().ToString("d") }
         };
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Searches for a user asynchronously.</summary>
+        /// <param name="query">The username to query for</param>
+        /// <returns>The found user or null if not found.</returns>
         public async Task<User> SearchAsync(string query)
         {
             User user = null;

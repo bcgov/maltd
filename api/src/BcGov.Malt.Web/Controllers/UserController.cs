@@ -21,22 +21,21 @@ namespace BcGov.Malt.Web.Controllers
 
         private readonly IUserSearchService _userSearchService;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userSearchService"></param>
-        /// <param name="logger"></param>
+        /// <summary>Initializes a new instance of the <see cref="UsersController"/> class.</summary>
+        /// <param name="userSearchService">The user search service.</param>
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="userSearchService"></paramref>
+        /// or
+        /// <paramref name="logger"/> is null.</exception>
         public UsersController(IUserSearchService userSearchService, ILogger<UsersController> logger)
         {
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Searches for a user.
-        /// </summary>
+        /// <summary>Searches for a user.</summary>
         /// <param name="query">The username to search for.</param>
-        /// <returns></returns>
+        /// <returns>The found user or 400, 401 or 404.</returns>
         [HttpGet]
         [SwaggerOperation(OperationId = "UserSearch")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -64,11 +63,9 @@ namespace BcGov.Malt.Web.Controllers
             return NotFound();
         }
 
-        /// <summary>
-        /// Gets a user
-        /// </summary>
+        /// <summary>Gets a user</summary>
         /// <param name="username">The username to get</param>
-        /// <returns></returns>
+        /// <returns>The user details or 400, 401 or 404.</returns>
         [HttpGet]
         [Route("{username}")]
         [SwaggerOperation(OperationId = "UserLookup")]
