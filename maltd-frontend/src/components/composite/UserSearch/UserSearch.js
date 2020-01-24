@@ -1,4 +1,6 @@
+/* eslint-disable react/jsx-filename-extension */
 import React from "react";
+import PropTypes from "prop-types";
 import { Container, Row, Col, Spinner } from "reactstrap";
 import InputField from "../../base/InputField/InputField";
 import GeneralButton from "../../base/GeneralButton/GeneralButton";
@@ -44,7 +46,7 @@ export default function UserSearch({
                         height: "2rem",
                         marginLeft: "20px"
                       }}
-                    />{" "}
+                    />
                   </div>
                   <GeneralButton generalButton={generalButton} />
                 </div>
@@ -56,3 +58,27 @@ export default function UserSearch({
     </Container>
   );
 }
+
+UserSearch.propTypes = {
+  userSearch: PropTypes.shape({
+    state: PropTypes.any.isRequired
+  }).isRequired,
+  inputField: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    valid: PropTypes.bool.isRequired,
+    invalid: PropTypes.bool.isRequired,
+    value: PropTypes.string.isRequired
+  }).isRequired,
+  generalButton: PropTypes.shape({
+    styling: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired,
+    block: PropTypes.bool.isRequired,
+    active: PropTypes.bool.isRequired,
+    outline: PropTypes.bool.isRequired,
+    label: PropTypes.any.isRequired
+  }).isRequired
+};
