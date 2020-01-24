@@ -8,28 +8,6 @@ exports[`General Button General button component renders as expected 1`] = `
   onClick={[Function]}
   type="submit"
 >
-  GeneralButton
-</button>
-`;
-
-exports[`Input Field Input field component renders as expected 1`] = `
-<input
-  className="input-field form-control"
-  name="myinputfield"
-  placeholder="placeholder"
-  type="text"
-  value="idir"
-/>
-`;
-
-exports[`Search Box Search box component renders as expected 1`] = `
-<button
-  aria-label={null}
-  className="search-box btn btn-success disabled"
-  disabled={true}
-  onClick={[Function]}
-  type="submit"
->
-  Search
+  Find
 </button>
 `;

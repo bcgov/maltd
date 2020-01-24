@@ -14,7 +14,7 @@ describe("General Button", () => {
           block: false,
           active: false,
           outline: false,
-          placeholder: "GeneralButton"
+          label: "Find"
         }}
       />
     );

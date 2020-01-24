@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import "./GeneralButton.css";
 
 export default function GeneralButton({
-  generalButton: { type, color, disabled, block, active, outline, placeholder }
+  generalButton: { type, color, disabled, block, active, outline, label }
 }) {
   return (
     <Button
@@ -17,7 +17,7 @@ export default function GeneralButton({
       active={active}
       outline={outline}
     >
-      {placeholder}
+      {label}
     </Button>
   );
 }
@@ -30,6 +30,6 @@ GeneralButton.propTypes = {
     block: PropTypes.bool.isRequired,
     active: PropTypes.bool.isRequired,
     outline: PropTypes.bool.isRequired,
-    placeholder: PropTypes.string.isRequired
+    label: PropTypes.string.isRequired
   }).isRequired
 };
