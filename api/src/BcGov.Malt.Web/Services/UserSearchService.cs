@@ -20,7 +20,7 @@ namespace BcGov.Malt.Web.Services
     /// <seealso cref="BcGov.Malt.Web.Services.IUserSearchService" />
     public class UserSearchService : IUserSearchService
     {
-        private static readonly User[] _users = new []
+        private readonly User[] _users = new []
         {
             new User { UserName = "pbolduc", Id = Guid.NewGuid().ToString("d") },
             new User { UserName = "tclausen", Id = Guid.NewGuid().ToString("d") },
