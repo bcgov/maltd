@@ -15,7 +15,7 @@ describe("User Search", () => {
     name: "myinputfield",
     valid: false,
     invalid: false,
-    val: "idir"
+    value: "idir"
   };
 
   const generalButton = {

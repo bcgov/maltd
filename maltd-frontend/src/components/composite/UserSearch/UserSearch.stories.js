@@ -18,7 +18,7 @@ const inputField = {
   placeholder: "Enter IDIR username to find",
   valid: false,
   invalid: false,
-  val: ""
+  value: ""
 };
 
 const generalButton = {

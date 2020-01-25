@@ -21,10 +21,10 @@ exports[`User Search Component renders as expected 1`] = `
       <div>
         <input
           className="input-field form-control"
+          defaultValue="idir"
           name="myinputfield"
           placeholder="placeholder"
           type="text"
-          val="idir"
         />
         <p />
         <button

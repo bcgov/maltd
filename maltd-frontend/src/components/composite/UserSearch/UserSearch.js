@@ -64,7 +64,7 @@ UserSearch.propTypes = {
     name: PropTypes.string.isRequired,
     valid: PropTypes.bool.isRequired,
     invalid: PropTypes.bool.isRequired,
-    val: PropTypes.string.isRequired
+    value: PropTypes.string.isRequired
   }).isRequired,
   generalButton: PropTypes.shape({
     styling: PropTypes.string.isRequired,

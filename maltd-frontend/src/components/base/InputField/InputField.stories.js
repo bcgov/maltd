@@ -10,16 +10,16 @@ const inputField = {
   placeholder: "Enter IDIR username to find",
   valid: false,
   invalid: false,
-  val: ""
+  value: ""
 };
 
 storiesOf("InputField", module)
   .add("default", () => <InputField inputField={inputField} />)
   .add("valid", () => (
     <InputField
-      inputField={{ ...inputField, valid: true, val: "IDIR/testuser" }}
+      inputField={{ ...inputField, valid: true, value: "IDIR/testuser" }}
     />
   ))
   .add("invalid", () => (
-    <InputField inputField={{ ...inputField, invalid: true, val: "a" }} />
+    <InputField inputField={{ ...inputField, invalid: true, value: "a" }} />
   ));
