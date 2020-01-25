@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import "./InputField.css";
 
 export default function InputField({
-  inputField: { name, type, placeholder, valid, invalid, value }
+  inputField: { name, type, placeholder, valid, invalid, val }
 }) {
   return (
     <Input
@@ -15,7 +15,7 @@ export default function InputField({
       placeholder={placeholder}
       valid={valid}
       invalid={invalid}
-      value={value}
+      val={val}
     />
   );
 }
@@ -27,6 +27,6 @@ InputField.propTypes = {
     name: PropTypes.string.isRequired,
     valid: PropTypes.bool.isRequired,
     invalid: PropTypes.bool.isRequired,
-    value: PropTypes.string.isRequired
+    val: PropTypes.string.isRequired
   }).isRequired
 };
