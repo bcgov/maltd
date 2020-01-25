@@ -2,10 +2,9 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
-import Enzyme from "enzyme";
-import { mount } from "enzyme";
-import UserSearch from "./UserSearch";
+import Enzyme, { mount } from "enzyme";
 import { Spinner } from "reactstrap";
+import UserSearch from "./UserSearch";
 
 Enzyme.configure({ adapter: new Adapter() });
 
