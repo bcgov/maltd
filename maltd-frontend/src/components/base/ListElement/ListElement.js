@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -14,5 +15,5 @@ ListElement.propTypes = {
   listElement: PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired
-  })
+  }).isRequired
 };
