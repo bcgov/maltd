@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List Element Component renders as expected 1`] = `
+<div>
+  <strong>
+    title
+  </strong>
+  <p>
+    description
+  </p>
+</div>
+`;
