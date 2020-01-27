@@ -24,3 +24,4 @@ jobs:
         npm run test
       env:
         CI: true
+        PROJECT_PATH: ./maltd-frontend
