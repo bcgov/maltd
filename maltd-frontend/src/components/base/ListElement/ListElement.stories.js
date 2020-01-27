@@ -3,9 +3,18 @@ import { storiesOf } from "@storybook/react";
 import ListElement from "./ListElement";
 
 export const listElement = {
-  title: "Test Element"
+  title: "MALTD",
+  description: "Dynamics Account Management Tool"
 };
 
-storiesOf("List Element", module).add("default", () => (
-  <ListElement listElement={listElement} />
-));
+storiesOf("List Element", module)
+  .add("current projects", () => <ListElement listElement={listElement} />)
+  .add("users", () => (
+    <ListElement
+      listElement={{
+        ...listElement,
+        title: "Pat Simonson",
+        description: "psimon@gov.bc.ca"
+      }}
+    />
+  ));

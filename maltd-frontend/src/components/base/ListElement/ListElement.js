@@ -12,6 +12,7 @@ export default function ListElement({ listElement: { title, description } }) {
 
 ListElement.propTypes = {
   listElement: PropTypes.shape({
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired
   })
 };
