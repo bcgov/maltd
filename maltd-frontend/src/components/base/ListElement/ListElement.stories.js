@@ -14,8 +14,8 @@ storiesOf("List Element", module)
     <ListElement
       listElement={{
         ...listElement,
-        title: "Pat Simonson",
-        description: "psimon@gov.bc.ca"
+        title: "User name",
+        description: "user@gov.bc.ca"
       }}
     />
   ));
