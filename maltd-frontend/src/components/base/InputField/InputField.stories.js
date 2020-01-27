@@ -7,7 +7,7 @@ import InputField from "./InputField";
 const inputField = {
   name: "idir",
   type: "text",
-  placeholder: "IDIR/username",
+  placeholder: "Enter IDIR username to find",
   valid: false,
   invalid: false,
   value: ""

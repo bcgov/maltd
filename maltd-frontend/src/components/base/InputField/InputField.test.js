@@ -4,7 +4,7 @@ import renderer from "react-test-renderer";
 import InputField from "./InputField";
 
 describe("Input Field", () => {
-  test("Input field component renders as expected", () => {
+  test("Component renders as expected", () => {
     const component = renderer.create(
       <InputField
         inputField={{

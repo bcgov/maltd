@@ -15,7 +15,7 @@ export default function InputField({
       placeholder={placeholder}
       valid={valid}
       invalid={invalid}
-      value={value}
+      defaultValue={value}
     />
   );
 }

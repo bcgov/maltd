@@ -4,7 +4,7 @@ import renderer from "react-test-renderer";
 import GeneralButton from "./GeneralButton";
 
 describe("General Button", () => {
-  test("General button component renders as expected", () => {
+  test("Component renders as expected", () => {
     const component = renderer.create(
       <GeneralButton
         generalButton={{
@@ -14,7 +14,8 @@ describe("General Button", () => {
           block: false,
           active: false,
           outline: false,
-          label: "Find"
+          label: "Find",
+          styling: "generic-classname"
         }}
       />
     );

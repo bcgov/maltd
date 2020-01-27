@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`General Button General button component renders as expected 1`] = `
+exports[`General Button Component renders as expected 1`] = `
 <button
   aria-label={null}
-  className="general-button btn btn-success disabled"
+  className="generic-classname btn btn-success disabled"
   disabled={true}
   onClick={[Function]}
   type="submit"
