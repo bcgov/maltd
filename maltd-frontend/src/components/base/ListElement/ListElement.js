@@ -6,7 +6,7 @@ export default function ListElement({ listElement: { title, description } }) {
   return (
     <div>
       <strong>{title}</strong>
-      <p>{description}</p>
+      {description && <p>{description}</p>}
     </div>
   );
 }
@@ -14,6 +14,6 @@ export default function ListElement({ listElement: { title, description } }) {
 ListElement.propTypes = {
   listElement: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired
+    description: PropTypes.string
   }).isRequired
 };
