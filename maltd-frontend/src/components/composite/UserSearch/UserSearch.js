@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import PropTypes from "prop-types";
-import { Container, Row, Col, Spinner } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import InputField from "../../base/InputField/InputField";
 import GeneralButton from "../../base/GeneralButton/GeneralButton";
 import "./UserSearch.css";
@@ -15,7 +15,7 @@ export default function UserSearch({
     <Container>
       <Row>
         <Col
-          className="block-example border rounded mb-0 p-3"
+          className="block-example shadow rounded my-3 p-3"
           sm="12"
           md={{ size: 6, offset: 3 }}
         >
@@ -39,9 +39,10 @@ export default function UserSearch({
                 <InputField inputField={inputField} />
                 <p />
                 <div>
-                  <div className="align-left">
-                    <p className="align-left">Loading...</p>
-                    <Spinner className="spinner" />
+                  <div className="float-left">
+                    <p className="float-left">
+                      <small>Loading...</small>
+                    </p>
                   </div>
                   <GeneralButton generalButton={generalButton} />
                 </div>

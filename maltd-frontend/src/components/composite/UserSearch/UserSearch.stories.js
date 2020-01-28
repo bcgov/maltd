@@ -25,11 +25,7 @@ const generalButton = {
   type: "submit",
   color: "primary",
   disabled: true,
-  block: false,
-  active: false,
-  outline: false,
-  label: "Find",
-  styling: "general-button align-right"
+  label: "Find"
 };
 
 storiesOf("UserSearch", module)
@@ -58,6 +54,6 @@ storiesOf("UserSearch", module)
     <UserSearch
       userSearch={userSearch}
       inputField={{ ...inputField, invalid: true, value: "a" }}
-      generalButton={generalButton}
+      generalButton={{ ...generalButton, color: "danger" }}
     />
   ));

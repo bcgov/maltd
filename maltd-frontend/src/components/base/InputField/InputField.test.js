@@ -9,8 +9,8 @@ describe("Input Field", () => {
       <InputField
         inputField={{
           type: "text",
-          placeholder: "placeholder",
           name: "myinputfield",
+          placeholder: "placeholder",
           valid: false,
           invalid: false,
           value: "idir"

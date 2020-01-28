@@ -1,39 +1,42 @@
 .input-field {
-  width: 100%;
-  font-family: "Open Sans", sans-serif;
+  width: 100% !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 
 .form-control {
-  color: #303030;
-  border: 1px solid #979797;
+  color: #303030 !important;
+  border: 1px solid #979797 !important;
 }
 
-.form-control:valid,
+.form-control:focus {
+  border-color: #979797 !important;
+  box-shadow: none !important;
+}
+
 .form-control.is-valid {
-  border: 1px solid #71d321;
+  border: 1px solid #71d321 !important;
+  background-image: none !important;
 }
 
-.form-control:invalid,
 .form-control.is-invalid {
-  border: 1px solid #dc3545;
+  border: 1px solid #dc3545 !important;
+  background-image: none !important;
 }
 
-::-webkit-input-placeholder {
-  color: #303030;
-  font-style: italic;
+input::-webkit-input-placeholder {
+  font-family: "Open Sans", sans-serif !important;
+  font-style: italic !important;
+  color: #808080 !important;
 }
 
-::placeholder {
-  color: #303030;
-  font-style: italic;
+input:-ms-input-placeholder {
+  font-family: "Open Sans", sans-serif !important;
+  font-style: italic !important;
+  color: #808080 !important;
 }
 
-:-ms-input-placeholder {
-  color: #303030;
-  font-style: italic;
-}
-
-:-moz-placeholder {
-  color: #303030;
-  font-style: italic;
+input::placeholder {
+  font-family: "Open Sans", sans-serif !important;
+  font-style: italic !important;
+  color: #808080 !important;
 }
