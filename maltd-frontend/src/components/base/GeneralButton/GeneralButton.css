@@ -4,42 +4,55 @@
   font-family: "Open Sans", sans-serif;
 }
 
-.btn-primary {
-  background-color: #4788c4;
-  border-color: #979797;
-  opacity: 0.75;
+/* Bootstrap .btn CSS override */
+.btn:focus {
+  box-shadow: none !important;
 }
 
-.btn-primary:hover {
-  background-color: #4788c4;
-  border-color: #979797;
-  opacity: 1;
+/* Bootstrap .btn-primary CSS override */
+.btn-primary {
+  background-color: #4788c4 !important;
+  border-color: #979797 !important;
+  opacity: 0.75 !important;
+}
+
+.btn-primary:active,
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #4788c4 !important;
+  border-color: #979797 !important;
+  opacity: 1 !important;
 }
 
 .btn-primary:disabled,
-.btn-primary:disabled {
-  background-color: #4788c4;
-  border-color: #979797;
-  opacity: 0.5;
+.btn-primary.disabled,
+.btn-primary:visited {
+  background-color: #4788c4 !important;
+  border-color: #979797 !important;
+  opacity: 0.5 !important;
 }
 
+/* Bootstrap .btn-danger CSS override */
 .btn-danger {
-  background-color: #dc3545;
-  border-color: #979797;
-  opacity: 0.75;
+  background-color: #dc3545 !important;
+  border-color: #979797 !important;
+  opacity: 0.75 !important;
 }
 
-.btn-danger:hover {
-  background-color: #dc3545;
-  border-color: #979797;
-  opacity: 1;
+.btn-danger:active,
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #dc3545 !important;
+  border-color: #979797 !important;
+  opacity: 1 !important;
 }
 
 .btn-danger:disabled,
-.btn-danger.disabled {
-  background-color: #dc3545;
-  border-color: #979797;
-  opacity: 0.5;
+.btn-danger.disabled,
+.btn-danger:visited {
+  background-color: #dc3545 !important;
+  border-color: #979797 !important;
+  opacity: 0.5 !important;
 }
 
 .align-right {
