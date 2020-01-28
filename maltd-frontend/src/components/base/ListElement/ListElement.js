@@ -2,10 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export default function ListElement({
-  listElement: { title, description },
-  id
-}) {
+export default function ListElement({ listElement: { title, description } }) {
   if (title) {
     return (
       <div>
@@ -26,6 +23,5 @@ ListElement.propTypes = {
   listElement: PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string
-  }).isRequired,
-  id: PropTypes.string
+  }).isRequired
 };
