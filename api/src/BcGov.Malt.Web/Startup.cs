@@ -1,3 +1,4 @@
+using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -71,10 +72,11 @@ namespace BcGov.Malt.Web
 
                 c.OperationFilter<ConsumesAndProductOnlyJSonContentTypeFilter>();
             });
-
-
-            services.AddTransient<IUserSearchService, UserSearchService>();
-
+            
+            // singleton for now since these are in memory (testing) implementations
+            services.AddSingleton<IProjectService, InMemoryProjectService>();
+            services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
+            services.AddSingleton<IUserManagementService, InMemoryUserManagementService>();
         }
 
         /// <summary>
