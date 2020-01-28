@@ -1,6 +1,8 @@
+/* eslint-disable react/jsx-filename-extension */
 import React from "react";
-import ListElement from "../../base/ListElement/ListElement";
+import PropTypes from "prop-types";
 import { Table } from "reactstrap";
+import ListElement from "../../base/ListElement/ListElement";
 
 export default function UserAccess({
   userAccess: { projects, userName, userEmail }
@@ -34,3 +36,11 @@ export default function UserAccess({
     </Table>
   );
 }
+
+UserAccess.propTypes = {
+  userAccess: PropTypes.shape({
+    projects: PropTypes.array.isRequired,
+    userName: PropTypes.string.isRequired,
+    userEmail: PropTypes.string.isRequired
+  }).isRequired
+};
