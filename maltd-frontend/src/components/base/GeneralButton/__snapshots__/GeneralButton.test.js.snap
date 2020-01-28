@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`General Button Component renders as expected 1`] = `
+<button
+  aria-label={null}
+  className="generic-classname btn btn-success disabled"
+  disabled={true}
+  onClick={[Function]}
+  type="submit"
+>
+  Find
+</button>
+`;

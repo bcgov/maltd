@@ -11,6 +11,8 @@ export default function UserAccess({
     title: userName,
     description: userEmail
   };
+  const projectExists =
+    projects && projects.length > 0 ? "projects" : "noProjects";
 
   return (
     <Table borderless>
@@ -21,15 +23,19 @@ export default function UserAccess({
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr id="user-access-row">
           <td>
             <ListElement listElement={userListElement} />
           </td>
-          <td>
-            {projects.map(value => {
-              const listElement = { title: value.name };
-              return <ListElement key={value.name} listElement={listElement} />;
-            })}
+          <td id={projectExists}>
+            {projects &&
+              projects.map(value => {
+                const listElement = { title: value.name };
+                return (
+                  <ListElement key={value.name} listElement={listElement} />
+                );
+              })}
+            {!projects && <ListElement listElement={{}} />}
           </td>
         </tr>
       </tbody>
