@@ -1,19 +1,39 @@
 .input-field {
   width: 100%;
+  font-family: "Open Sans", sans-serif;
+}
+
+.form-control {
+  color: #303030;
+  border: 1px solid #979797;
+}
+
+.form-control:valid,
+.form-control.is-valid {
+  border: 1px solid #71d321;
+}
+
+.form-control:invalid,
+.form-control.is-invalid {
+  border: 1px solid #dc3545;
 }
 
 ::-webkit-input-placeholder {
+  color: #303030;
   font-style: italic;
 }
 
-:-moz-placeholder {
-  font-style: italic;
-}
-
-::-moz-placeholder {
+::placeholder {
+  color: #303030;
   font-style: italic;
 }
 
 :-ms-input-placeholder {
+  color: #303030;
+  font-style: italic;
+}
+
+:-moz-placeholder {
+  color: #303030;
   font-style: italic;
 }

@@ -11,11 +11,7 @@ describe("General Button", () => {
           type: "submit",
           color: "success",
           disabled: true,
-          block: false,
-          active: false,
-          outline: false,
-          label: "Find",
-          styling: "generic-classname"
+          label: "Find"
         }}
       />
     );

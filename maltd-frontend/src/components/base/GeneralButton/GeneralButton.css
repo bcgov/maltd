@@ -1,6 +1,45 @@
 .general-button {
   width: 150px;
   height: 40px;
+  font-family: "Open Sans", sans-serif;
+}
+
+.btn-primary {
+  background-color: #4788c4;
+  border-color: #979797;
+  opacity: 0.75;
+}
+
+.btn-primary:hover {
+  background-color: #4788c4;
+  border-color: #979797;
+  opacity: 1;
+}
+
+.btn-primary:disabled,
+.btn-primary:disabled {
+  background-color: #4788c4;
+  border-color: #979797;
+  opacity: 0.5;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #979797;
+  opacity: 0.75;
+}
+
+.btn-danger:hover {
+  background-color: #dc3545;
+  border-color: #979797;
+  opacity: 1;
+}
+
+.btn-danger:disabled,
+.btn-danger.disabled {
+  background-color: #dc3545;
+  border-color: #979797;
+  opacity: 0.5;
 }
 
 .align-right {

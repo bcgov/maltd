@@ -67,13 +67,9 @@ UserSearch.propTypes = {
     value: PropTypes.string.isRequired
   }).isRequired,
   generalButton: PropTypes.shape({
-    styling: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
-    block: PropTypes.bool.isRequired,
-    active: PropTypes.bool.isRequired,
-    outline: PropTypes.bool.isRequired,
     label: PropTypes.any.isRequired
   }).isRequired
 };

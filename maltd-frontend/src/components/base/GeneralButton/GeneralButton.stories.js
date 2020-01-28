@@ -8,11 +8,7 @@ const generalButton = {
   type: "submit",
   color: "primary",
   disabled: true,
-  block: false,
-  active: false,
-  outline: false,
-  label: "Find",
-  styling: "general-button"
+  label: "Find"
 };
 
 storiesOf("GeneralButton", module)
