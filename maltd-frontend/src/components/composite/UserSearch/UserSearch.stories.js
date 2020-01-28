@@ -18,7 +18,8 @@ const inputField = {
   placeholder: "Enter IDIR username to find",
   valid: false,
   invalid: false,
-  value: ""
+  value: "",
+  disabled: false
 };
 
 const generalButton = {
@@ -50,7 +51,12 @@ storiesOf("UserSearch", module)
   .add("loading", () => (
     <UserSearch
       userSearch={isLoadingUserSearch}
-      inputField={{ ...inputField, valid: true, value: "IDIR/validuser" }}
+      inputField={{
+        ...inputField,
+        valid: true,
+        value: "IDIR/validuser",
+        disabled: true
+      }}
       generalButton={generalButton}
     />
   ))
