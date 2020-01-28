@@ -19,7 +19,5 @@ storiesOf("List Element", module)
     />
   ))
   .add("empty", () => (
-    <ListElement
-      listElement={{ ...listElement, title: undefined, description: undefined }}
-    />
+    <ListElement listElement={{ ...listElement, title: undefined }} />
   ));
