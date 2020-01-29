@@ -20,5 +20,6 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm install ./maltd-frontend
+        npm run build ./matld-frontend
       env:
         CI: true
