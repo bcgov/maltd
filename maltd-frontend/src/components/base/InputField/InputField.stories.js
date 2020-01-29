@@ -10,7 +10,8 @@ const inputField = {
   placeholder: "Enter IDIR username to find",
   valid: false,
   invalid: false,
-  value: ""
+  value: "",
+  disabled: false
 };
 
 storiesOf("InputField", module)
@@ -22,4 +23,7 @@ storiesOf("InputField", module)
   ))
   .add("invalid", () => (
     <InputField inputField={{ ...inputField, invalid: true, value: "a" }} />
+  ))
+  .add("disabled", () => (
+    <InputField inputField={{ ...inputField, disabled: true }} />
   ));
