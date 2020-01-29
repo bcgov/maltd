@@ -25,5 +25,7 @@ jobs:
         npm install express
         echo INIT!
         npm init -y
+        echo TEST!
+        npm run test
       env:
         CI: true
