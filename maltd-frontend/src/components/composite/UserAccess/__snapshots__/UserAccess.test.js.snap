@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Access Component renders as expected 1`] = `
+<table
+  className="table table-borderless"
+>
+  <thead>
+    <tr
+      className="border-bottom"
+    >
+      <th>
+        USER
+      </th>
+      <th>
+        CURRENT PROJECTS
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      id="user-access-row"
+    >
+      <td>
+        <div>
+          <strong>
+            username
+          </strong>
+          <p>
+            useremail@gov.bc.ca
+          </p>
+        </div>
+      </td>
+      <td
+        id="noProjects"
+      />
+    </tr>
+  </tbody>
+</table>
+`;

@@ -3,10 +3,18 @@ import React from "react";
 import PropTypes from "prop-types";
 
 export default function ListElement({ listElement: { title, description } }) {
+  if (title) {
+    return (
+      <div>
+        <strong>{title}</strong>
+        {description && <p>{description}</p>}
+      </div>
+    );
+  }
+
   return (
     <div>
-      <strong>{title}</strong>
-      <p>{description}</p>
+      <p>No projects</p>
     </div>
   );
 }
@@ -14,6 +22,6 @@ export default function ListElement({ listElement: { title, description } }) {
 ListElement.propTypes = {
   listElement: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired
+    description: PropTypes.string
   }).isRequired
 };
