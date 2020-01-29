@@ -21,7 +21,7 @@ jobs:
       run: |
         npm install ./maltd-frontend
         echo RUNNING PWD
-        pwd
-        echo $path
+        npm run build --if-present
+        npm test
       env:
         CI: true
