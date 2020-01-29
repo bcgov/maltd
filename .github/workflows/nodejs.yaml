@@ -19,11 +19,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
       run: |
-        npm install ./maltd-frontend
-        npm init
-        echo RUNNING PWD
-        pwd
-        npm run build --if-present ./home/runner/maltd/maltd/maltd-frontend/
-        npm test
+        echo NPM VERSION!
+        npm --version
+        echo INSTALL!
+        npm install express
+        echo INIT!
+        npm init -y
       env:
         CI: true
