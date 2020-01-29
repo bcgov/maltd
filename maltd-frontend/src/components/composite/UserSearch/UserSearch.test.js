@@ -14,7 +14,8 @@ describe("User Search", () => {
     placeholder: "placeholder",
     valid: false,
     invalid: false,
-    value: "idir"
+    value: "idir",
+    disabled: false
   };
 
   const generalButton = {

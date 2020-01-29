@@ -13,7 +13,8 @@ describe("Input Field", () => {
           placeholder: "placeholder",
           valid: false,
           invalid: false,
-          value: "idir"
+          value: "idir",
+          disabled: false
         }}
       />
     );

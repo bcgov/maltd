@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Search Component renders as expected 1`] = `
+<div>
+  <h4>
+    Add or Remove User
+  </h4>
+  <p />
+  <p>
+    Find a user by IDIR username and add them to or remove them from projects.
+  </p>
+  <p />
+  <div>
+    <input
+      className="input-field form-control"
+      defaultValue="idir"
+      disabled={false}
+      name="myinputfield"
+      placeholder="placeholder"
+      type="text"
+    />
+    <p />
+    <button
+      aria-label={null}
+      className="general-button btn btn-primary disabled"
+      disabled={true}
+      onClick={[Function]}
+      type="submit"
+    >
+      Find
+    </button>
+  </div>
+</div>
+`;
