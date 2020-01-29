@@ -22,5 +22,6 @@ jobs:
         npm install ./maltd-frontend
         echo RUNNING PWD
         pwd
+        npm run build ./home/runner/work/maltd/maltd/maltd-frontend
       env:
         CI: true
