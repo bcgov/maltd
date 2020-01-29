@@ -19,8 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
       run: |
-        npm init
-        npm build ./maltd-frontend
+        npm install
         npm test
       env:
         CI: true
