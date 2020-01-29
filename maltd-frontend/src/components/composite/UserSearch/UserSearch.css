@@ -1,13 +1,4 @@
-.col-border {
-  border: "2px solid #000000";
-}
-
-.align-left {
-  float: left;
-}
-
-.spinner {
-  width: 2rem;
-  height: 2rem;
-  margin-left: 20px;
+body {
+  color: #303030 !important;
+  font-family: "Open Sans", sans-serif !important;
 }

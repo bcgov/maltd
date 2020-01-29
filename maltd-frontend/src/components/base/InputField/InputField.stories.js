@@ -5,8 +5,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import InputField from "./InputField";
 
 const inputField = {
-  name: "idir",
   type: "text",
+  name: "idir",
   placeholder: "Enter IDIR username to find",
   valid: false,
   invalid: false,

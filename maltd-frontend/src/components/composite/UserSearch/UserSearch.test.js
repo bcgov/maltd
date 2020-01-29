@@ -2,8 +2,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
-import Enzyme, { mount } from "enzyme";
-import { Spinner } from "reactstrap";
+import Enzyme from "enzyme";
 import UserSearch from "./UserSearch";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -11,22 +10,19 @@ Enzyme.configure({ adapter: new Adapter() });
 describe("User Search", () => {
   const inputField = {
     type: "text",
-    placeholder: "placeholder",
     name: "myinputfield",
+    placeholder: "placeholder",
     valid: false,
     invalid: false,
-    value: "idir"
+    value: "idir",
+    disabled: false
   };
 
   const generalButton = {
     type: "submit",
-    color: "success",
+    color: "primary",
     disabled: true,
-    block: false,
-    active: false,
-    outline: false,
-    label: "Find",
-    styling: "generic-classname"
+    label: "Find"
   };
 
   test("Component renders as expected", () => {
@@ -42,19 +38,5 @@ describe("User Search", () => {
 
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
-  });
-
-  test("Component renders with a loading spinner when in the loading state", () => {
-    const component = mount(
-      <UserSearch
-        userSearch={{
-          state: { isLoading: true }
-        }}
-        inputField={inputField}
-        generalButton={generalButton}
-      />
-    );
-
-    expect(component.find(Spinner)).toHaveLength(1);
   });
 });

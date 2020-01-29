@@ -24,8 +24,8 @@ export default function InputField({
 InputField.propTypes = {
   inputField: PropTypes.shape({
     type: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
     valid: PropTypes.bool.isRequired,
     invalid: PropTypes.bool.isRequired,
     value: PropTypes.string.isRequired,

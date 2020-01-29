@@ -9,13 +9,9 @@ describe("General Button", () => {
       <GeneralButton
         generalButton={{
           type: "submit",
-          color: "success",
+          color: "primary",
           disabled: true,
-          block: false,
-          active: false,
-          outline: false,
-          label: "Find",
-          styling: "generic-classname"
+          label: "Find"
         }}
       />
     );

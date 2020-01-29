@@ -1,19 +1,42 @@
 .input-field {
-  width: 100%;
+  width: 100% !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 
-::-webkit-input-placeholder {
-  font-style: italic;
+.form-control {
+  color: #303030 !important;
+  border: 1px solid #979797 !important;
 }
 
-:-moz-placeholder {
-  font-style: italic;
+.form-control:focus {
+  border-color: #979797 !important;
+  box-shadow: none !important;
 }
 
-::-moz-placeholder {
-  font-style: italic;
+.form-control.is-valid {
+  border: 1px solid #71d321 !important;
+  background-image: none !important;
 }
 
-:-ms-input-placeholder {
-  font-style: italic;
+.form-control.is-invalid {
+  border: 1px solid #dc3545 !important;
+  background-image: none !important;
+}
+
+input::-webkit-input-placeholder {
+  font-family: "Open Sans", sans-serif !important;
+  font-style: italic !important;
+  color: #808080 !important;
+}
+
+input:-ms-input-placeholder {
+  font-family: "Open Sans", sans-serif !important;
+  font-style: italic !important;
+  color: #808080 !important;
+}
+
+input::placeholder {
+  font-family: "Open Sans", sans-serif !important;
+  font-style: italic !important;
+  color: #808080 !important;
 }

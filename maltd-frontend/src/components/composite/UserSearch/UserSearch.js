@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import PropTypes from "prop-types";
-import { Spinner } from "reactstrap";
 import InputField from "../../base/InputField/InputField";
 import GeneralButton from "../../base/GeneralButton/GeneralButton";
 import "./UserSearch.css";
@@ -13,8 +12,6 @@ export default function UserSearch({
 }) {
   return (
     <div>
-      <h4>Add or Remove User</h4>
-      <p />
       <p>
         Find a user by IDIR username and add them to or remove them from
         projects.
@@ -33,9 +30,10 @@ export default function UserSearch({
             <InputField inputField={inputField} />
             <p />
             <div>
-              <div className="align-left">
-                <p className="align-left">Loading...</p>
-                <Spinner className="spinner" />
+              <div className="float-left">
+                <p className="float-left">
+                  <small>Loading...</small>
+                </p>
               </div>
               <GeneralButton generalButton={generalButton} />
             </div>
@@ -59,13 +57,9 @@ UserSearch.propTypes = {
     value: PropTypes.string.isRequired
   }).isRequired,
   generalButton: PropTypes.shape({
-    styling: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
-    block: PropTypes.bool.isRequired,
-    active: PropTypes.bool.isRequired,
-    outline: PropTypes.bool.isRequired,
     label: PropTypes.any.isRequired
   }).isRequired
 };
