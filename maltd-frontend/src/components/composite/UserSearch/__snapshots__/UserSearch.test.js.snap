@@ -2,10 +2,6 @@
 
 exports[`User Search Component renders as expected 1`] = `
 <div>
-  <h4>
-    Add or Remove User
-  </h4>
-  <p />
   <p>
     Find a user by IDIR username and add them to or remove them from projects.
   </p>
