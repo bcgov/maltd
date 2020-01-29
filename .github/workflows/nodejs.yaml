@@ -22,8 +22,6 @@ jobs:
         npm install ./maltd-frontend
         echo RUNNING PWD
         pwd
-        echo RUNNING LIST
-        ls /home/runner/maltd/maltd
         npm run build --if-present ./home/runner/maltd/maltd/maltd-frontend/
         npm test
       env:
