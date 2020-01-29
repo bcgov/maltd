@@ -20,7 +20,7 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm ci
-        npm --prefix /maltd-frontend run build
+        npm build ./maltd-frontend
         npm run test
       env:
         CI: true
