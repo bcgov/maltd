@@ -26,6 +26,6 @@ jobs:
         echo INIT!
         npm init -y
         echo TEST!
-        npm run test
+        npm run test ./maltd-frontend
       env:
         CI: true
