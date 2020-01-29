@@ -21,7 +21,10 @@ jobs:
       run: |
         npm install ./maltd-frontend
         echo RUNNING PWD
-        npm run build --if-present
+        pwd
+        echo RUNNING LIST
+        ls /home/runner/maltd/maltd/maltd-frontend
+        npm run build --if-present [./home/runner/maltd/maltd/maltd-frontend/]
         npm test
       env:
         CI: true
