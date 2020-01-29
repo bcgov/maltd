@@ -11,8 +11,8 @@ Enzyme.configure({ adapter: new Adapter() });
 describe("User Search", () => {
   const inputField = {
     type: "text",
-    placeholder: "placeholder",
     name: "myinputfield",
+    placeholder: "placeholder",
     valid: false,
     invalid: false,
     value: "idir"
@@ -20,13 +20,9 @@ describe("User Search", () => {
 
   const generalButton = {
     type: "submit",
-    color: "success",
+    color: "primary",
     disabled: true,
-    block: false,
-    active: false,
-    outline: false,
-    label: "Find",
-    styling: "generic-classname"
+    label: "Find"
   };
 
   test("Component renders as expected", () => {
@@ -42,19 +38,5 @@ describe("User Search", () => {
 
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
-  });
-
-  test("Component renders with a loading spinner when in the loading state", () => {
-    const component = mount(
-      <UserSearch
-        userSearch={{
-          state: { isLoading: true }
-        }}
-        inputField={inputField}
-        generalButton={generalButton}
-      />
-    );
-
-    expect(component.find(Spinner)).toHaveLength(1);
   });
 });

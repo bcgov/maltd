@@ -9,7 +9,7 @@ describe("General Button", () => {
       <GeneralButton
         generalButton={{
           type: "submit",
-          color: "success",
+          color: "primary",
           disabled: true,
           label: "Find"
         }}
