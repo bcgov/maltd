@@ -2,8 +2,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
-import { mount } from "enzyme";
-import Enzyme from "enzyme";
+import Enzyme, { mount } from "enzyme";
 import UserSearch from "./UserSearch";
 
 Enzyme.configure({ adapter: new Adapter() });
