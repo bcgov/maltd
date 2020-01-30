@@ -32,7 +32,7 @@ export default function UserSearch({
             <div>
               <div className="float-left">
                 <p className="float-left">
-                  <small>Loading...</small>
+                  <small id="loading">Loading...</small>
                 </p>
               </div>
               <GeneralButton generalButton={generalButton} />
