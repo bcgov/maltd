@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import PropTypes from "prop-types";
-import InputField from "../../base/InputField/InputField";
-import GeneralButton from "../../base/GeneralButton/GeneralButton";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 
