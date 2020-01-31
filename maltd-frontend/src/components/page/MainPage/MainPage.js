@@ -4,38 +4,40 @@ import PropTypes from "prop-types";
 import InputField from "../../base/InputField/InputField";
 import GeneralButton from "../../base/GeneralButton/GeneralButton";
 import "./MainPage.css";
+import UserSearch from "../../composite/UserSearch/UserSearch";
 
-export default function MainPage({
-  userSearch: { state },
-  inputField,
-  generalButton
-}) {
+export default function MainPage({}) {
+  const inputField = {
+    type: "text",
+    name: "idir",
+    placeholder: "Enter IDIR username to find",
+    valid: false,
+    invalid: false,
+    value: "",
+    disabled: false
+  };
+
+  const generalButton = {
+    type: "submit",
+    color: "primary",
+    disabled: true,
+    label: "Find"
+  };
+
+  const userSearch = {
+    state: {
+      isLoading: false
+    }
+  };
+
   return (
     <div className="container my-3 p-3 rounded shadow">
-      <h4 className="my-3">Add or Remove User</h4>
-      <p className="my-3">
-        Find a user by IDIR username and add them to or remove them from
-        projects.
-      </p>
-      {!state.isLoading && (
-        <div className="my-3">
-          <InputField inputField={inputField} />
-          <GeneralButton generalButton={generalButton} />
-        </div>
-      )}
-      {state.isLoading && (
-        <div className="my-3">
-          <div>
-            <InputField inputField={inputField} />
-            <div>
-              <p className="float-left">
-                <small id="loading">Loading...</small>
-              </p>
-              <GeneralButton generalButton={generalButton} />
-            </div>
-          </div>
-        </div>
-      )}
+      <h4>Add or Remove User</h4>
+      <UserSearch
+        userSearch={userSearch}
+        inputField={inputField}
+        generalButton={generalButton}
+      />
     </div>
   );
 }
@@ -46,11 +48,12 @@ MainPage.propTypes = {
   }).isRequired,
   inputField: PropTypes.shape({
     type: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
     valid: PropTypes.bool.isRequired,
     invalid: PropTypes.bool.isRequired,
-    value: PropTypes.string.isRequired
+    value: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired
   }).isRequired,
   generalButton: PropTypes.shape({
     type: PropTypes.string.isRequired,
