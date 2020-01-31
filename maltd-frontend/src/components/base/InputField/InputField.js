@@ -9,7 +9,7 @@ export default function InputField({
 }) {
   return (
     <Input
-      className="input-field"
+      className="input-field my-2"
       type={type}
       disabled={disabled}
       name={name}

@@ -12,26 +12,25 @@ export default function MainPage({
 }) {
   return (
     <div className="container my-3 p-3 rounded shadow">
-      <h4>Add or Remove User</h4>
-      <p />
+      <h4 className="my-3">Add or Remove User</h4>
+      <p className="my-3">
+        Find a user by IDIR username and add them to or remove them from
+        projects.
+      </p>
       {!state.isLoading && (
-        <div>
+        <div className="my-3">
           <InputField inputField={inputField} />
-          <p />
           <GeneralButton generalButton={generalButton} />
         </div>
       )}
       {state.isLoading && (
-        <div>
+        <div className="my-3">
           <div>
             <InputField inputField={inputField} />
-            <p />
             <div>
-              <div className="float-left">
-                <p className="float-left">
-                  <small id="loading">Loading...</small>
-                </p>
-              </div>
+              <p className="float-left">
+                <small id="loading">Loading...</small>
+              </p>
               <GeneralButton generalButton={generalButton} />
             </div>
           </div>
