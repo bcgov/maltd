@@ -9,7 +9,7 @@ export default function GeneralButton({
 }) {
   return (
     <Button
-      className="general-button"
+      className="general-button my-2"
       type={type}
       color={color}
       disabled={disabled}

@@ -21,7 +21,9 @@ export default function UserSearch({
         <div>
           <InputField inputField={inputField} />
           <p />
-          <GeneralButton generalButton={generalButton} />
+          <div className="d-flex justify-content-end">
+            <GeneralButton generalButton={generalButton} />
+          </div>
         </div>
       )}
       {state.isLoading && (
@@ -35,7 +37,9 @@ export default function UserSearch({
                   <small id="loading">Loading...</small>
                 </p>
               </div>
-              <GeneralButton generalButton={generalButton} />
+              <div className="d-flex justify-content-end">
+                <GeneralButton generalButton={generalButton} />
+              </div>
             </div>
           </div>
         </div>
