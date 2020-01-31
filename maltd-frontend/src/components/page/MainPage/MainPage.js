@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 
-export default function MainPage({}) {
+export default function MainPage() {
   const inputField = {
     type: "text",
     name: "idir",
