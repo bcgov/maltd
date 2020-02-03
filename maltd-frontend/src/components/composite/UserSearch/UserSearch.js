@@ -17,7 +17,7 @@ export default function UserSearch({
         projects.
       </p>
       <p />
-      {!state.isLoading && (
+      {!state.isLoading && state.userExists && (
         <div>
           <InputField inputField={inputField} />
           <p />
@@ -26,7 +26,7 @@ export default function UserSearch({
           </div>
         </div>
       )}
-      {state.isLoading && (
+      {state.isLoading && state.userExists && (
         <div>
           <div>
             <InputField inputField={inputField} />
@@ -35,6 +35,26 @@ export default function UserSearch({
               <div className="float-left">
                 <p className="float-left">
                   <small id="loading">Loading...</small>
+                </p>
+              </div>
+              <div className="d-flex justify-content-end">
+                <GeneralButton generalButton={generalButton} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {!state.userExists && (
+        <div>
+          <div>
+            <InputField inputField={inputField} />
+            <p />
+            <div>
+              <div className="float-left">
+                <p className="float-left">
+                  <small>
+                    The user does not exist, please retype your IDIR username...
+                  </small>
                 </p>
               </div>
               <div className="d-flex justify-content-end">
