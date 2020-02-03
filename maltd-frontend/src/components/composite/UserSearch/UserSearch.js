@@ -8,7 +8,9 @@ import "./UserSearch.css";
 export default function UserSearch({
   userSearch: { state },
   inputField,
-  generalButton
+  generalButton,
+  onClick,
+  onChange
 }) {
   return (
     <div>
@@ -19,17 +21,17 @@ export default function UserSearch({
       <p />
       {!state.isLoading && state.userExists === null && (
         <div>
-          <InputField inputField={inputField} />
+          <InputField inputField={inputField} onChange={onChange} />
           <p />
           <div className="d-flex justify-content-end">
-            <GeneralButton generalButton={generalButton} />
+            <GeneralButton generalButton={generalButton} onClick={onClick} />
           </div>
         </div>
       )}
       {state.isLoading && state.userExists === null && (
         <div>
           <div>
-            <InputField inputField={inputField} />
+            <InputField inputField={inputField} onChange={onChange} />
             <p />
             <div>
               <div className="float-left">
@@ -38,7 +40,10 @@ export default function UserSearch({
                 </p>
               </div>
               <div className="d-flex justify-content-end">
-                <GeneralButton generalButton={generalButton} />
+                <GeneralButton
+                  generalButton={generalButton}
+                  onClick={onClick}
+                />
               </div>
             </div>
           </div>
@@ -85,5 +90,7 @@ UserSearch.propTypes = {
     color: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
     label: PropTypes.any.isRequired
-  }).isRequired
+  }).isRequired,
+  onClick: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
 };
