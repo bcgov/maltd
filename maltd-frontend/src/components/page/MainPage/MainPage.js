@@ -18,7 +18,6 @@ export default function MainPage() {
   const [userEmail, setUserEmail] = useState(null);
 
   function onButtonClick() {
-    console.log("Make backend call here... and set loading to true");
     setIsLoading(true);
     setDisabledButton(true);
     setDisabledInput(true);
@@ -26,7 +25,6 @@ export default function MainPage() {
     fetch(`https://localhost:5001/api/users/${value}`)
       .then(res => res.json())
       .then(result => {
-        console.log(result);
         if (result.status !== 404) {
           setProjects(result.projects);
           if (result.email) {
@@ -78,7 +76,7 @@ export default function MainPage() {
 
   const userSearch = {
     state: {
-      isLoading: false,
+      isLoading,
       userExists: null
     }
   };
