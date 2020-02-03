@@ -1,6 +1,5 @@
 .input-field {
   width: 100% !important;
-  font-family: "Open Sans", sans-serif !important;
 }
 
 .form-control {
@@ -24,19 +23,16 @@
 }
 
 input::-webkit-input-placeholder {
-  font-family: "Open Sans", sans-serif !important;
   font-style: italic !important;
   color: #808080 !important;
 }
 
 input:-ms-input-placeholder {
-  font-family: "Open Sans", sans-serif !important;
   font-style: italic !important;
   color: #808080 !important;
 }
 
 input::placeholder {
-  font-family: "Open Sans", sans-serif !important;
   font-style: italic !important;
   color: #808080 !important;
 }

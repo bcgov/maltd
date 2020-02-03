@@ -24,7 +24,8 @@ export default function MainPage() {
 
   const userSearch = {
     state: {
-      isLoading: false
+      isLoading: false,
+      userExists: null
     }
   };
 
