@@ -5,14 +5,14 @@ import "bootstrap/dist/css/bootstrap.css";
 import UserSearch from "./UserSearch";
 
 const userSearch = {
-  state: { isLoading: false, userExists: true }
+  state: { isLoading: false, userExists: null }
 };
 
 const isLoadingUserSearch = {
-  state: { isLoading: true, userExists: true }
+  state: { isLoading: true, userExists: null }
 };
 
-const userNotExist = {
+const noUserExistsUserSearch = {
   state: { isLoading: false, userExists: false }
 };
 
@@ -60,15 +60,11 @@ storiesOf("UserSearch", module)
       generalButton={generalButton}
     />
   ))
-  .add("not exist", () => (
+  .add("user does not exist", () => (
     <UserSearch
-      userSearch={userNotExist}
-      inputField={{
-        ...inputField,
-        invalid: true,
-        value: "IDIR/validuser"
-      }}
-      generalButton={{ ...generalButton, color: "danger" }}
+      userSearch={noUserExistsUserSearch}
+      inputField={inputField}
+      generalButton={generalButton}
     />
   ))
   .add("invalid", () => (

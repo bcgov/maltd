@@ -17,7 +17,7 @@ export default function UserSearch({
         projects.
       </p>
       <p />
-      {!state.isLoading && state.userExists && (
+      {!state.isLoading && state.userExists === null && (
         <div>
           <InputField inputField={inputField} />
           <p />
@@ -26,7 +26,7 @@ export default function UserSearch({
           </div>
         </div>
       )}
-      {state.isLoading && state.userExists && (
+      {state.isLoading && state.userExists === null && (
         <div>
           <div>
             <InputField inputField={inputField} />
@@ -44,7 +44,7 @@ export default function UserSearch({
           </div>
         </div>
       )}
-      {!state.userExists && (
+      {state.userExists === false && (
         <div>
           <div>
             <InputField inputField={inputField} />
@@ -53,7 +53,7 @@ export default function UserSearch({
               <div className="float-left">
                 <p className="float-left">
                   <small>
-                    The user does not exist, please retype your IDIR username...
+                    This user does not exist, please retype the IDIR username...
                   </small>
                 </p>
               </div>
