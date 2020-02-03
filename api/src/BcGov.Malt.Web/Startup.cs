@@ -1,8 +1,8 @@
-using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.IO;
 using System.Reflection;
+
 
 namespace BcGov.Malt.Web
 {
@@ -40,6 +41,13 @@ namespace BcGov.Malt.Web
         {
             services.AddControllers();
 
+            // send header Access-Control-Allow-Origin: *
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => { 
+                    builder.AllowAnyOrigin();
+                });
+            });
 
             services.AddMvcCore()
                 .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; })
