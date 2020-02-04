@@ -1,3 +1,7 @@
 body {
   color: #303030 !important;
 }
+
+.error-message {
+  color: #dc3545;
+}

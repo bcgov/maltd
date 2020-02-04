@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
+import NavBar from "../../base/NavBar/NavBar";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 
 export default function MainPage() {
@@ -16,6 +16,8 @@ export default function MainPage() {
   const [isUserSearch, setIsUserSearch] = useState(true);
   const [projects, setProjects] = useState([]);
   const [userEmail, setUserEmail] = useState(null);
+  const [color, setColor] = useState("primary");
+  const [userExists, setUserExists] = useState(null);
 
   function onButtonClick() {
     setIsLoading(true);
@@ -31,12 +33,26 @@ export default function MainPage() {
             setUserEmail(result.email);
           }
 
+          setUserExists(true);
           setIsUserSearch(false);
         } else {
           setIsLoading(false);
           setDisabledButton(false);
           setDisabledInput(false);
+          setUserExists(false);
+          setInvalidInput(false);
+          setValidInput(false);
+          console.log("in here");
+          setValue("");
         }
+      })
+      .catch(err => {
+        setInvalidInput(false);
+        setValidInput(false);
+        setDisabledButton(true);
+        setColor("primary");
+        setValue("");
+        setUserExists(false);
       });
   }
 
@@ -46,12 +62,16 @@ export default function MainPage() {
     if (val.length === 0) {
       setInvalidInput(false);
       setValidInput(false);
+      setDisabledButton(true);
+      setColor("primary");
     } else if (val.length < 5) {
       setInvalidInput(true);
+      setColor("danger");
     } else {
       setInvalidInput(false);
       setValidInput(true);
       setDisabledButton(false);
+      setColor("primary");
     }
 
     setValue(event.target.value);
@@ -69,7 +89,7 @@ export default function MainPage() {
 
   const generalButton = {
     type: "submit",
-    color: "primary",
+    color,
     disabled: disabledButton,
     label: "Find"
   };
@@ -77,7 +97,7 @@ export default function MainPage() {
   const userSearch = {
     state: {
       isLoading,
-      userExists: null
+      userExists
     }
   };
 
@@ -87,40 +107,26 @@ export default function MainPage() {
     userEmail
   };
 
+  const navBar = {
+    isAuthed: true
+  };
+
   return (
-    <div className="container my-3 p-3 rounded shadow">
-      <h4>Add or Remove User</h4>
-      {isUserSearch && (
-        <UserSearch
-          userSearch={userSearch}
-          inputField={inputField}
-          onChange={onInputChange}
-          generalButton={generalButton}
-          onClick={onButtonClick}
-        />
-      )}
-      {!isUserSearch && <UserAccess userAccess={userAccess} />}
-    </div>
+    <>
+      <NavBar navBar={navBar} />
+      <div className="container my-3 p-3 rounded shadow">
+        <h4>Add or Remove User</h4>
+        {isUserSearch && (
+          <UserSearch
+            userSearch={userSearch}
+            inputField={inputField}
+            onChange={onInputChange}
+            generalButton={generalButton}
+            onClick={onButtonClick}
+          />
+        )}
+        {!isUserSearch && <UserAccess userAccess={userAccess} />}
+      </div>
+    </>
   );
 }
-
-MainPage.propTypes = {
-  userSearch: PropTypes.shape({
-    state: PropTypes.any.isRequired
-  }).isRequired,
-  inputField: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired,
-    valid: PropTypes.bool.isRequired,
-    invalid: PropTypes.bool.isRequired,
-    value: PropTypes.string.isRequired,
-    disabled: PropTypes.bool.isRequired
-  }).isRequired,
-  generalButton: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    disabled: PropTypes.bool.isRequired,
-    label: PropTypes.any.isRequired
-  }).isRequired
-};

@@ -1,19 +1,15 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import renderer from "react-test-renderer";
-import GeneralButton from "./GeneralButton";
+import NavBar from "./NavBar";
 
-describe("General Button", () => {
+describe("NavBar", () => {
   test("Component renders as expected", () => {
     const component = renderer.create(
-      <GeneralButton
-        generalButton={{
-          type: "submit",
-          color: "primary",
-          disabled: true,
-          label: "Find"
+      <NavBar
+        navBar={{
+          isAuthed: false
         }}
-        onClick={() => jest.fn()}
       />
     );
 
