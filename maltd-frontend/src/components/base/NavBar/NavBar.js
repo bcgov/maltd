@@ -17,13 +17,14 @@ export default function NavBar({ navBar: { isAuthed } }) {
     <div className="nav-div">
       <Navbar expand="md">
         <NavbarBrand>MALT</NavbarBrand>
-        <Collapse isOpen={true} navbar>
+        <Collapse isOpen navbar>
           <Nav className="mr-auto" navbar>
             <NavbarText>Account and License Management Tool</NavbarText>
           </Nav>
           {isAuthed && (
             <GeneralButton
               generalButton={generalButton}
+              // eslint-disable no-alert
               onClick={() => alert("Are you sure you want to log out?")}
             />
           )}

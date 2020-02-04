@@ -42,11 +42,10 @@ export default function MainPage() {
           setUserExists(false);
           setInvalidInput(false);
           setValidInput(false);
-          console.log("in here");
           setValue("");
         }
       })
-      .catch(err => {
+      .catch(() => {
         setInvalidInput(false);
         setValidInput(false);
         setDisabledButton(true);
