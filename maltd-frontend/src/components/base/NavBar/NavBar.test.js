@@ -10,6 +10,7 @@ describe("NavBar", () => {
         navBar={{
           isAuthed: false
         }}
+        onClick={() => jest.fn()}
       />
     );
 

@@ -31,7 +31,7 @@ export default function UserSearch({
       {state.isLoading && state.userExists === null && (
         <div>
           <div>
-            <InputField inputField={inputField} onChange={onChange} />
+            <InputField inputField={inputField} />
             <p />
             <div>
               <div className="float-left">
@@ -40,10 +40,7 @@ export default function UserSearch({
                 </p>
               </div>
               <div className="d-flex justify-content-end">
-                <GeneralButton
-                  generalButton={generalButton}
-                  onClick={onClick}
-                />
+                <GeneralButton generalButton={generalButton} />
               </div>
             </div>
           </div>
@@ -64,10 +61,7 @@ export default function UserSearch({
                 </p>
               </div>
               <div className="d-flex justify-content-end">
-                <GeneralButton
-                  generalButton={generalButton}
-                  onClick={onClick}
-                />
+                <GeneralButton generalButton={generalButton} />
               </div>
             </div>
           </div>
@@ -95,6 +89,6 @@ UserSearch.propTypes = {
     disabled: PropTypes.bool.isRequired,
     label: PropTypes.any.isRequired
   }).isRequired,
-  onClick: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired
+  onClick: PropTypes.func,
+  onChange: PropTypes.func
 };

@@ -1,3 +1,7 @@
+th {
+  font-weight: normal;
+}
+
 .border-bottom {
   border-bottom: "1px black solid";
 }

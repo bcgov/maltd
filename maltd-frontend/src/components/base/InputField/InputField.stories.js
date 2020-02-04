@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
+import { actions, action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import "bootstrap/dist/css/bootstrap.css";
 import InputField from "./InputField";
@@ -15,14 +16,23 @@ const inputField = {
 };
 
 storiesOf("InputField", module)
-  .add("default", () => <InputField inputField={inputField} />)
+  .add("default", () => (
+    <InputField
+      inputField={inputField}
+      onChange={action("input value changed")}
+    />
+  ))
   .add("valid", () => (
     <InputField
       inputField={{ ...inputField, valid: true, value: "IDIR/testuser" }}
+      onChange={action("input value changed")}
     />
   ))
   .add("invalid", () => (
-    <InputField inputField={{ ...inputField, invalid: true, value: "a" }} />
+    <InputField
+      inputField={{ ...inputField, invalid: true, value: "a" }}
+      onChange={action("input value changed")}
+    />
   ))
   .add("disabled", () => (
     <InputField inputField={{ ...inputField, disabled: true }} />

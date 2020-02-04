@@ -19,63 +19,6 @@ export default function MainPage() {
   const [color, setColor] = useState("primary");
   const [userExists, setUserExists] = useState(null);
 
-  function onButtonClick() {
-    setIsLoading(true);
-    setDisabledButton(true);
-    setDisabledInput(true);
-
-    fetch(`https://localhost:5001/api/users/${value}`)
-      .then(res => res.json())
-      .then(result => {
-        if (result.status !== 404) {
-          setProjects(result.projects);
-          if (result.email) {
-            setUserEmail(result.email);
-          }
-
-          setUserExists(true);
-          setIsUserSearch(false);
-        } else {
-          setIsLoading(false);
-          setDisabledButton(false);
-          setDisabledInput(false);
-          setUserExists(false);
-          setInvalidInput(false);
-          setValidInput(false);
-          setValue("");
-        }
-      })
-      .catch(() => {
-        setInvalidInput(false);
-        setValidInput(false);
-        setDisabledButton(true);
-        setColor("primary");
-        setValue("");
-        setUserExists(false);
-      });
-  }
-
-  function onInputChange(event) {
-    const val = event.target.value;
-
-    if (val.length === 0) {
-      setInvalidInput(false);
-      setValidInput(false);
-      setDisabledButton(true);
-      setColor("primary");
-    } else if (val.length < 5) {
-      setInvalidInput(true);
-      setColor("danger");
-    } else {
-      setInvalidInput(false);
-      setValidInput(true);
-      setDisabledButton(false);
-      setColor("primary");
-    }
-
-    setValue(event.target.value);
-  }
-
   const inputField = {
     type: "text",
     name: "idir",
@@ -110,9 +53,75 @@ export default function MainPage() {
     isAuthed: true
   };
 
+  function clearForm() {
+    setUserExists(false);
+    clearErrorMessage();
+    setIsLoading(false);
+    setDisabledButton(true);
+    setDisabledInput(false);
+    setInvalidInput(false);
+    setValidInput(false);
+    setValue("");
+  }
+
+  function clearErrorMessage() {
+    setTimeout(() => {
+      setUserExists(null);
+      return;
+    }, 2000);
+  }
+
+  function onLogoutClick() {}
+
+  function onButtonClick() {
+    setIsLoading(true);
+    setDisabledButton(true);
+    setDisabledInput(true);
+
+    fetch(`https://localhost:5001/api/users/${value}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.status !== 404) {
+          setProjects(result.projects);
+
+          if (result.email) {
+            setUserEmail(result.email);
+          }
+
+          setIsUserSearch(false);
+        } else {
+          clearForm();
+        }
+      })
+      .catch(() => {
+        clearForm();
+      });
+  }
+
+  function onInputChange(event) {
+    const val = event.target.value;
+
+    if (val.length === 0) {
+      setInvalidInput(false);
+      setValidInput(false);
+      setDisabledButton(true);
+      setColor("primary");
+    } else if (val.length < 5) {
+      setInvalidInput(true);
+      setColor("danger");
+    } else {
+      setInvalidInput(false);
+      setValidInput(true);
+      setDisabledButton(false);
+      setColor("primary");
+    }
+
+    setValue(event.target.value);
+  }
+
   return (
     <>
-      <NavBar navBar={navBar} />
+      <NavBar navBar={navBar} onClick={onLogoutClick} />
       <div className="container my-3 p-3 rounded shadow">
         <h4>Add or Remove User</h4>
         {isUserSearch && (

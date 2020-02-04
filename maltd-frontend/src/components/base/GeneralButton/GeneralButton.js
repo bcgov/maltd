@@ -14,7 +14,9 @@ export default function GeneralButton({
       type={type}
       color={color}
       disabled={disabled}
-      onClick={onClick}
+      {...{
+        ...(onClick && { onClick })
+      }}
     >
       {label}
     </Button>
@@ -28,5 +30,5 @@ GeneralButton.propTypes = {
     disabled: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired
   }).isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func
 };

@@ -17,8 +17,10 @@ export default function InputField({
       placeholder={placeholder}
       valid={valid}
       invalid={invalid}
-      defaultValue={value}
-      onChange={onChange}
+      value={value}
+      {...{
+        ...(onChange && { onChange })
+      }}
     />
   );
 }
@@ -33,5 +35,5 @@ InputField.propTypes = {
     value: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired
   }).isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func
 };

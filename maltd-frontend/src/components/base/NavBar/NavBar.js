@@ -12,7 +12,7 @@ const generalButton = {
   label: "Logout"
 };
 
-export default function NavBar({ navBar: { isAuthed } }) {
+export default function NavBar({ navBar: { isAuthed }, onClick }) {
   return (
     <div className="nav-div">
       <Navbar expand="md">
@@ -22,11 +22,7 @@ export default function NavBar({ navBar: { isAuthed } }) {
             <NavbarText>Account and License Management Tool</NavbarText>
           </Nav>
           {isAuthed && (
-            <GeneralButton
-              generalButton={generalButton}
-              // eslint-disable no-alert
-              onClick={() => alert("Are you sure you want to log out?")}
-            />
+            <GeneralButton generalButton={generalButton} onClick={onClick} />
           )}
         </Collapse>
       </Navbar>
@@ -37,5 +33,6 @@ export default function NavBar({ navBar: { isAuthed } }) {
 NavBar.propTypes = {
   navBar: PropTypes.shape({
     isAuthed: PropTypes.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  onClick: PropTypes.func.isRequired
 };

@@ -2,7 +2,9 @@
 
 exports[`List Element Component renders as expected 1`] = `
 <div>
-  <strong>
+  <strong
+    className="large-size"
+  >
     title
   </strong>
   <p>
