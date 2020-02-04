@@ -92,3 +92,8 @@ UserSearch.propTypes = {
   onClick: PropTypes.func,
   onChange: PropTypes.func
 };
+
+UserSearch.defaultProps = {
+  onClick: () => {},
+  onChange: () => {}
+};

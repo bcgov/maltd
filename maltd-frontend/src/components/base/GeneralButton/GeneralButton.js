@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Button } from "reactstrap";
 import PropTypes from "prop-types";
@@ -31,4 +32,8 @@ GeneralButton.propTypes = {
     label: PropTypes.string.isRequired
   }).isRequired,
   onClick: PropTypes.func
+};
+
+GeneralButton.defaultProps = {
+  onClick: () => {}
 };

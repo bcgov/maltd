@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Input } from "reactstrap";
 import PropTypes from "prop-types";
@@ -36,4 +37,8 @@ InputField.propTypes = {
     disabled: PropTypes.bool.isRequired
   }).isRequired,
   onChange: PropTypes.func
+};
+
+InputField.defaultProps = {
+  onChange: () => {}
 };

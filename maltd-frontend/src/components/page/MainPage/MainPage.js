@@ -53,6 +53,12 @@ export default function MainPage() {
     isAuthed: true
   };
 
+  function clearErrorMessage() {
+    setTimeout(() => {
+      setUserExists(null);
+    }, 2000);
+  }
+
   function clearForm() {
     setUserExists(false);
     clearErrorMessage();
@@ -62,13 +68,6 @@ export default function MainPage() {
     setInvalidInput(false);
     setValidInput(false);
     setValue("");
-  }
-
-  function clearErrorMessage() {
-    setTimeout(() => {
-      setUserExists(null);
-      return;
-    }, 2000);
   }
 
   function onLogoutClick() {}

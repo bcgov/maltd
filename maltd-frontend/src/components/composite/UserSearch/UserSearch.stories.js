@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
-import { actions, action } from "@storybook/addon-actions";
+import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import "bootstrap/dist/css/bootstrap.css";
 import UserSearch from "./UserSearch";
