@@ -16,6 +16,7 @@ describe("Input Field", () => {
           value: "idir",
           disabled: false
         }}
+        onChange={() => jest.fn()}
       />
     );
 

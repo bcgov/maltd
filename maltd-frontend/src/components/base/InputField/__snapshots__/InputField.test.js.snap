@@ -2,11 +2,12 @@
 
 exports[`Input Field Component renders as expected 1`] = `
 <input
-  className="input-field form-control"
-  defaultValue="idir"
+  className="input-field my-2 form-control"
   disabled={false}
   name="myinputfield"
+  onChange={[Function]}
   placeholder="placeholder"
   type="text"
+  value="idir"
 />
 `;

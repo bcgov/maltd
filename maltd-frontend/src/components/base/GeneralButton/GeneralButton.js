@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Button } from "reactstrap";
 import PropTypes from "prop-types";
 import "./GeneralButton.css";
 
 export default function GeneralButton({
-  generalButton: { type, color, disabled, label }
+  generalButton: { type, color, disabled, label },
+  onClick
 }) {
   return (
     <Button
@@ -13,6 +15,9 @@ export default function GeneralButton({
       type={type}
       color={color}
       disabled={disabled}
+      {...{
+        ...(onClick && { onClick })
+      }}
     >
       {label}
     </Button>
@@ -25,5 +30,10 @@ GeneralButton.propTypes = {
     color: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
     label: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  onClick: PropTypes.func
+};
+
+GeneralButton.defaultProps = {
+  onClick: () => {}
 };

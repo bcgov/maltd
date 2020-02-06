@@ -8,7 +8,9 @@ import "./UserSearch.css";
 export default function UserSearch({
   userSearch: { state },
   inputField,
-  generalButton
+  generalButton,
+  onClick,
+  onChange
 }) {
   return (
     <div>
@@ -19,10 +21,10 @@ export default function UserSearch({
       <p />
       {!state.isLoading && state.userExists === null && (
         <div>
-          <InputField inputField={inputField} />
+          <InputField inputField={inputField} onChange={onChange} />
           <p />
           <div className="d-flex justify-content-end">
-            <GeneralButton generalButton={generalButton} />
+            <GeneralButton generalButton={generalButton} onClick={onClick} />
           </div>
         </div>
       )}
@@ -47,13 +49,14 @@ export default function UserSearch({
       {state.userExists === false && (
         <div>
           <div>
-            <InputField inputField={inputField} />
+            <InputField inputField={inputField} onChange={onChange} />
             <p />
             <div>
               <div className="float-left">
                 <p className="float-left">
-                  <small>
-                    This user does not exist, please retype the IDIR username...
+                  <small className="error-message">
+                    This user does not exist, please try again with a different
+                    IDIR username.
                   </small>
                 </p>
               </div>
@@ -85,5 +88,12 @@ UserSearch.propTypes = {
     color: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
     label: PropTypes.any.isRequired
-  }).isRequired
+  }).isRequired,
+  onClick: PropTypes.func,
+  onChange: PropTypes.func
+};
+
+UserSearch.defaultProps = {
+  onClick: () => {},
+  onChange: () => {}
 };

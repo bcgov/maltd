@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar Component renders as expected 1`] = `
+<div
+  className="nav-div"
+>
+  <nav
+    className="navbar navbar-expand-md"
+  >
+    <a
+      className="navbar-brand"
+    >
+      MALT
+    </a>
+    <div
+      className="collapse show navbar-collapse"
+      style={Object {}}
+    >
+      <ul
+        className="mr-auto navbar-nav"
+      >
+        <span
+          className="navbar-text"
+        >
+          Account and License Management Tool
+        </span>
+      </ul>
+    </div>
+  </nav>
+</div>
+`;

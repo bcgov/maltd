@@ -3,7 +3,7 @@
 exports[`General Button Component renders as expected 1`] = `
 <button
   aria-label={null}
-  className="general-button btn btn-primary disabled"
+  className="general-button my-2 btn btn-primary disabled"
   disabled={true}
   onClick={[Function]}
   type="submit"

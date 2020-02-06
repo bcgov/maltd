@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Input } from "reactstrap";
 import PropTypes from "prop-types";
 import "./InputField.css";
 
 export default function InputField({
-  inputField: { name, type, placeholder, valid, invalid, value, disabled }
+  inputField: { name, type, placeholder, valid, invalid, value, disabled },
+  onChange
 }) {
   return (
     <Input
@@ -16,7 +18,10 @@ export default function InputField({
       placeholder={placeholder}
       valid={valid}
       invalid={invalid}
-      defaultValue={value}
+      value={value}
+      {...{
+        ...(onChange && { onChange })
+      }}
     />
   );
 }
@@ -30,5 +35,10 @@ InputField.propTypes = {
     invalid: PropTypes.bool.isRequired,
     value: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  onChange: PropTypes.func
+};
+
+InputField.defaultProps = {
+  onChange: () => {}
 };

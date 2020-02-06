@@ -3,6 +3,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import "bootstrap/dist/css/bootstrap.css";
 import UserAccess from "./UserAccess";
+import "./UserAccess.css";
 
 const userAccess = {
   projects: [{ name: "Project1" }, { name: "Project2" }],
@@ -13,5 +14,5 @@ const userAccess = {
 storiesOf("UserAccess", module)
   .add("default", () => <UserAccess userAccess={userAccess} />)
   .add("no projects", () => (
-    <UserAccess userAccess={{ ...userAccess, projects: undefined }} />
+    <UserAccess userAccess={{ ...userAccess, projects: [] }} />
   ));

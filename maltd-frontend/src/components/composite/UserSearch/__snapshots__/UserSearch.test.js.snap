@@ -8,23 +8,28 @@ exports[`User Search Component renders as expected 1`] = `
   <p />
   <div>
     <input
-      className="input-field form-control"
-      defaultValue="idir"
+      className="input-field my-2 form-control"
       disabled={false}
       name="myinputfield"
+      onChange={[Function]}
       placeholder="placeholder"
       type="text"
+      value="idir"
     />
     <p />
-    <button
-      aria-label={null}
-      className="general-button btn btn-primary disabled"
-      disabled={true}
-      onClick={[Function]}
-      type="submit"
+    <div
+      className="d-flex justify-content-end"
     >
-      Find
-    </button>
+      <button
+        aria-label={null}
+        className="general-button my-2 btn btn-primary disabled"
+        disabled={true}
+        onClick={[Function]}
+        type="submit"
+      >
+        Find
+      </button>
+    </div>
   </div>
 </div>
 `;

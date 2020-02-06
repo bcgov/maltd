@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from "react";
+import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import "bootstrap/dist/css/bootstrap.css";
 import UserSearch from "./UserSearch";
@@ -39,6 +40,7 @@ storiesOf("UserSearch", module)
       inputField={inputField}
       generalButton={generalButton}
       userSearch={userSearch}
+      onChange={action("input field value changed")}
     />
   ))
   .add("valid", () => (
@@ -46,6 +48,8 @@ storiesOf("UserSearch", module)
       userSearch={userSearch}
       inputField={{ ...inputField, valid: true, value: "IDIR/validuser" }}
       generalButton={{ ...generalButton, disabled: false }}
+      onChange={action("input field value changed")}
+      onClick={action("button clicked")}
     />
   ))
   .add("loading", () => (
@@ -65,6 +69,7 @@ storiesOf("UserSearch", module)
       userSearch={noUserExistsUserSearch}
       inputField={inputField}
       generalButton={generalButton}
+      onChange={action("input field value changed")}
     />
   ))
   .add("invalid", () => (
@@ -72,5 +77,6 @@ storiesOf("UserSearch", module)
       userSearch={userSearch}
       inputField={{ ...inputField, invalid: true, value: "a" }}
       generalButton={{ ...generalButton, color: "danger" }}
+      onChange={action("input field value changed")}
     />
   ));

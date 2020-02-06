@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Table } from "reactstrap";
 import ListElement from "../../base/ListElement/ListElement";
+import "./UserAccess.css";
 
 export default function UserAccess({
   userAccess: { projects, userName, userEmail }
@@ -35,7 +36,9 @@ export default function UserAccess({
                   <ListElement key={value.name} listElement={listElement} />
                 );
               })}
-            {!projects && <ListElement listElement={{}} />}
+            {(!projects || projects.length === 0) && (
+              <ListElement listElement={{}} />
+            )}
           </td>
         </tr>
       </tbody>

@@ -2,7 +2,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
-import Enzyme, { mount } from "enzyme";
+import Enzyme, { shallow } from "enzyme";
 import UserAccess from "./UserAccess";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -27,7 +27,7 @@ describe("User Access", () => {
   });
 
   test("Component renders with no projects text when there are no projects for a user", () => {
-    const component = mount(
+    const component = shallow(
       <UserAccess
         userAccess={{
           projects: [],
@@ -48,7 +48,7 @@ describe("User Access", () => {
   });
 
   test("Component renders with existing projects when there are projects for a user", () => {
-    const component = mount(
+    const component = shallow(
       <UserAccess
         userAccess={{
           projects: [{ name: "Project1" }, { name: "Project2" }],
