@@ -1,0 +1,12 @@
+#main {
+  position: absolute;
+  padding: 10px;
+}
+
+#main > div {
+  float: right;
+}
+
+.size-large {
+  font-size: 40px;
+}
