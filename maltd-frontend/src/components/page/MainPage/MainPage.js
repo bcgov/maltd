@@ -3,7 +3,6 @@ import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
 import UserAccess from "../../composite/UserAccess/UserAccess";
-import BackIcon from "../../base/BackIcon/BackIcon";
 
 export default function MainPage() {
   // declare state variables, using hooks
@@ -125,7 +124,6 @@ export default function MainPage() {
   return (
     <>
       <NavBar navBar={navBar} onClick={onLogoutClick} />
-      <BackIcon backIcon={backIcon} />
       <div className="container my-3 p-3 rounded shadow">
         <h4>Add or Remove User</h4>
         {isUserSearch && (
