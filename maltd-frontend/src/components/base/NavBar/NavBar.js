@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import { Collapse, Navbar, NavbarBrand, Nav, NavbarText } from "reactstrap";
 import PropTypes from "prop-types";

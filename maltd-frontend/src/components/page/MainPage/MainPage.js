@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
 import React, { useState } from "react";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
