@@ -52,10 +52,6 @@ export default function MainPage() {
     isAuthed: true
   };
 
-  const backIcon = {
-    message: "Find another user"
-  };
-
   function clearErrorMessage() {
     setTimeout(() => {
       setUserExists(null);
