@@ -15,7 +15,6 @@ jobs:
         with:
           browser: chrome
           headless: true
-        working-directory: qa-automation/src/cypress-tests
       - name: Install test dependencies
         run: npm ci
         working-directory: qa-automation/src/cypress-tests
