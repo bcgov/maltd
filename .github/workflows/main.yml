@@ -1,0 +1,19 @@
+name: Jest Unit Tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10"
+      - name: Install dependencies
+        run: npm ci
+        working-directory: maltd-frontend
+      - name: Run tests
+        run: CI=true npm run test
+        working-directory: maltd-frontend
