@@ -13,7 +13,7 @@ jobs:
           node-version: "10"
       - name: Install dependencies
         run: npm ci
-        working-directory: maltd-frontend
+        working-directory: qa-automation/src/cypress-tests
       - name: Run tests
         run: npx cypress run
-        working-directory: qa-automation
+        working-directory: qa-automation/src/cypress-tests
