@@ -1,15 +1,15 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import ListElement from "./ListElement";
+import BackIcon from "./BackIcon";
 
-describe("List Element", () => {
+describe("Back Icon", () => {
   test("Component renders as expected", () => {
     const component = renderer.create(
-      <ListElement
-        listElement={{
-          title: "title",
-          description: "description"
+      <BackIcon
+        backIcon={{
+          message: "Find another user"
         }}
+        onClick={() => jest.fn()}
       />
     );
 

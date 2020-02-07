@@ -12,6 +12,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-icons": "^3.9.0",
     "react-scripts": "3.3.0",
     "react-test-renderer": "^16.12.0",
     "reactstrap": "^8.4.0"
@@ -24,7 +25,8 @@
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "ci-test": "cross-env CI=true jest --env=jsdom --testResultsProcessor=jest-sonar-reporter --update-snapshot --runInBand --coverage"
   },
   "eslintConfig": {
     "extends": "react-app"

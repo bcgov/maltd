@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
 import React from "react";
 import renderer from "react-test-renderer";
 import InputField from "./InputField";

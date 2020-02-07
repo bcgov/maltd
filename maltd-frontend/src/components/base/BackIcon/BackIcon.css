@@ -1,0 +1,17 @@
+#main {
+  position: absolute;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#main > div {
+  float: right;
+}
+
+.size-large {
+  font-size: 40px;
+}
+
+.limit-width {
+  width: 100px;
+}
