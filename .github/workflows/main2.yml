@@ -11,9 +11,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "10"
-      - name: Install dependencies
+      - name: Install test dependencies
         run: npm ci
         working-directory: qa-automation/src/cypress-tests
+      - name: Install app dependencies
+        run: npm ci
+        working-directory: maltd-frontend
+      - name: Run app server
+        run: npm run start
+        working-directory: maltd-frontend
       - name: Run tests
         run: npx cypress run
         working-directory: qa-automation/src/cypress-tests
