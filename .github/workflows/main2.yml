@@ -12,6 +12,7 @@ jobs:
         with:
           node-version: "10"
       - uses: cypress-io/github-action@v1
+        working-directory: qa-automation/src/cypress-tests
         with:
           browser: chrome
           headless: true
