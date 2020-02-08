@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Plus Icon Component renders as expected 1`] = `
+<div
+  id="main"
+  onClick={[Function]}
+  onKeyDown={[Function]}
+  role="button"
+  tabIndex="0"
+>
+  <img
+    alt="plus icon"
+    height="25px"
+    src="plus-icon.PNG"
+    width="25px"
+  />
+</div>
+`;
