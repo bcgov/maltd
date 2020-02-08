@@ -12,13 +12,9 @@ jobs:
         with:
           node-version: "10"
       - uses: cypress-io/github-action@v1
-        working-directory: qa-automation/src/cypress-tests
         with:
+          start: npm-run.sh
+          wait: localhost:3000/
           browser: chrome
           headless: true
-      - name: Install test dependencies
-        run: npm ci
-        working-directory: qa-automation/src/cypress-tests
-      - name: Run tests
-        run: npx cypress run
-        working-directory: qa-automation/src/cypress-tests
+          working-directory: qa-automation/src/cypress-tests
