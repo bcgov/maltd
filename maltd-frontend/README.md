@@ -58,7 +58,7 @@ This project uses Jest for snapshot component testing. Snapshot tests are a very
 
 Launches the test runner in the interactive watch mode.
 
-# MALTD QA Automation Tests
+## MALTD QA Automation Tests
 
 ### Install Cypress
 
