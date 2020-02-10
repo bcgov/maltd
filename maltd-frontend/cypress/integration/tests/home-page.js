@@ -1,5 +1,6 @@
-describe("The Home Page", function() {
-  it("Successfully loads", function() {
+/* global cy */
+describe("The Home Page", () => {
+  it("Successfully loads", () => {
     // Launches the url
     cy.visit("/");
 
