@@ -1,0 +1,13 @@
+{
+  "userName": {
+    "valid": ["pbolduc", "nyang", "choban"],
+    "invalid": [
+      "&***&",
+      "0",
+      "-10000",
+      "a",
+      "'1 or = 1'",
+      "somereallylongtextTogetusernamefornegtivecase"
+    ]
+  }
+}
