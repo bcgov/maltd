@@ -1,16 +1,17 @@
-/// <reference types="Cypress" />
+/* global cy, before */
+// / <reference types="Cypress" />
 
 import LandingPage from "../../support/pageObjects/landing-page";
 
-describe("The landing Page", function() {
-  before(function() {
+describe("The landing Page", () => {
+  before(() => {
     // Runs once before all tests in the block
-    cy.fixture("userData").then(function(data) {
+    cy.fixture("userData").then(data => {
       this.data = data;
     });
   });
 
-  it("Find users", function() {
+  it("Find users", () => {
     const landingPage = new LandingPage();
     // Launches the url
     cy.visit("/");
@@ -19,11 +20,11 @@ describe("The landing Page", function() {
     landingPage.getFindButton().should("be.disabled");
 
     // Validating invalid inputs and error message
-    var i = this.data.userName.invalid.length;
+    let i = this.data.userName.invalid.length;
 
     while (i > 0) {
-      i--;
-      landingPage.getInputField().type("IDIR/" + this.data.userName.invalid[i]);
+      i -= 1;
+      landingPage.getInputField().type(`IDIR/${this.data.userName.invalid[i]}`);
       landingPage.getFindButton().click();
       landingPage
         .getErrorText()
