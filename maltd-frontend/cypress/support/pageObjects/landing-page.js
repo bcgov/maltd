@@ -10,6 +10,11 @@ class LandingPage {
     return cy.get(".d-flex > .general-button");
   }
 
+  // Get the Red find button
+  static getFindRedButton() {
+    return cy.get(".general-button.my-2.btn.btn-danger.disabled");
+  }
+
   // Get the error text element
   static getErrorText() {
     return cy.get(".error-message");

@@ -3,37 +3,41 @@
 
 import LandingPage from "../../support/pageObjects/landing-page";
 
-describe("The landing Page", () => {
+describe("The landing pages tests", () => {
+  // Runs once before all tests in the block
   before(() => {
-    // Runs once before all tests in the block
-    cy.fixture("userData").then(data => {
-      this.data = data;
-    });
+    cy.fixture("userData.json").as("users");
   });
 
-  it("Find users", () => {
-    const landingPage = new LandingPage();
+  it("Finds users", () => {
     // Launches the url
     cy.visit("/");
 
     // Validates the Find button is disabled by default
-    landingPage.getFindButton().should("be.disabled");
+    LandingPage.getFindButton().should("be.disabled");
 
-    // Validating invalid inputs and error message
-    let i = this.data.userName.invalid.length;
+    cy.get("@users").then(users => {
+      const invalidUser = users.userName.invalid;
 
-    while (i > 0) {
-      i -= 1;
-      landingPage.getInputField().type(`IDIR/${this.data.userName.invalid[i]}`);
-      landingPage.getFindButton().click();
-      landingPage
-        .getErrorText()
-        .should(
-          "have.text",
-          "This user does not exist, please try again with a different IDIR username."
-        );
-      landingPage.getErrorText().should("not.be.visible");
-    }
-    landingPage.getLogoutButton().click();
+      // Validates invalid inputs and error message
+      let i = invalidUser.length;
+
+      while (i > 0) {
+        i -= 1;
+        LandingPage.getInputField().type(invalidUser[i]);
+
+        if (invalidUser[i].length < 5) {
+          LandingPage.getFindRedButton().should("be.disabled");
+          LandingPage.getInputField().clear();
+        } else {
+          LandingPage.getFindButton().click();
+          LandingPage.getErrorText().should(
+            "have.text",
+            "This user does not exist, please try again with a different IDIR username."
+          );
+        }
+        LandingPage.getErrorText().should("not.be.visible");
+      }
+    });
   });
 });
