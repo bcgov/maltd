@@ -48,10 +48,6 @@ export default function MainPage() {
     userEmail
   };
 
-  const navBar = {
-    isAuthed: true
-  };
-
   function clearErrorMessage() {
     setTimeout(() => {
       setUserExists(null);
@@ -119,7 +115,7 @@ export default function MainPage() {
 
   return (
     <>
-      <NavBar navBar={navBar} onClick={onLogoutClick} />
+      <NavBar onClick={onLogoutClick} />
       <div className="container my-3 p-3 rounded shadow">
         <h4>Add or Remove User</h4>
         {isUserSearch && (

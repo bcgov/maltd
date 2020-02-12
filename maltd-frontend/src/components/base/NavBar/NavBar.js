@@ -11,7 +11,7 @@ const generalButton = {
   label: "Logout"
 };
 
-export default function NavBar({ navBar: { isAuthed }, onClick }) {
+export default function NavBar({ onClick }) {
   return (
     <div className="nav-div">
       <Navbar expand="md">
@@ -20,9 +20,7 @@ export default function NavBar({ navBar: { isAuthed }, onClick }) {
           <Nav className="mr-auto" navbar>
             <NavbarText>Account and License Management Tool</NavbarText>
           </Nav>
-          {isAuthed && (
-            <GeneralButton generalButton={generalButton} onClick={onClick} />
-          )}
+          <GeneralButton generalButton={generalButton} onClick={onClick} />
         </Collapse>
       </Navbar>
     </div>
@@ -30,8 +28,5 @@ export default function NavBar({ navBar: { isAuthed }, onClick }) {
 }
 
 NavBar.propTypes = {
-  navBar: PropTypes.shape({
-    isAuthed: PropTypes.bool.isRequired
-  }).isRequired,
   onClick: PropTypes.func.isRequired
 };
