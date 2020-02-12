@@ -50,10 +50,6 @@ export default function MainPage() {
     userEmail
   };
 
-  const navBar = {
-    isAuthed: true
-  };
-
   const backIcon = {
     message: "Find another user"
   };
@@ -128,7 +124,7 @@ export default function MainPage() {
 
   return (
     <>
-      <NavBar navBar={navBar} onClick={onLogoutClick} />
+      <NavBar onClick={onLogoutClick} />
       <div className="top-spacing" id="wrapper">
         {!isUserSearch && (
           <div className="backicon-spacing">

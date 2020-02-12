@@ -25,6 +25,15 @@ exports[`NavBar Component renders as expected 1`] = `
           Account and License Management Tool
         </span>
       </ul>
+      <button
+        aria-label={null}
+        className="general-button my-2 btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="submit"
+      >
+        Logout
+      </button>
     </div>
   </nav>
 </div>
