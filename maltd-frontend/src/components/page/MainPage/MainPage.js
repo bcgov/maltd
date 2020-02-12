@@ -16,6 +16,7 @@ export default function MainPage() {
   const [isUserSearch, setIsUserSearch] = useState(true);
   const [projects, setProjects] = useState([]);
   const [userEmail, setUserEmail] = useState(null);
+  const [userName, setUserName] = useState("");
   const [color, setColor] = useState("primary");
   const [userExists, setUserExists] = useState(null);
 
@@ -45,7 +46,7 @@ export default function MainPage() {
 
   const userAccess = {
     projects,
-    userName: value,
+    userName,
     userEmail
   };
 
@@ -87,6 +88,9 @@ export default function MainPage() {
 
           if (result.email) {
             setUserEmail(result.email);
+          }
+          if (result.firstName && result.lastName) {
+            setUserName(`${result.firstName} ${result.lastName}`);
           }
 
           setIsUserSearch(false);
