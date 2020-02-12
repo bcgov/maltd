@@ -5,7 +5,8 @@ import ListElement from "../../base/ListElement/ListElement";
 import "./UserAccess.css";
 
 export default function UserAccess({
-  userAccess: { projects, userName, userEmail }
+  userAccess: { projects, userName, userEmail },
+  onXClick
 }) {
   const userListElement = {
     title: userName,
@@ -19,10 +20,10 @@ export default function UserAccess({
       <thead>
         <tr className="border-bottom">
           <th>
-            <strong>USER</strong>
+            <strong className="big-font">USER</strong>
           </th>
           <th>
-            <strong>CURRENT PROJECTS</strong>
+            <strong className="big-font">CURRENT PROJECTS</strong>
           </th>
         </tr>
       </thead>
@@ -34,9 +35,16 @@ export default function UserAccess({
           <td id={projectExists}>
             {projects &&
               projects.map(value => {
-                const listElement = { title: value.name };
+                const listElement = { title: value.name, id: value.id };
                 return (
-                  <ListElement key={value.name} listElement={listElement} />
+                  <>
+                    <ListElement
+                      key={value.name}
+                      listElement={listElement}
+                      onXClick={onXClick}
+                    />
+                    <p />
+                  </>
                 );
               })}
             {(!projects || projects.length === 0) && (
@@ -54,5 +62,6 @@ UserAccess.propTypes = {
     projects: PropTypes.array.isRequired,
     userName: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  onXClick: PropTypes.func.isRequired
 };

@@ -65,6 +65,8 @@ export default function MainPage() {
 
   function onLogoutClick() {}
 
+  function removeUserFromProject(id) {}
+
   function onButtonClick() {
     setIsLoading(true);
     setDisabledButton(true);
@@ -142,7 +144,12 @@ export default function MainPage() {
               onClick={onButtonClick}
             />
           )}
-          {!isUserSearch && <UserAccess userAccess={userAccess} />}
+          {!isUserSearch && (
+            <UserAccess
+              userAccess={userAccess}
+              onXClick={removeUserFromProject}
+            />
+          )}
         </div>
       </div>
     </>
