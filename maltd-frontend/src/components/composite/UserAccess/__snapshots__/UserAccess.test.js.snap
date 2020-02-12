@@ -2,17 +2,21 @@
 
 exports[`User Access Component renders as expected 1`] = `
 <table
-  className="table table-borderless"
+  className="move-down table table-borderless"
 >
   <thead>
     <tr
       className="border-bottom"
     >
       <th>
-        USER
+        <strong>
+          USER
+        </strong>
       </th>
       <th>
-        CURRENT PROJECTS
+        <strong>
+          CURRENT PROJECTS
+        </strong>
       </th>
     </tr>
   </thead>

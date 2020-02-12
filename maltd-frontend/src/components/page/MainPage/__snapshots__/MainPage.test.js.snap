@@ -39,39 +39,46 @@ Array [
     </nav>
   </div>,
   <div
-    className="container my-3 p-3 rounded shadow"
+    className="top-spacing"
+    id="wrapper"
   >
-    <h4>
-      Add or Remove User
-    </h4>
-    <div>
-      <p>
-        Find a user by IDIR username and add them to or remove them from projects.
-      </p>
-      <p />
-      <div>
-        <input
-          className="input-field my-2 form-control"
-          disabled={false}
-          name="idir"
-          onChange={[Function]}
-          placeholder="Enter IDIR username to find"
-          type="text"
-          value=""
-        />
+    <div
+      className="my-3 p-3 rounded shadow less-spacing-top"
+    >
+      <h4>
+        Add or Remove User
+      </h4>
+      <div
+        className="move-down"
+      >
+        <p>
+          Find a user by IDIR username and add them to or remove them from projects.
+        </p>
         <p />
-        <div
-          className="d-flex justify-content-end"
-        >
-          <button
-            aria-label={null}
-            className="general-button my-2 btn btn-primary disabled"
-            disabled={true}
-            onClick={[Function]}
-            type="submit"
+        <div>
+          <input
+            className="input-field my-2 form-control"
+            disabled={false}
+            name="idir"
+            onChange={[Function]}
+            placeholder="Enter IDIR username to find"
+            type="text"
+            value=""
+          />
+          <p />
+          <div
+            className="d-flex justify-content-end"
           >
-            Find
-          </button>
+            <button
+              aria-label={null}
+              className="general-button my-2 btn btn-primary disabled"
+              disabled={true}
+              onClick={[Function]}
+              type="submit"
+            >
+              Find
+            </button>
+          </div>
         </div>
       </div>
     </div>
