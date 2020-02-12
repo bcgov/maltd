@@ -15,11 +15,15 @@ export default function UserAccess({
     projects && projects.length > 0 ? "projects" : "noProjects";
 
   return (
-    <Table borderless>
+    <Table borderless className="move-down">
       <thead>
         <tr className="border-bottom">
-          <th>USER</th>
-          <th>CURRENT PROJECTS</th>
+          <th>
+            <strong>USER</strong>
+          </th>
+          <th>
+            <strong>CURRENT PROJECTS</strong>
+          </th>
         </tr>
       </thead>
       <tbody>

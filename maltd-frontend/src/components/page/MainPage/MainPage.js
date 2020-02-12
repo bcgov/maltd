@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
+import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 
 export default function MainPage() {
@@ -15,6 +16,7 @@ export default function MainPage() {
   const [isUserSearch, setIsUserSearch] = useState(true);
   const [projects, setProjects] = useState([]);
   const [userEmail, setUserEmail] = useState(null);
+  const [userName, setUserName] = useState("");
   const [color, setColor] = useState("primary");
   const [userExists, setUserExists] = useState(null);
 
@@ -44,25 +46,21 @@ export default function MainPage() {
 
   const userAccess = {
     projects,
-    userName: value,
+    userName,
     userEmail
   };
 
-  function clearErrorMessage() {
-    setTimeout(() => {
-      setUserExists(null);
-    }, 2000);
-  }
+  const backIcon = {
+    message: "Find another user"
+  };
 
   function clearForm() {
     setUserExists(false);
-    clearErrorMessage();
     setIsLoading(false);
     setDisabledButton(true);
     setDisabledInput(false);
     setInvalidInput(false);
     setValidInput(false);
-    setValue("");
   }
 
   function onLogoutClick() {}
@@ -81,6 +79,9 @@ export default function MainPage() {
           if (result.email) {
             setUserEmail(result.email);
           }
+          if (result.firstName && result.lastName) {
+            setUserName(`${result.firstName} ${result.lastName}`);
+          }
 
           setIsUserSearch(false);
         } else {
@@ -93,6 +94,7 @@ export default function MainPage() {
   }
 
   function onInputChange(event) {
+    setUserExists(null);
     const val = event.target.value;
 
     if (val.length === 0) {
@@ -113,21 +115,35 @@ export default function MainPage() {
     setValue(event.target.value);
   }
 
+  function onBackClick() {
+    setIsUserSearch(true);
+    clearForm();
+    setUserExists(null);
+    setValue("");
+  }
+
   return (
     <>
       <NavBar onClick={onLogoutClick} />
-      <div className="container my-3 p-3 rounded shadow">
-        <h4>Add or Remove User</h4>
-        {isUserSearch && (
-          <UserSearch
-            userSearch={userSearch}
-            inputField={inputField}
-            onChange={onInputChange}
-            generalButton={generalButton}
-            onClick={onButtonClick}
-          />
+      <div className="top-spacing" id="wrapper">
+        {!isUserSearch && (
+          <div className="backicon-spacing">
+            <BackIcon backIcon={backIcon} onClick={onBackClick} />
+          </div>
         )}
-        {!isUserSearch && <UserAccess userAccess={userAccess} />}
+        <div className="my-3 p-3 rounded shadow less-spacing-top">
+          <h4>Add or Remove User</h4>
+          {isUserSearch && (
+            <UserSearch
+              userSearch={userSearch}
+              inputField={inputField}
+              onChange={onInputChange}
+              generalButton={generalButton}
+              onClick={onButtonClick}
+            />
+          )}
+          {!isUserSearch && <UserAccess userAccess={userAccess} />}
+        </div>
       </div>
     </>
   );
