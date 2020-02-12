@@ -5,3 +5,7 @@ body {
 .error-message {
   color: #dc3545;
 }
+
+.move-down {
+  margin-top: 30px;
+}
