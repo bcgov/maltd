@@ -58,12 +58,6 @@ export default function MainPage() {
     message: "Find another user"
   };
 
-  function clearErrorMessage() {
-    setTimeout(() => {
-      setUserExists(null);
-    }, 2000);
-  }
-
   function clearForm() {
     setUserExists(false);
     setIsLoading(false);
@@ -131,8 +125,6 @@ export default function MainPage() {
     setUserExists(null);
     setValue("");
   }
-
-  console.log("user search", isUserSearch);
 
   return (
     <>
