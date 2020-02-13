@@ -90,7 +90,7 @@ export default function MainPage() {
   function addUserToProject() {
     axios
       .put(
-        `https://localhost:5001/api/projects/${selectedProjectId}/users/${value}`
+        `https://localhost:5001/api/projects/${selectedDropdownItem}/users/${value}`
       )
       .then(() => {})
       .catch(() => {});
