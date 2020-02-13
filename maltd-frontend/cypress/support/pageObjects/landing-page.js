@@ -22,7 +22,7 @@ class LandingPage {
 
   // Get the loading text element
   static getLoading() {
-    return cy.get("#loading");
+    return cy.get(".loading");
   }
 
   // Get the logout button
