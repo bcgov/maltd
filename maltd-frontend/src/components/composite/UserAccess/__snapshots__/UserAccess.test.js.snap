@@ -83,7 +83,7 @@ exports[`User Access Component renders as expected 1`] = `
                 type="button"
               >
                 name
-                 - 
+                -
                 type
               </button>
             </div>
@@ -149,7 +149,7 @@ exports[`User Access Component renders as expected 1`] = `
                 type="button"
               >
                 name
-                 - 
+                -
                 type
               </button>
             </div>
