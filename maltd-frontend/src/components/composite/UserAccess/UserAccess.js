@@ -80,5 +80,10 @@ UserAccess.propTypes = {
     userName: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired
   }).isRequired,
-  onXClick: PropTypes.func.isRequired
+  onXClick: PropTypes.func.isRequired,
+  onPlusClick: PropTypes.func.isRequired,
+  onDropdownClick: PropTypes.func.isRequired,
+  dropdown: PropTypes.shape({
+    items: PropTypes.array.isRequired
+  }).isRequired
 };

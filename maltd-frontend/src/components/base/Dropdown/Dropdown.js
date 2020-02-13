@@ -18,7 +18,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
       }}
       key={item.id}
     >
-      {item.name} - {item.type}
+      {item.name}-{item.type}
     </DropdownItem>
   ));
 
