@@ -87,7 +87,14 @@ export default function MainPage() {
 
   function onLogoutClick() {}
 
-  function addUserToProject() {}
+  function addUserToProject() {
+    axios
+      .put(
+        `https://localhost:5001/api/projects/${selectedProjectId}/users/${value}`
+      )
+      .then(() => {})
+      .catch(() => {});
+  }
 
   function removeUserFromProject(projectId) {
     axios
