@@ -87,16 +87,12 @@ export default function MainPage() {
 
   function onLogoutClick() {}
 
-  function addUserToProject() {
-    console.log("hello add", selectedDropdownItem);
-  }
+  function addUserToProject() {}
 
   function removeUserFromProject(projectId) {
     axios
       .delete(`https://localhost:5001/api/projects/${projectId}/users/${value}`)
-      .then(res => {
-        console.log(res);
-      })
+      .then(() => {})
       .catch(() => {});
   }
 
