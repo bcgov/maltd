@@ -42,14 +42,13 @@ export default function UserAccess({
               projects.map(value => {
                 const listElement = { title: value.name, id: value.id };
                 return (
-                  <>
+                  <div key={value.name}>
                     <ListElement
-                      key={value.name}
                       listElement={listElement}
                       onXClick={onXClick}
                     />
                     <p />
-                  </>
+                  </div>
                 );
               })}
             <div>

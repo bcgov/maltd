@@ -16,6 +16,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
         setSelectedTitle(`${item.name} - ${item.type}`);
         onDropdownClick(item.id);
       }}
+      key={item.id}
     >
       {item.name} - {item.type}
     </DropdownItem>
@@ -36,7 +37,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
 
 Dropdown.propTypes = {
   dropdown: PropTypes.shape({
-    defaultTitle: PropTypes.string.isRequired,
     items: PropTypes.array.isRequired
-  }).isRequired
+  }).isRequired,
+  onDropdownClick: PropTypes.func.isRequired
 };
