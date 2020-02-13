@@ -12,7 +12,9 @@ export default function ListElement({
       <>
         <div>
           <strong className="large-size">{title}</strong>
-          {onXClick && <XIcon id={id} onClick={onXClick} />}
+          {typeof onXClick === "function" && (
+            <XIcon id={id} onClick={onXClick} />
+          )}
         </div>
         {description && <p>{description}</p>}
       </>
@@ -33,4 +35,8 @@ ListElement.propTypes = {
     id: PropTypes.string
   }).isRequired,
   onXClick: PropTypes.func
+};
+
+ListElement.defaultProps = {
+  onXClick: null
 };

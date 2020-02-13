@@ -20,5 +20,5 @@ export default function XIcon({ onClick, id }) {
 
 XIcon.propTypes = {
   onClick: PropTypes.func.isRequired,
-  id: PropTypes.string
+  id: PropTypes.string.isRequired
 };

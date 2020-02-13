@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
@@ -19,6 +20,19 @@ export default function MainPage() {
   const [userName, setUserName] = useState("");
   const [color, setColor] = useState("primary");
   const [userExists, setUserExists] = useState(null);
+  const [items, setItems] = useState([]);
+  const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://localhost:5001/api/projects`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.status !== 401) {
+          setItems(result);
+        }
+      })
+      .catch(() => {});
+  });
 
   const inputField = {
     type: "text",
@@ -54,6 +68,10 @@ export default function MainPage() {
     message: "Find another user"
   };
 
+  const dropdown = {
+    items
+  };
+
   function clearForm() {
     setUserExists(false);
     setIsLoading(false);
@@ -63,9 +81,24 @@ export default function MainPage() {
     setValidInput(false);
   }
 
+  function updateSelectedDropdownItem(selectedProjectId) {
+    setSelectedDropdownItem(selectedProjectId);
+  }
+
   function onLogoutClick() {}
 
-  function removeUserFromProject(id) {}
+  function addUserToProject() {
+    console.log("hello add", selectedDropdownItem);
+  }
+
+  function removeUserFromProject(projectId) {
+    axios
+      .delete(`https://localhost:5001/api/projects/${projectId}/users/${value}`)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(() => {});
+  }
 
   function onButtonClick() {
     setIsLoading(true);
@@ -148,6 +181,9 @@ export default function MainPage() {
             <UserAccess
               userAccess={userAccess}
               onXClick={removeUserFromProject}
+              onPlusClick={addUserToProject}
+              onDropdownClick={updateSelectedDropdownItem}
+              dropdown={dropdown}
             />
           )}
         </div>

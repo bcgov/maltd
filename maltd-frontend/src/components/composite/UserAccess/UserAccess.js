@@ -2,11 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Table } from "reactstrap";
 import ListElement from "../../base/ListElement/ListElement";
+import PlusIcon from "../../base/PlusIcon/PlusIcon";
+import Dropdown from "../../base/Dropdown/Dropdown";
 import "./UserAccess.css";
 
 export default function UserAccess({
   userAccess: { projects, userName, userEmail },
-  onXClick
+  onXClick,
+  onPlusClick,
+  onDropdownClick,
+  dropdown
 }) {
   const userListElement = {
     title: userName,
@@ -47,8 +52,21 @@ export default function UserAccess({
                   </>
                 );
               })}
+            <div>
+              <Dropdown dropdown={dropdown} onDropdownClick={onDropdownClick} />
+              <PlusIcon onClick={onPlusClick} />
+            </div>
             {(!projects || projects.length === 0) && (
-              <ListElement listElement={{}} />
+              <>
+                <ListElement listElement={{}} onPlusClick={onPlusClick} />
+                <div>
+                  <Dropdown
+                    dropdown={dropdown}
+                    onDropdownClick={onDropdownClick}
+                  />
+                  <PlusIcon onClick={onPlusClick} />
+                </div>
+              </>
             )}
           </td>
         </tr>
