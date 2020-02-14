@@ -30,6 +30,7 @@ describe("The landing pages tests", () => {
           LandingPage.getFindRedButton().should("be.disabled");
           LandingPage.getInputField().clear();
         } else {
+          cy.wait(500);
           LandingPage.getFindButton().click();
           LandingPage.getLoading().should("not.be.visible");
           LandingPage.getErrorText().should(
