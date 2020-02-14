@@ -7,6 +7,7 @@ using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace BcGov.Malt.Web.Controllers
@@ -20,16 +21,23 @@ namespace BcGov.Malt.Web.Controllers
         private readonly IProjectService _projectService;
         private readonly IUserSearchService _userSearchService;
         private readonly IUserManagementService _userManagementService;
+        private readonly ILogger<ProjectsController> _logger;
 
         /// <summary>Initializes a new instance of the <see cref="ProjectsController"/> class.</summary>
         /// <param name="projectService">The project service.</param>
-        /// <param name="userSearchService"></param>
-        /// <param name="userManagementService"></param>
-        public ProjectsController(IProjectService projectService, IUserSearchService userSearchService, IUserManagementService userManagementService)
+        /// <param name="userSearchService">The user search service</param>
+        /// <param name="userManagementService">The user managment service.</param>
+        /// <param name="logger">The logger.</param>
+        public ProjectsController(
+            IProjectService projectService,
+            IUserSearchService userSearchService,
+            IUserManagementService userManagementService,
+            ILogger<ProjectsController> logger)
         {
             _projectService = projectService ?? throw new System.ArgumentNullException(nameof(projectService));
             _userSearchService = userSearchService ?? throw new System.ArgumentNullException(nameof(userSearchService));
             _userManagementService = userManagementService ?? throw new System.ArgumentNullException(nameof(userManagementService));
+            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -41,6 +49,8 @@ namespace BcGov.Malt.Web.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Project>>> GetAsync()
         {
+            _logger.LogDebug("Getting list of available projects");
+
             var projects = await _projectService.GetProjectsAsync();
             return Ok(projects);
         }
@@ -58,13 +68,17 @@ namespace BcGov.Malt.Web.Controllers
         {
             if (project == null)
             {
+                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(project));
                 return BadRequest();
             }
 
             if (string.IsNullOrEmpty(username))
             {
+                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(username));
                 return BadRequest();
             }
+
+            _logger.LogDebug("Adding {username} to {project}", username, project);
 
             ActionResult result = await AddOrRemoveUserFromProject(project, username, _userManagementService.AddUserToProjectAsync);
             return result;
@@ -82,13 +96,17 @@ namespace BcGov.Malt.Web.Controllers
         {
             if (project == null)
             {
+                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(project));
                 return BadRequest();
             }
 
             if (string.IsNullOrEmpty(username))
             {
+                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(username));
                 return BadRequest();
             }
+
+            _logger.LogDebug("Removing {username} from {project}", username, project);
 
             ActionResult result = await AddOrRemoveUserFromProject(project, username, _userManagementService.RemoveUserFromProjectAsync);
             return result;

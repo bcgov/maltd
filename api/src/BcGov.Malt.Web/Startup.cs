@@ -104,6 +104,9 @@ namespace BcGov.Malt.Web
 
             app.UseRouting();
 
+            // Apply CORS policies to all endpoints
+            app.UseCors();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

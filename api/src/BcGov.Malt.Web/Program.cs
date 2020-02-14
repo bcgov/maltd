@@ -1,7 +1,9 @@
+using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace BcGov.Malt.Web
 {
@@ -13,10 +15,25 @@ namespace BcGov.Malt.Web
         /// <summary>
         /// The main entry point.
         /// </summary>
-
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            ConfigureLogging();
+
+            try
+            {
+                Log.Logger.Information("Starting web host");
+                CreateHostBuilder(args).Build().Run();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Fatal(ex, "Web host terminated unexpectedly");
+                return 1;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         /// <summary>
@@ -25,6 +42,7 @@ namespace BcGov.Malt.Web
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             var builder = Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -40,6 +58,17 @@ namespace BcGov.Malt.Web
                 });
 
                 return builder;
+        }
+
+        private static void ConfigureLogging()
+        {
+            var configuration = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .Enrich.FromLogContext();
+
+            configuration.WriteTo.Console();
+
+            Log.Logger = configuration.CreateLogger();
         }
     }
 }
