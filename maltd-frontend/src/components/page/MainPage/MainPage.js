@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
@@ -95,16 +95,16 @@ export default function MainPage() {
   function onButtonClick() {
     fetch(`https://localhost:5001/api/projects`)
       .then(res => res.json())
-      .then(result => {
-        if (result.status !== 401) {
-          setItems(result);
+      .then(resul => {
+        if (resul.status !== 401) {
+          setItems(resul);
 
           setIsLoading(true);
           setDisabledButton(true);
           setDisabledInput(true);
 
           fetch(`https://localhost:5001/api/users/${value}`)
-            .then(res => res.json())
+            .then(res2 => res2.json())
             .then(result => {
               if (result.status !== 404) {
                 setProjects(result.projects);
