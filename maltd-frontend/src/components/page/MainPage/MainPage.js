@@ -23,17 +23,6 @@ export default function MainPage() {
   const [items, setItems] = useState([]);
   const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
 
-  useEffect(() => {
-    fetch(`https://localhost:5001/api/projects`)
-      .then(res => res.json())
-      .then(result => {
-        if (result.status !== 401) {
-          setItems(result);
-        }
-      })
-      .catch(() => {});
-  });
-
   const inputField = {
     type: "text",
     name: "idir",
@@ -104,31 +93,40 @@ export default function MainPage() {
   }
 
   function onButtonClick() {
-    setIsLoading(true);
-    setDisabledButton(true);
-    setDisabledInput(true);
-
-    fetch(`https://localhost:5001/api/users/${value}`)
+    fetch(`https://localhost:5001/api/projects`)
       .then(res => res.json())
       .then(result => {
-        if (result.status !== 404) {
-          setProjects(result.projects);
+        if (result.status !== 401) {
+          setItems(result);
 
-          if (result.email) {
-            setUserEmail(result.email);
-          }
-          if (result.firstName && result.lastName) {
-            setUserName(`${result.firstName} ${result.lastName}`);
-          }
+          setIsLoading(true);
+          setDisabledButton(true);
+          setDisabledInput(true);
 
-          setIsUserSearch(false);
-        } else {
-          clearForm();
+          fetch(`https://localhost:5001/api/users/${value}`)
+            .then(res => res.json())
+            .then(result => {
+              if (result.status !== 404) {
+                setProjects(result.projects);
+
+                if (result.email) {
+                  setUserEmail(result.email);
+                }
+                if (result.firstName && result.lastName) {
+                  setUserName(`${result.firstName} ${result.lastName}`);
+                }
+
+                setIsUserSearch(false);
+              } else {
+                clearForm();
+              }
+            })
+            .catch(() => {
+              clearForm();
+            });
         }
       })
-      .catch(() => {
-        clearForm();
-      });
+      .catch(() => {});
   }
 
   function onInputChange(event) {
