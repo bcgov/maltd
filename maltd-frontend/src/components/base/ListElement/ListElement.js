@@ -1,14 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
+import XIcon from "../XIcon/XIcon";
 import "./ListElement.css";
 
-export default function ListElement({ listElement: { title, description } }) {
+export default function ListElement({
+  listElement: { title, description, id },
+  onXClick
+}) {
   if (title) {
     return (
-      <div>
-        <strong className="large-size">{title}</strong>
+      <>
+        <div>
+          <strong className="large-size">{title}</strong>
+          {typeof onXClick === "function" && (
+            <XIcon id={id} onClick={onXClick} />
+          )}
+        </div>
         {description && <p>{description}</p>}
-      </div>
+      </>
     );
   }
 
@@ -22,6 +31,12 @@ export default function ListElement({ listElement: { title, description } }) {
 ListElement.propTypes = {
   listElement: PropTypes.shape({
     title: PropTypes.string,
-    description: PropTypes.string
-  }).isRequired
+    description: PropTypes.string,
+    id: PropTypes.string
+  }).isRequired,
+  onXClick: PropTypes.func
+};
+
+ListElement.defaultProps = {
+  onXClick: null
 };

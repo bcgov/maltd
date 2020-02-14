@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
@@ -19,6 +20,8 @@ export default function MainPage() {
   const [userName, setUserName] = useState("");
   const [color, setColor] = useState("primary");
   const [userExists, setUserExists] = useState(null);
+  const [items, setItems] = useState([]);
+  const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
 
   const inputField = {
     type: "text",
@@ -54,6 +57,10 @@ export default function MainPage() {
     message: "Find another user"
   };
 
+  const dropdown = {
+    items
+  };
+
   function clearForm() {
     setUserExists(false);
     setIsLoading(false);
@@ -63,34 +70,63 @@ export default function MainPage() {
     setValidInput(false);
   }
 
+  function updateSelectedDropdownItem(selectedProjectId) {
+    setSelectedDropdownItem(selectedProjectId);
+  }
+
   function onLogoutClick() {}
 
+  function addUserToProject() {
+    axios
+      .put(
+        `https://localhost:5001/api/projects/${selectedDropdownItem}/users/${value}`
+      )
+      .then(() => {})
+      .catch(() => {});
+  }
+
+  function removeUserFromProject(projectId) {
+    axios
+      .delete(`https://localhost:5001/api/projects/${projectId}/users/${value}`)
+      .then(() => {})
+      .catch(() => {});
+  }
+
   function onButtonClick() {
-    setIsLoading(true);
-    setDisabledButton(true);
-    setDisabledInput(true);
-
-    fetch(`https://localhost:5001/api/users/${value}`)
+    fetch(`https://localhost:5001/api/projects`)
       .then(res => res.json())
-      .then(result => {
-        if (result.status !== 404) {
-          setProjects(result.projects);
+      .then(resul => {
+        if (resul.status !== 401) {
+          setItems(resul);
 
-          if (result.email) {
-            setUserEmail(result.email);
-          }
-          if (result.firstName && result.lastName) {
-            setUserName(`${result.firstName} ${result.lastName}`);
-          }
+          setIsLoading(true);
+          setDisabledButton(true);
+          setDisabledInput(true);
 
-          setIsUserSearch(false);
-        } else {
-          clearForm();
+          fetch(`https://localhost:5001/api/users/${value}`)
+            .then(res2 => res2.json())
+            .then(result => {
+              if (result.status !== 404) {
+                setProjects(result.projects);
+
+                if (result.email) {
+                  setUserEmail(result.email);
+                }
+                if (result.firstName && result.lastName) {
+                  setUserName(`${result.firstName} ${result.lastName}`);
+                }
+
+                setIsUserSearch(false);
+              } else {
+                clearForm();
+              }
+            })
+            .catch(() => {
+              clearForm();
+            });
         }
       })
-      .catch(() => {
-        clearForm();
-      });
+      .catch(() => {});
   }
 
   function onInputChange(event) {
@@ -142,7 +178,15 @@ export default function MainPage() {
               onClick={onButtonClick}
             />
           )}
-          {!isUserSearch && <UserAccess userAccess={userAccess} />}
+          {!isUserSearch && (
+            <UserAccess
+              userAccess={userAccess}
+              onXClick={removeUserFromProject}
+              onPlusClick={addUserToProject}
+              onDropdownClick={updateSelectedDropdownItem}
+              dropdown={dropdown}
+            />
+          )}
         </div>
       </div>
     </>

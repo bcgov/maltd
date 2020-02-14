@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dropdown Component renders as expected 1`] = `
+<div
+  className="dropdown"
+  onKeyDown={[Function]}
+  style={
+    Object {
+      "paddingTop": "20px",
+    }
+  }
+>
+  <button
+    aria-expanded={false}
+    aria-haspopup={true}
+    aria-label={null}
+    className="dropdown-toggle btn btn-secondary"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": "white",
+        "color": "black",
+      }
+    }
+    type="button"
+  >
+    Select a project
+  </button>
+  <div
+    aria-hidden={true}
+    className="dropdown-menu"
+    role="menu"
+    tabIndex="-1"
+  >
+    <button
+      className="dropdown-item"
+      onClick={[Function]}
+      role="menuitem"
+      tabIndex="0"
+      type="button"
+    >
+      System 1
+      -
+      Dynamics
+    </button>
+  </div>
+</div>
+`;

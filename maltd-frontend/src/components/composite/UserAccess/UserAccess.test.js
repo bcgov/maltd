@@ -18,6 +18,12 @@ describe("User Access", () => {
           userName,
           userEmail
         }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
+        }}
       />
     );
 
@@ -32,6 +38,12 @@ describe("User Access", () => {
           projects: [],
           userName,
           userEmail
+        }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
         }}
       />
     );
@@ -53,6 +65,12 @@ describe("User Access", () => {
           projects: [{ name: "Project1" }, { name: "Project2" }],
           userName,
           userEmail
+        }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
         }}
       />
     );
