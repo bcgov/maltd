@@ -44,7 +44,9 @@ namespace BcGov.Malt.Web
             // send header Access-Control-Allow-Origin: *
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder => { 
+                options.AddDefaultPolicy(builder => {
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
                     builder.AllowAnyOrigin();
                 });
             });
