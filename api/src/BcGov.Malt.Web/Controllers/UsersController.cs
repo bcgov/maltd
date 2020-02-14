@@ -5,6 +5,7 @@ using BcGov.Malt.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace BcGov.Malt.Web.Controllers
@@ -18,19 +19,21 @@ namespace BcGov.Malt.Web.Controllers
     {
         private readonly IUserSearchService _userSearchService;
         private readonly IUserManagementService _userManagementService;
+        private readonly ILogger<UsersController> _logger;
 
         /// <summary>Initializes a new instance of the <see cref="UsersController" /> class.</summary>
         /// <param name="userSearchService">The user search service.</param>
-        /// <param name="userManagementService"></param>
+        /// <param name="userManagementService">The user management service</param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="userSearchService" />, <paramref name="userManagementService" /> 
         /// or <paramref name="logger" /> is null.
         /// </exception>
-        public UsersController(IUserSearchService userSearchService, IUserManagementService userManagementService)
+        public UsersController(IUserSearchService userSearchService, IUserManagementService userManagementService, ILogger<UsersController> logger)
         {
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
             _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>Searches for a user.</summary>
@@ -46,12 +49,19 @@ namespace BcGov.Malt.Web.Controllers
         {
             // TODO: user model validation
 
-            if (string.IsNullOrEmpty(query)) return BadRequest();
+            if (string.IsNullOrEmpty(query))
+            {
+                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(query));
+                return BadRequest();
+            }
 
             var user = await _userSearchService.SearchAsync(query);
 
+            _logger.LogDebug("Searching for user using {query}", query);
+
             if (user == null)
             {
+                _logger.LogDebug("Search for {username} returned null, returning 404 Not Found", query);
                 return NotFound();
             }
 
@@ -72,15 +82,23 @@ namespace BcGov.Malt.Web.Controllers
         {
             // TODO: user model validation
 
-            if (string.IsNullOrEmpty(username)) return BadRequest();
+            if (string.IsNullOrEmpty(username))
+            {
+                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(username));
+                return BadRequest();
+            }
+
+            _logger.LogDebug("Looking up user {username}", username);
 
             var user = await _userSearchService.SearchAsync(username);
 
             if (user == null)
             {
+                _logger.LogDebug("Lookup for {username} returned null, returning 404 Not Found", username);
                 return NotFound();
             }
 
+            _logger.LogDebug("Getting the current projects for {username}", user.UserName);
             var projects = await _userManagementService.GetProjectsForUserAsync(user);
 
             DetailedUser result = new DetailedUser(user, projects);
