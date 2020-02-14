@@ -39,10 +39,15 @@ export default function UserAccess({
           </td>
           <td id={projectExists}>
             {projects &&
+              projects.length > 0 &&
               projects.map(value => {
-                const listElement = { title: value.name, id: value.id };
+                const listElement = {
+                  title: value.name,
+                  description: value.type,
+                  id: value.id
+                };
                 return (
-                  <div key={value.name}>
+                  <div key={value.id}>
                     <ListElement
                       listElement={listElement}
                       onXClick={onXClick}
@@ -51,13 +56,18 @@ export default function UserAccess({
                   </div>
                 );
               })}
-            <div>
-              <Dropdown dropdown={dropdown} onDropdownClick={onDropdownClick} />
-              <PlusIcon onClick={onPlusClick} />
-            </div>
+            {projects && projects.length > 0 && (
+              <div>
+                <Dropdown
+                  dropdown={dropdown}
+                  onDropdownClick={onDropdownClick}
+                />
+                <PlusIcon onClick={onPlusClick} />
+              </div>
+            )}
             {(!projects || projects.length === 0) && (
               <>
-                <ListElement listElement={{}} onPlusClick={onPlusClick} />
+                <ListElement listElement={{}} />
                 <div>
                   <Dropdown
                     dropdown={dropdown}

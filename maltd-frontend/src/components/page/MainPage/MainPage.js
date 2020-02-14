@@ -70,8 +70,8 @@ export default function MainPage() {
     setValidInput(false);
   }
 
-  function updateSelectedDropdownItem(selectedProjectId) {
-    setSelectedDropdownItem(selectedProjectId);
+  function updateSelectedDropdownItem(selectedProject) {
+    setSelectedDropdownItem(selectedProject);
   }
 
   function onLogoutClick() {}
@@ -79,16 +79,28 @@ export default function MainPage() {
   function addUserToProject() {
     axios
       .put(
-        `https://localhost:5001/api/projects/${selectedDropdownItem}/users/${value}`
+        `https://localhost:5001/api/projects/${selectedDropdownItem.id}/users/${value}`
       )
-      .then(() => {})
+      .then(() => {
+        const updatedProjects = projects.slice(0);
+        updatedProjects.push(selectedDropdownItem);
+        setProjects(updatedProjects);
+      })
       .catch(() => {});
   }
 
   function removeUserFromProject(projectId) {
     axios
       .delete(`https://localhost:5001/api/projects/${projectId}/users/${value}`)
-      .then(() => {})
+      .then(() => {
+        const updatedProjects = [];
+        projects.forEach(proj => {
+          if (proj.id !== projectId) {
+            updatedProjects.push(proj);
+          }
+        });
+        setProjects(updatedProjects);
+      })
       .catch(() => {});
   }
 

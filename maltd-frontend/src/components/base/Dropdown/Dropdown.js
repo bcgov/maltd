@@ -14,7 +14,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
     <DropdownItem
       onClick={() => {
         setSelectedTitle(`${item.name} - ${item.type}`);
-        onDropdownClick(item.id);
+        onDropdownClick(item);
       }}
       key={item.id}
     >
