@@ -27,7 +27,7 @@ class LandingPage {
 
   // Get the logout button
   static getLogoutButton() {
-    return cy.get(".collapse > .general-button");
+    return cy.get(".collapse.>.general-button");
   }
 }
 
