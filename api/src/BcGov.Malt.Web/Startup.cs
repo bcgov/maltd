@@ -44,7 +44,9 @@ namespace BcGov.Malt.Web
             // send header Access-Control-Allow-Origin: *
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder => { 
+                options.AddDefaultPolicy(builder => {
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
                     builder.AllowAnyOrigin();
                 });
             });
@@ -103,6 +105,9 @@ namespace BcGov.Malt.Web
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Apply CORS policies to all endpoints
+            app.UseCors();
 
             app.UseAuthorization();
 
