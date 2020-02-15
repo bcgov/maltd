@@ -62,7 +62,10 @@ describe("User Access", () => {
     const component = shallow(
       <UserAccess
         userAccess={{
-          projects: [{ name: "Project1" }, { name: "Project2" }],
+          projects: [
+            { name: "Project1", id: "123" },
+            { name: "Project2", id: "1234" }
+          ],
           userName,
           userEmail
         }}

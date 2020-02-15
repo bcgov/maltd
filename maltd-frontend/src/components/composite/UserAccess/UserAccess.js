@@ -19,6 +19,7 @@ export default function UserAccess({
   };
   const projectExists =
     projects && projects.length > 0 ? "projects" : "noProjects";
+  let key = null;
 
   return (
     <Table borderless className="move-down">
@@ -46,8 +47,9 @@ export default function UserAccess({
                   description: value.type,
                   id: value.id
                 };
+                key = listElement.id;
                 return (
-                  <div key={value.id}>
+                  <div key={key}>
                     <ListElement
                       listElement={listElement}
                       onXClick={onXClick}
@@ -57,7 +59,7 @@ export default function UserAccess({
                 );
               })}
             {projects && projects.length > 0 && (
-              <div>
+              <div key={key}>
                 <Dropdown
                   dropdown={dropdown}
                   onDropdownClick={onDropdownClick}

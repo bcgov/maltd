@@ -44,67 +44,6 @@ exports[`User Access Component renders as expected 1`] = `
         id="noProjects"
       >
         <div>
-          <div
-            className="dropdown"
-            onKeyDown={[Function]}
-            style={
-              Object {
-                "paddingTop": "20px",
-              }
-            }
-          >
-            <button
-              aria-expanded={false}
-              aria-haspopup={true}
-              aria-label={null}
-              className="dropdown-toggle btn btn-secondary"
-              onClick={[Function]}
-              style={
-                Object {
-                  "backgroundColor": "white",
-                  "color": "black",
-                }
-              }
-              type="button"
-            >
-              Select a project
-            </button>
-            <div
-              aria-hidden={true}
-              className="dropdown-menu"
-              role="menu"
-              tabIndex="-1"
-            >
-              <button
-                className="dropdown-item"
-                onClick={[Function]}
-                role="menuitem"
-                tabIndex="0"
-                type="button"
-              >
-                name
-                -
-                type
-              </button>
-            </div>
-          </div>
-          <div
-            className="inline-blocked"
-            id="main"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
-            tabIndex="0"
-          >
-            <img
-              alt="plus icon"
-              height="25px"
-              src="plus-icon.PNG"
-              width="25px"
-            />
-          </div>
-        </div>
-        <div>
           <p>
             No projects
           </p>
