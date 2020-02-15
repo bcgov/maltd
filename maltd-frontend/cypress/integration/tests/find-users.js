@@ -30,7 +30,6 @@ describe("The landing pages tests", () => {
           LandingPage.getFindRedButton().should("be.disabled");
           LandingPage.getInputField().clear();
         } else {
-          cy.wait(500);
           LandingPage.getFindButton().click();
           LandingPage.getLoading().should("not.be.visible");
           LandingPage.getErrorText().should(
@@ -39,7 +38,6 @@ describe("The landing pages tests", () => {
           );
           LandingPage.getInputField().clear();
         }
-        // LandingPage.getErrorText().should("not.be.visible");
       }
     });
   });
