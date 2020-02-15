@@ -1,4 +1,5 @@
 .inline-blocked {
-  margin-top: -45px;
-  margin-left: 200px;
+  display: inline-block !important;
+  margin-top: -10px;
+  margin-left: 20px;
 }

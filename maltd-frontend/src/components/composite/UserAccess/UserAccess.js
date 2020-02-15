@@ -64,7 +64,9 @@ export default function UserAccess({
                   dropdown={dropdown}
                   onDropdownClick={onDropdownClick}
                 />
-                <PlusIcon onClick={onPlusClick} />
+                <div className="icon-alignment">
+                  <PlusIcon onClick={onPlusClick} />
+                </div>
               </div>
             )}
             {(!projects || projects.length === 0) && (
@@ -75,7 +77,9 @@ export default function UserAccess({
                     dropdown={dropdown}
                     onDropdownClick={onDropdownClick}
                   />
-                  <PlusIcon onClick={onPlusClick} />
+                  <div className="icon-alignment">
+                    <PlusIcon onClick={onPlusClick} />
+                  </div>
                 </div>
               </>
             )}

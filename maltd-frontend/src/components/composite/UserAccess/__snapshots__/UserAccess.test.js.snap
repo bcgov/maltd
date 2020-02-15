@@ -94,19 +94,23 @@ exports[`User Access Component renders as expected 1`] = `
             </div>
           </div>
           <div
-            className="inline-blocked"
-            id="main"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
-            tabIndex="0"
+            className="icon-alignment"
           >
-            <img
-              alt="plus icon"
-              height="25px"
-              src="plus-icon.PNG"
-              width="25px"
-            />
+            <div
+              className="inline-blocked"
+              id="main"
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              role="button"
+              tabIndex="0"
+            >
+              <img
+                alt="plus icon"
+                height="25px"
+                src="plus-icon.PNG"
+                width="25px"
+              />
+            </div>
           </div>
         </div>
       </td>
