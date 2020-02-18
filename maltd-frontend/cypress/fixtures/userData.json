@@ -1,16 +1,6 @@
 {
   "userName": {
     "valid": ["pbolduc", "nyang", "choban"],
-    "invalid": [
-      "jblaze",
-      "lChris",
-      "&***&",
-      ".",
-      "0!",
-      "-10000",
-      "a987",
-      "'1 or = 1'",
-      "somereallylongtextTogetusernamefornegtivecase"
-    ]
+    "invalid": ["jblaze"]
   }
 }

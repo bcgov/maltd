@@ -36,7 +36,7 @@ describe("The landing pages tests", () => {
             "have.text",
             "This user does not exist, please try again with a different IDIR username."
           );
-          LandingPage.getInputField().clear();
+          // LandingPage.getInputField().clear();
         }
       }
     });
