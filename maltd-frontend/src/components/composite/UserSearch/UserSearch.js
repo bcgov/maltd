@@ -51,9 +51,9 @@ export default function UserSearch({
             <InputField inputField={inputField} onChange={onChange} />
             <p />
             <div>
-              <div className="float-left">
+              <div className="float-left error-message">
                 <p className="float-left">
-                  <small className="error-message">
+                  <small>
                     This user does not exist, please try again with a different
                     IDIR username.
                   </small>
