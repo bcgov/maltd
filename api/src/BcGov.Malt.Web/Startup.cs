@@ -73,8 +73,7 @@ namespace BcGov.Malt.Web
                         c.Response.ContentType = "text/plain";
                       
                             return c.Response.WriteAsync(c.Exception.ToString());
-                        
-                        //return c.Response.WriteAsync("An error occured processing your authentication.");
+                                              
                     }
                 };
             });
