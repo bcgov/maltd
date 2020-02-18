@@ -12,7 +12,7 @@ export default function UserSearch({
   onChange
 }) {
   return (
-    <div>
+    <div className="move-down">
       <p>
         Find a user by IDIR username and add them to or remove them from
         projects.

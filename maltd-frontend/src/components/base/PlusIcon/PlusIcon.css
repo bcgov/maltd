@@ -1,0 +1,5 @@
+.inline-blocked {
+  display: inline-block !important;
+  margin-top: -10px;
+  margin-left: 20px;
+}

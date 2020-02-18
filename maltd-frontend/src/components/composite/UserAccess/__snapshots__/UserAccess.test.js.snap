@@ -2,17 +2,25 @@
 
 exports[`User Access Component renders as expected 1`] = `
 <table
-  className="table table-borderless"
+  className="move-down table table-borderless"
 >
   <thead>
     <tr
       className="border-bottom"
     >
       <th>
-        USER
+        <strong
+          className="big-font"
+        >
+          USER
+        </strong>
       </th>
       <th>
-        CURRENT PROJECTS
+        <strong
+          className="big-font"
+        >
+          CURRENT PROJECTS
+        </strong>
       </th>
     </tr>
   </thead>
@@ -27,10 +35,10 @@ exports[`User Access Component renders as expected 1`] = `
           >
             username
           </strong>
-          <p>
-            useremail@gov.bc.ca
-          </p>
         </div>
+        <p>
+          useremail@gov.bc.ca
+        </p>
       </td>
       <td
         id="noProjects"
@@ -39,6 +47,71 @@ exports[`User Access Component renders as expected 1`] = `
           <p>
             No projects
           </p>
+        </div>
+        <div>
+          <div
+            className="dropdown"
+            onKeyDown={[Function]}
+            style={
+              Object {
+                "paddingTop": "20px",
+              }
+            }
+          >
+            <button
+              aria-expanded={false}
+              aria-haspopup={true}
+              aria-label={null}
+              className="dropdown-toggle btn btn-secondary"
+              onClick={[Function]}
+              style={
+                Object {
+                  "backgroundColor": "white",
+                  "color": "black",
+                }
+              }
+              type="button"
+            >
+              Select a project
+            </button>
+            <div
+              aria-hidden={true}
+              className="dropdown-menu"
+              role="menu"
+              tabIndex="-1"
+            >
+              <button
+                className="dropdown-item"
+                onClick={[Function]}
+                role="menuitem"
+                tabIndex="0"
+                type="button"
+              >
+                name
+                -
+                type
+              </button>
+            </div>
+          </div>
+          <div
+            className="icon-alignment"
+          >
+            <div
+              className="inline-blocked"
+              id="main"
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              role="button"
+              tabIndex="0"
+            >
+              <img
+                alt="plus icon"
+                height="25px"
+                src="plus-icon.PNG"
+                width="25px"
+              />
+            </div>
+          </div>
         </div>
       </td>
     </tr>
