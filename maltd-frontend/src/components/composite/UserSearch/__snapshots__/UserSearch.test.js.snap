@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User Search Component renders as expected 1`] = `
-<div>
+<div
+  className="move-down"
+>
   <p>
     Find a user by IDIR username and add them to or remove them from projects.
   </p>

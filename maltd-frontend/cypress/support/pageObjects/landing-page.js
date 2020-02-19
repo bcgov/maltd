@@ -22,12 +22,12 @@ class LandingPage {
 
   // Get the loading text element
   static getLoading() {
-    return cy.get("#loading");
+    return cy.get(".loading");
   }
 
   // Get the logout button
   static getLogoutButton() {
-    return cy.get(".collapse > .general-button");
+    return cy.get(".collapse.>.general-button");
   }
 }
 

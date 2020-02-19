@@ -18,6 +18,12 @@ describe("User Access", () => {
           userName,
           userEmail
         }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
+        }}
       />
     );
 
@@ -32,6 +38,12 @@ describe("User Access", () => {
           projects: [],
           userName,
           userEmail
+        }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
         }}
       />
     );
@@ -50,9 +62,18 @@ describe("User Access", () => {
     const component = shallow(
       <UserAccess
         userAccess={{
-          projects: [{ name: "Project1" }, { name: "Project2" }],
+          projects: [
+            { name: "Project1", id: "123" },
+            { name: "Project2", id: "1234" }
+          ],
           userName,
           userEmail
+        }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
         }}
       />
     );

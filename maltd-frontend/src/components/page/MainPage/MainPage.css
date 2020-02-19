@@ -12,3 +12,15 @@ body {
     height: 45vh !important;
   }
 }
+
+.top-spacing {
+  padding-top: 30px;
+  display: flex;
+}
+
+.less-spacing-top {
+  position: relative;
+  top: -10px;
+  width: 50%;
+  margin: auto;
+}
