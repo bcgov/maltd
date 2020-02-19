@@ -5,3 +5,23 @@ body {
 .error-message {
   color: #dc3545;
 }
+
+.error-btn-div {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.float-left {
+  padding-right: 1px;
+  margin-right: 1px;
+  max-width: 45%;
+  margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 600px) {
+  .error-btn-div {
+    line-height: 1;
+  }
+}

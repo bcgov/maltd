@@ -4,4 +4,11 @@ body {
 
 .container {
   max-width: 600px !important;
+  height: 40vh !important;
+}
+
+@media only screen and (max-width: 325px) {
+  .container {
+    height: 45vh !important;
+  }
 }
