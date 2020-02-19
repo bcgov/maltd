@@ -16,3 +16,4 @@ jobs:
           headless: true
           working-directory: maltd-frontend
       - run: cypress run
+        working-directory: maltd-frontend
