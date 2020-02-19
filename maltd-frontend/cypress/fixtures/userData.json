@@ -1,12 +1,12 @@
 {
   "userName": {
-    "valid": ["pbolduc", "nyang", "choban"],
+    "valid": ["pbolduc", "nyang", "choban", "sdevalapurkar"],
     "invalid": [
       "jblaze",
       "lChris",
       "&***&",
       ".",
-      "0!",
+      "0!A",
       "-10000",
       "a987",
       "'1 or = 1'",

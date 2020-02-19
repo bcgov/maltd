@@ -29,15 +29,14 @@ describe("The landing pages tests", () => {
         // if (invalidUser[i].length < 5) {
         //   LandingPage.getFindRedButton().should("be.disabled");
         //   LandingPage.getInputField().clear();
-        //   // } else {
-        //   //   LandingPage.getFindButton().click();
-        //   //   // LandingPage.getLoading().should("not.be.visible");
-        //   //   // LandingPage.getErrorText().should(
-        //   //   //   "have.text",
-        //   //   //   "This user does not exist, please try again with a different IDIR username."
-        //   //   // );
-        //   //   LandingPage.getInputField().clear();
-        //   // }
+        // } else {
+        //   LandingPage.getFindButton().click();
+        //   LandingPage.getLoading().should("not.be.visible");
+        //   LandingPage.getErrorText().should(
+        //     "have.text",
+        //     "This user does not exist, please try again with a different IDIR username."
+        //   );
+        //   LandingPage.getInputField().clear();
         // }
       }
     });
