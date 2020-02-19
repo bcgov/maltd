@@ -8,5 +8,5 @@ jobs:
     container: cypress/included:3.8.3
     steps:
       - uses: actions/checkout@v1
-        run: cypress run
+      - run: cypress run
         working-directory: maltd-frontend
