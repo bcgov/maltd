@@ -17,7 +17,6 @@ jobs:
       - uses: cypress-io/github-action@v1
         with:
           start: npm --prefix maltd-frontend run start
-          build: npm --prefix maltd-frontend ci
           wait: localhost:3000/
           browser: chrome
           headless: true
