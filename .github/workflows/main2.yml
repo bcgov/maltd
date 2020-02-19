@@ -15,9 +15,9 @@ jobs:
         run: npm init -y && npm install
       - uses: cypress-io/github-action@v1
         with:
+          working-directory: maltd-frontend
           start: npm --prefix maltd-frontend run start
           build: npm --prefix maltd-frontend ci
           wait: localhost:3000/
           browser: chrome
           headless: true
-          working-directory: maltd-frontend
