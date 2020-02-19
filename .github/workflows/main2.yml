@@ -11,6 +11,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "10"
+      - name: Setup npm package
+        run: npm init -y && npm install
       - uses: cypress-io/github-action@v1
         with:
           start: npm --prefix maltd-frontend run start
