@@ -4,13 +4,6 @@ body {
 
 .container {
   max-width: 600px !important;
-  height: 40vh !important;
-}
-
-@media only screen and (max-width: 325px) {
-  .container {
-    height: 45vh !important;
-  }
 }
 
 .top-spacing {
@@ -23,4 +16,10 @@ body {
   top: -10px;
   width: 50%;
   margin: auto;
+}
+
+@media only screen and (max-width: 700px) {
+  .less-spacing-top {
+    width: 80%;
+  }
 }

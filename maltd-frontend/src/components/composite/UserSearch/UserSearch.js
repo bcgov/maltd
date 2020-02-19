@@ -35,7 +35,7 @@ export default function UserSearch({
           <div>
             <InputField inputField={inputField} />
             <p />
-            <div className="error-btn-div">
+            <div>
               <div className="float-left">
                 <p className="float-left">
                   <small id="loading">Loading...</small>
