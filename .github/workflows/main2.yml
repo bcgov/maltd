@@ -13,8 +13,8 @@ jobs:
           node-version: "10"
       - uses: cypress-io/github-action@v1
         with:
-          start: npm --prefix maltd-frontend/maltd-frontend run start
-          build: npm --prefix maltd-frontend/maltd-frontend ci
+          start: npm --prefix run start
+          build: npm --prefix ci
           wait: localhost:3000/
           browser: chrome
           headless: true
