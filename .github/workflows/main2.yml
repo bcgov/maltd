@@ -13,7 +13,7 @@ jobs:
           node-version: "10"
       - uses: cypress-io/github-action@v1
         with:
-          start: npm --prefix maltd-frontend run start
+          start: npm run start
           build: npm ci
           wait: localhost:3000/
           browser: chrome
