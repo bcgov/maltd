@@ -17,7 +17,7 @@ class LandingPage {
 
   // Get the error text element
   static getErrorText() {
-    return cy.get("small.error-message");
+    return cy.get('small[class="error-message"]');
   }
 
   // Get the loading text element
