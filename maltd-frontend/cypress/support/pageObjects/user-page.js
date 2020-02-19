@@ -1,4 +1,4 @@
-/* global cy, before */
+/* global cy*/
 class UserPage {
   static getBackButton() {
     return cy.get(".limit-width");
