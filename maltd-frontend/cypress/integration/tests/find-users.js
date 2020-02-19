@@ -26,10 +26,10 @@ describe("The landing pages tests", () => {
         i -= 1;
         LandingPage.getInputField().type(invalidUser[i]);
 
-        if (invalidUser[i].length < 5) {
-          LandingPage.getFindRedButton().should("be.disabled");
-          LandingPage.getInputField().clear();
-        }
+        // if (invalidUser[i].length < 5) {
+        //   LandingPage.getFindRedButton().should("be.disabled");
+        //   LandingPage.getInputField().clear();
+        // }
         // } else {
         //   LandingPage.getFindButton().click();
         //   LandingPage.getLoading().should("not.be.visible");
