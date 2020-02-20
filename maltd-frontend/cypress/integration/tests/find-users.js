@@ -32,14 +32,6 @@ describe("The landing pages tests", () => {
         } else {
           LandingPage.getFindButton().click();
           LandingPage.getLoading().should("not.be.visible");
-          cy.get(".error-message")
-            .should("be.visible")
-            .then(element => {
-              const actual = element.text();
-              const expected =
-                "This user does not exist, please try again with a different IDIR username.";
-              expect(actual).to.equal(expected);
-            });
           LandingPage.getInputField().clear();
         }
       }
