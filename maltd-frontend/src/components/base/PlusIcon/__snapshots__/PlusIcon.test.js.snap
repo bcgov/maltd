@@ -12,7 +12,11 @@ exports[`Plus Icon Component renders as expected 1`] = `
   <img
     alt="plus icon"
     height="25px"
-    src="plus-icon.PNG"
+    src={
+      Object {
+        "process": [Function],
+      }
+    }
     width="25px"
   />
 </div>
