@@ -32,10 +32,8 @@ describe("The landing pages tests", () => {
         } else {
           LandingPage.getFindButton().click();
           LandingPage.getLoading().should("not.be.visible");
-          LandingPage.getErrorText().should(
-            "have.text",
-            "This user does not exist, please try again with a different IDIR username."
-          );
+          cy.get(".error-message");
+          cy.contains("This user does not exist");
           LandingPage.getInputField().clear();
         }
       }
