@@ -1,7 +1,7 @@
 /* global cy */
 class UserPage {
   static getBackButton() {
-    return cy.get("div.limit-width > h5");
+    return cy.get(".limit-width > p");
   }
 }
 export default UserPage;
