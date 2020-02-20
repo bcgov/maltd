@@ -23,7 +23,7 @@ export default function UserSearch({
           <InputField inputField={inputField} onChange={onChange} />
           <p />
           <div className="error-btn-div">
-            <div></div>
+            <div />
             <div className="d-flex justify-content-end">
               <GeneralButton generalButton={generalButton} onClick={onClick} />
             </div>
