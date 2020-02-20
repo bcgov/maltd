@@ -17,7 +17,7 @@ describe("The landing pages tests", () => {
       const validUser = users.userName.valid;
       LandingPage.getInputField().type(validUser[1]);
       LandingPage.getFindButton().click();
-      UserPage.getBackButton().click();
+      // UserPage.getBackButton().click();
     });
   });
 });
