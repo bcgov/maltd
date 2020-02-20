@@ -1,120 +1,119 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User Access Component renders as expected 1`] = `
-<table
-  className="move-down table table-borderless"
+<div
+  className="move-down responsive container"
 >
-  <thead>
-    <tr
-      className="border-bottom"
+  <div
+    className="border-bottom responsive row"
+  >
+    <div
+      className="big-font col"
     >
-      <th>
-        <strong
-          className="big-font"
-        >
-          USER
-        </strong>
-      </th>
-      <th>
-        <strong
-          className="big-font"
-        >
-          CURRENT PROJECTS
-        </strong>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      id="user-access-row"
+      USER
+    </div>
+    <div
+      className="big-font col"
     >
-      <td>
-        <div>
-          <strong
-            className="large-size"
-          >
-            username
-          </strong>
-        </div>
+      CURRENT PROJECTS
+    </div>
+  </div>
+  <div
+    className="row"
+    id="user-access-row responsive"
+  >
+    <div
+      className="col"
+    >
+      <div>
+        <strong
+          className="large-size"
+        >
+          username
+        </strong>
+      </div>
+      <p>
+        useremail@gov.bc.ca
+      </p>
+    </div>
+    <div
+      className="top-projects col"
+      id="noProjects"
+    />
+  </div>
+  <div
+    className="responsive row"
+  >
+    <div
+      className="collapsable col"
+    />
+    <div
+      className="col"
+    >
+      <div>
         <p>
-          useremail@gov.bc.ca
+          No projects
         </p>
-      </td>
-      <td
-        id="noProjects"
+      </div>
+      <div
+        className="drop-plus"
       >
-        <div>
-          <p>
-            No projects
-          </p>
-        </div>
-        <div>
-          <div
-            className="dropdown"
-            onKeyDown={[Function]}
+        <div
+          className="dropdown"
+          onKeyDown={[Function]}
+        >
+          <button
+            aria-expanded={false}
+            aria-haspopup={true}
+            aria-label={null}
+            className="dropdown-toggle btn btn-secondary"
+            onClick={[Function]}
             style={
               Object {
-                "paddingTop": "20px",
+                "backgroundColor": "white",
+                "color": "black",
               }
             }
+            type="button"
+          >
+            Select a project
+          </button>
+          <div
+            aria-hidden={true}
+            className="dropdown-menu"
+            role="menu"
+            tabIndex="-1"
           >
             <button
-              aria-expanded={false}
-              aria-haspopup={true}
-              aria-label={null}
-              className="dropdown-toggle btn btn-secondary"
+              className="dropdown-item"
               onClick={[Function]}
-              style={
-                Object {
-                  "backgroundColor": "white",
-                  "color": "black",
-                }
-              }
+              role="menuitem"
+              tabIndex="0"
               type="button"
             >
-              Select a project
+              name
+              -
+              type
             </button>
-            <div
-              aria-hidden={true}
-              className="dropdown-menu"
-              role="menu"
-              tabIndex="-1"
-            >
-              <button
-                className="dropdown-item"
-                onClick={[Function]}
-                role="menuitem"
-                tabIndex="0"
-                type="button"
-              >
-                name
-                -
-                type
-              </button>
-            </div>
-          </div>
-          <div
-            className="icon-alignment"
-          >
-            <div
-              className="inline-blocked"
-              id="main"
-              onClick={[Function]}
-              onKeyDown={[Function]}
-              role="button"
-              tabIndex="0"
-            >
-              <img
-                alt="plus icon"
-                height="25px"
-                src="plus-icon.PNG"
-                width="25px"
-              />
-            </div>
           </div>
         </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <div
+          className="inline-blocked"
+          id="main"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          tabIndex="0"
+        >
+          <img
+            alt="plus icon"
+            height="25px"
+            src="plus-icon.PNG"
+            width="25px"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 `;
