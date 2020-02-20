@@ -2,7 +2,7 @@
 // / <reference types="Cypress" />
 
 import LandingPage from "../../support/pageObjects/landing-page";
-import UserPage from "../../support/pageObjects/user-page";
+// import UserPage from "../../support/pageObjects/user-page";
 
 describe("The landing pages tests", () => {
   // Runs once before all tests in the block
