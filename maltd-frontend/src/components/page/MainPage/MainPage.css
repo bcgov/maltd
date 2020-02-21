@@ -9,6 +9,7 @@ body {
 .top-spacing {
   padding-top: 30px;
   display: flex;
+  border: 2px solid pink;
 }
 
 .less-spacing-top {
@@ -16,10 +17,23 @@ body {
   top: -10px;
   width: 50%;
   margin: auto;
+  border: 1px solid green;
 }
 
 @media only screen and (max-width: 700px) {
+  /* widen box on smaller screens */
   .less-spacing-top {
-    width: 80%;
+    width: 90%;
+    padding-right: 1em;
+  }
+  /* To stack back button on top of current box */
+  #wrapper {
+    flex-direction: column;
+  }
+  .backicon-spacing {
+    margin-bottom: 30%;
+  }
+  .top-spacing {
+    padding-top: 15px;
   }
 }

@@ -53,7 +53,7 @@ describe("User Access", () => {
     expect(
       rows
         .first()
-        .find("td")
+        .find("Col")
         .find("#noProjects").length
     ).toEqual(1);
   });
@@ -83,7 +83,7 @@ describe("User Access", () => {
     expect(
       rows
         .first()
-        .find("td")
+        .find("Col")
         .find("#projects").length
     ).toEqual(1);
   });

@@ -2,29 +2,24 @@
 
 exports[`User Access Component renders as expected 1`] = `
 <div
-  className="move-down responsive container"
+  className="move-down container"
 >
   <div
-    className="border-bottom responsive row"
+    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    id="user-access-row"
   >
     <div
-      className="big-font col"
+      className="cols col"
     >
-      USER
-    </div>
-    <div
-      className="big-font col"
-    >
-      CURRENT PROJECTS
-    </div>
-  </div>
-  <div
-    className="row"
-    id="user-access-row responsive"
-  >
-    <div
-      className="col"
-    >
+      <div
+        className="row"
+      >
+        <div
+          className="big-font border-bottom col"
+        >
+          USER
+        </div>
+      </div>
       <div>
         <strong
           className="large-size"
@@ -39,16 +34,30 @@ exports[`User Access Component renders as expected 1`] = `
     <div
       className="top-projects col"
       id="noProjects"
-    />
+    >
+      <div
+        className="cols"
+      >
+        <div
+          className="row"
+        >
+          <div
+            className="big-font border-bottom col"
+          >
+            CURRENT PROJECTS
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div
-    className="responsive row"
+    className="responsive row row-cols-1 row-cols-sm-1 row-cols-md-2"
   >
     <div
       className="collapsable col"
     />
     <div
-      className="col"
+      className="no-padding col"
     >
       <div>
         <p>

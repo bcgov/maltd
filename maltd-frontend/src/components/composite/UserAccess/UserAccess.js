@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Table } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import ListElement from "../../base/ListElement/ListElement";
 import PlusIcon from "../../base/PlusIcon/PlusIcon";
 import Dropdown from "../../base/Dropdown/Dropdown";
@@ -22,23 +22,23 @@ export default function UserAccess({
   let key = null;
 
   return (
-    <Table borderless className="move-down">
-      <thead>
-        <tr className="border-bottom">
-          <th>
-            <strong className="big-font">USER</strong>
-          </th>
-          <th>
-            <strong className="big-font">CURRENT PROJECTS</strong>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr id="user-access-row">
-          <td>
-            <ListElement listElement={userListElement} />
-          </td>
-          <td id={projectExists}>
+    <Container className="move-down">
+      {/* <Row xs="1" md="2" className="border-bottom">
+        <Col  className="big-font">USER</Col>
+        <Col className="big-font top-projects current responsive">CURRENT PROJECTS</Col>
+      </Row> */}
+      <Row xs="1" sm="1" md="2" id="user-access-row">
+        <Col className="cols">
+          <Row>
+            <Col className="big-font">USER</Col>
+          </Row>
+          <ListElement listElement={userListElement} />
+        </Col>
+        <Col className="top-projects" id={projectExists}>
+          <div className="cols">
+            <Row>
+              <Col className="big-font">CURRENT PROJECTS</Col>
+            </Row>
             {projects &&
               projects.length > 0 &&
               projects.map(value => {
@@ -58,35 +58,101 @@ export default function UserAccess({
                   </div>
                 );
               })}
-            {projects && projects.length > 0 && (
-              <div key={key}>
+          </div>
+        </Col>
+      </Row>
+      <Row xs="1" sm="1" md="2">
+        <Col />
+        <Col>
+          {projects && projects.length > 0 && (
+            <div className="drop-plus" key={key}>
+              <Dropdown dropdown={dropdown} onDropdownClick={onDropdownClick} />
+              <div>
+                <PlusIcon onClick={onPlusClick} />
+              </div>
+            </div>
+          )}
+          {(!projects || projects.length === 0) && (
+            <>
+              <ListElement listElement={{}} />
+              <div className="drop-plus">
                 <Dropdown
                   dropdown={dropdown}
                   onDropdownClick={onDropdownClick}
                 />
-                <div className="icon-alignment">
-                  <PlusIcon onClick={onPlusClick} />
-                </div>
+                <PlusIcon onClick={onPlusClick} />
               </div>
-            )}
-            {(!projects || projects.length === 0) && (
-              <>
-                <ListElement listElement={{}} />
-                <div>
-                  <Dropdown
-                    dropdown={dropdown}
-                    onDropdownClick={onDropdownClick}
-                  />
-                  <div className="icon-alignment">
-                    <PlusIcon onClick={onPlusClick} />
-                  </div>
-                </div>
-              </>
-            )}
-          </td>
-        </tr>
-      </tbody>
-    </Table>
+            </>
+          )}
+        </Col>
+      </Row>
+    </Container>
+
+    // <Table borderless className="move-down" responsive>
+    //   <thead>
+    //     <tr className="border-bottom">
+    //       <th>
+    //         <strong className="big-font">USER</strong>
+    //       </th>
+    //       <th>
+    //         <strong className="big-font">CURRENT PROJECTS</strong>
+    //       </th>
+    //     </tr>
+    //   </thead>
+    //   <tbody>
+    //     <tr id="user-access-row responsive">
+    //       <td>
+    //         <ListElement listElement={userListElement} />
+    //       </td>
+    //       <td id={projectExists}>
+    //         {projects &&
+    //           projects.length > 0 &&
+    //           projects.map(value => {
+    //             const listElement = {
+    //               title: value.name,
+    //               description: value.type,
+    //               id: value.id
+    //             };
+    //             key = listElement.id;
+    //             return (
+    //               <div key={key}>
+    //                 <ListElement
+    //                   listElement={listElement}
+    //                   onXClick={onXClick}
+    //                 />
+    //                 <p />
+    //               </div>
+    //             );
+    //           })}
+    //         {projects && projects.length > 0 && (
+    //           <div key={key}>
+    //             <Dropdown
+    //               dropdown={dropdown}
+    //               onDropdownClick={onDropdownClick}
+    //             />
+    //             <div className="icon-alignment">
+    //               <PlusIcon onClick={onPlusClick} />
+    //             </div>
+    //           </div>
+    //         )}
+    //         {(!projects || projects.length === 0) && (
+    //           <>
+    //             <ListElement listElement={{}} />
+    //             <div>
+    //               <Dropdown
+    //                 dropdown={dropdown}
+    //                 onDropdownClick={onDropdownClick}
+    //               />
+    //               <div className="icon-alignment">
+    //                 <PlusIcon onClick={onPlusClick} />
+    //               </div>
+    //             </div>
+    //           </>
+    //         )}
+    //       </td>
+    //     </tr>
+    //   </tbody>
+    // </Table>
   );
 }
 

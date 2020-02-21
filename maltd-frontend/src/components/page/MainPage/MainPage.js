@@ -104,41 +104,65 @@ export default function MainPage() {
       .catch(() => {});
   }
 
+  function testing() {
+    const result2 = [{ id: 0, name: "system1", type: "sharepoint/dynamics" }];
+    setItems(result2);
+
+    setIsLoading(true);
+    setDisabledButton(true);
+    setDisabledInput(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      setProjects([
+        { name: "project1", type: "sharepoint", id: "p1" },
+        { name: "project2", type: "dynamics", id: "p2" }
+      ]);
+
+      setUserEmail("nyang@gmail.com");
+      setUserName("Nan Yang");
+      setIsUserSearch(false);
+    }, 3000);
+  }
+
   function onButtonClick() {
-    fetch(`https://localhost:5001/api/projects`)
-      .then(res => res.json())
-      .then(resul => {
-        if (resul.status !== 401) {
-          setItems(resul);
+    testing();
+    // fetch(`https://localhost:5001/api/projects`)
+    //   .then(res => res.json())
+    //   .then(resul => {
+    //     if (resul.status !== 401) {
+    //       setItems(resul);
 
-          setIsLoading(true);
-          setDisabledButton(true);
-          setDisabledInput(true);
+    //       setIsLoading(true);
+    //       setDisabledButton(true);
+    //       setDisabledInput(true);
 
-          fetch(`https://localhost:5001/api/users/${value}`)
-            .then(res2 => res2.json())
-            .then(result => {
-              if (result.status !== 404) {
-                setProjects(result.projects);
+    //       fetch(`https://localhost:5001/api/users/${value}`)
+    //         .then(res2 => res2.json())
+    //         .then(result => {
+    //           if (result.status !== 404) {
+    //             setProjects(result.projects);
 
-                if (result.email) {
-                  setUserEmail(result.email);
-                }
-                if (result.firstName && result.lastName) {
-                  setUserName(`${result.firstName} ${result.lastName}`);
-                }
+    //             if (result.email) {
+    //               setUserEmail(result.email);
+    //             }
+    //             if (result.firstName && result.lastName) {
+    //               setUserName(`${result.firstName} ${result.lastName}`);
+    //             }
 
-                setIsUserSearch(false);
-              } else {
-                clearForm();
-              }
-            })
-            .catch(() => {
-              clearForm();
-            });
-        }
-      })
-      .catch(() => {});
+    //             setIsUserSearch(false);
+    //           } else {
+    //             clearForm();
+    //           }
+    //         })
+    //         .catch(() => {
+    //           clearForm();
+    //         });
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(`err: ${err}`);
+    //   });
   }
 
   function onInputChange(event) {
@@ -179,7 +203,7 @@ export default function MainPage() {
             <BackIcon backIcon={backIcon} onClick={onBackClick} />
           </div>
         )}
-        <div className="my-3 p-3 rounded shadow less-spacing-top">
+        <div className="my-3 p-3 rounded shadow less-spacing-top responsive">
           <h4>Add or Remove User</h4>
           {isUserSearch && (
             <UserSearch
@@ -190,6 +214,7 @@ export default function MainPage() {
               onClick={onButtonClick}
             />
           )}
+
           {!isUserSearch && (
             <UserAccess
               userAccess={userAccess}
