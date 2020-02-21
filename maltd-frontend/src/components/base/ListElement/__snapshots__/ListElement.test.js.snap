@@ -1,16 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`List Element Component renders as expected 1`] = `
-Array [
+<div
+  className="project-div"
+>
   <div>
     <strong
       className="large-size"
     >
       title
     </strong>
-  </div>,
-  <p>
-    description
-  </p>,
-]
+    <p>
+      description
+    </p>
+  </div>
+  <div />
+</div>
 `;

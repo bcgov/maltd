@@ -45,7 +45,9 @@ Array [
     <div
       className="my-3 p-3 rounded shadow less-spacing-top"
     >
-      <h4>
+      <h4
+        className="add-remove-text"
+      >
         Add or Remove User
       </h4>
       <div
