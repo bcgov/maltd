@@ -10,13 +10,17 @@ export default function ListElement({
   if (title) {
     return (
       <>
-        <div>
-          <strong className="large-size">{title}</strong>
-          {typeof onXClick === "function" && (
-            <XIcon id={id} onClick={onXClick} />
-          )}
+        <div className="project-div">
+          <div>
+            <strong className="large-size">{title}</strong>
+            {description && <p>{description}</p>}
+          </div>
+          <div>
+            {typeof onXClick === "function" && (
+              <XIcon id={id} onClick={onXClick} />
+            )}
+          </div>
         </div>
-        {description && <p>{description}</p>}
       </>
     );
   }

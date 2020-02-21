@@ -8,17 +8,17 @@ th {
 
 .drop-plus {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: baseline;
-  margin-right: 1em;
+  margin-right: 2em;
 }
 
 .top-projects {
   display: flex;
-  justify-content: flex-start;
-  align-items: baseline;
 }
+
 .cols {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }

@@ -23,10 +23,6 @@ export default function UserAccess({
 
   return (
     <Container className="move-down">
-      {/* <Row xs="1" md="2" className="border-bottom">
-        <Col  className="big-font">USER</Col>
-        <Col className="big-font top-projects current responsive">CURRENT PROJECTS</Col>
-      </Row> */}
       <Row xs="1" sm="1" md="2" id="user-access-row">
         <Col className="cols">
           <Row>
@@ -80,7 +76,9 @@ export default function UserAccess({
                   dropdown={dropdown}
                   onDropdownClick={onDropdownClick}
                 />
-                <PlusIcon onClick={onPlusClick} />
+                <div>
+                  <PlusIcon onClick={onPlusClick} />
+                </div>
               </div>
             </>
           )}

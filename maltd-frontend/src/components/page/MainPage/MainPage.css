@@ -12,24 +12,19 @@ body {
 }
 
 .less-spacing-top {
-  position: relative;
   top: -10px;
   width: 50%;
   margin: auto;
   display: flex;
   flex-direction: column;
-  border: 1px solid red;
 }
 
 @media only screen and (max-width: 700px) {
   /* widen box on smaller screens */
   .less-spacing-top {
     width: 90%;
-    padding-right: 1em;
   }
-  .add-remove-text {
-    align-self: center;
-  }
+
   /* To stack back button on top of current box */
   #wrapper {
     flex-direction: column;
@@ -46,8 +41,5 @@ body {
 @media only screen and (min-width: 701px) and (max-width: 850px) {
   .less-spacing-top {
     width: 55%;
-  }
-  .add-remove-text {
-    align-self: center;
   }
 }
