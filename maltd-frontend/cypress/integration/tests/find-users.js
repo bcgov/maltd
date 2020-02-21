@@ -38,6 +38,7 @@ describe("The landing pages tests", () => {
         //   );
         //   LandingPage.getInputField().clear();
         // }
+        // Added new comment to test. Will be removed.
       }
     });
   });
