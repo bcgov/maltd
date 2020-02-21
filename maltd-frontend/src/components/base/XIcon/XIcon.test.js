@@ -16,16 +16,18 @@ describe("X Icon", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test("Component onClick works as expected", () => {
+  test("Component onClick and onKeyDown work as expected", () => {
     const testState = { isClicked: false };
+    const onClick = () => {
+      testState.isClicked = true;
+    };
+
     const wrapper = shallow(
-      <XIcon
-        id="123"
-        onClick={() => {
-          testState.isClicked = true;
-        }}
-      />
+      <XIcon id="123" onKeyDown={onClick} onClick={onClick} />
     );
+
+    wrapper.find("#main").simulate("keydown");
+    expect(testState.isClicked).toEqual(true);
 
     wrapper.find("#main").simulate("click");
     expect(testState.isClicked).toEqual(true);
