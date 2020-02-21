@@ -3,31 +3,42 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/preset-react": "^7.8.3",
     "@storybook/addon-actions": "^5.3.8",
     "@storybook/react": "^5.3.8",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.19.2",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
     "bootstrap": "^4.4.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-icons": "^3.9.0",
-    "react-scripts": "3.3.0",
+    "react-scripts": "3.4.0",
     "react-test-renderer": "^16.12.0",
-    "reactstrap": "^8.4.0",
-    "axios": "^0.19.2"
+    "reactstrap": "^8.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "ci-test": "cross-env CI=true jest --env=jsdom --testResultsProcessor=jest-sonar-reporter --update-snapshot --runInBand --coverage"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|PNG|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|pdf)$": "<rootDir>/src/AssetsTransformer.js",
+      "\\.(css|less)$": "<rootDir>/src/AssetsTransformer.js"
+    }
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,6 +56,8 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "@storybook/addon-links": "^5.3.8",
     "@storybook/addon-viewport": "^5.3.13",
     "@storybook/addons": "^5.3.8",

@@ -9,7 +9,6 @@ body {
 .top-spacing {
   padding-top: 30px;
   display: flex;
-  border: 2px solid pink;
 }
 
 .less-spacing-top {
@@ -17,7 +16,6 @@ body {
   top: -10px;
   width: 50%;
   margin: auto;
-  border: 1px solid green;
 }
 
 @media only screen and (max-width: 700px) {

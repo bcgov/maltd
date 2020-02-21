@@ -22,9 +22,9 @@ exports[`User Access Component renders as expected 1`] = `
       </div>
       <div>
         <strong
-          className="large-size"
+          className="big-font"
         >
-          username
+          CURRENT PROJECTS
         </strong>
       </div>
       <p>
@@ -59,70 +59,97 @@ exports[`User Access Component renders as expected 1`] = `
     <div
       className="no-padding col"
     >
-      <div>
+      <td>
+        <div>
+          <strong
+            className="large-size"
+          >
+            username
+          </strong>
+        </div>
         <p>
-          No projects
+          useremail@gov.bc.ca
         </p>
-      </div>
-      <div
-        className="drop-plus"
+      </td>
+      <td
+        id="noProjects"
       >
-        <div
-          className="dropdown"
-          onKeyDown={[Function]}
-        >
-          <button
-            aria-expanded={false}
-            aria-haspopup={true}
-            aria-label={null}
-            className="dropdown-toggle btn btn-secondary"
-            onClick={[Function]}
+        <div>
+          <p>
+            No projects
+          </p>
+        </div>
+        <div>
+          <div
+            className="dropdown"
+            onKeyDown={[Function]}
             style={
               Object {
-                "backgroundColor": "white",
-                "color": "black",
+                "paddingTop": "20px",
               }
             }
-            type="button"
-          >
-            Select a project
-          </button>
-          <div
-            aria-hidden={true}
-            className="dropdown-menu"
-            role="menu"
-            tabIndex="-1"
           >
             <button
-              className="dropdown-item"
+              aria-expanded={false}
+              aria-haspopup={true}
+              aria-label={null}
+              className="dropdown-toggle btn btn-secondary"
               onClick={[Function]}
-              role="menuitem"
-              tabIndex="0"
+              style={
+                Object {
+                  "backgroundColor": "white",
+                  "color": "black",
+                }
+              }
               type="button"
             >
-              name
-              -
-              type
+              Select a project
             </button>
+            <div
+              aria-hidden={true}
+              className="dropdown-menu"
+              role="menu"
+              tabIndex="-1"
+            >
+              <button
+                className="dropdown-item"
+                onClick={[Function]}
+                role="menuitem"
+                tabIndex="0"
+                type="button"
+              >
+                name
+                -
+                type
+              </button>
+            </div>
+          </div>
+          <div
+            className="icon-alignment"
+          >
+            <div
+              className="inline-blocked"
+              id="main"
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              role="button"
+              tabIndex="0"
+            >
+              <img
+                alt="plus icon"
+                height="25px"
+                src={
+                  Object {
+                    "process": [Function],
+                  }
+                }
+                width="25px"
+              />
+            </div>
           </div>
         </div>
-        <div
-          className="inline-blocked"
-          id="main"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          tabIndex="0"
-        >
-          <img
-            alt="plus icon"
-            height="25px"
-            src="plus-icon.PNG"
-            width="25px"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 `;
