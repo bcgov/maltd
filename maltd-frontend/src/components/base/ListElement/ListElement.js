@@ -9,7 +9,7 @@ export default function ListElement({
 }) {
   if (title) {
     return (
-      <>
+      <React.Fragment>
         <div className="project-div">
           <div>
             <strong className="large-size">{title}</strong>
@@ -21,7 +21,7 @@ export default function ListElement({
             )}
           </div>
         </div>
-      </>
+      </React.Fragment>
     );
   }
 

@@ -69,7 +69,7 @@ export default function UserAccess({
             </div>
           )}
           {(!projects || projects.length === 0) && (
-            <>
+            <React.Fragment>
               <ListElement listElement={{}} />
               <div className="drop-plus">
                 <Dropdown
@@ -80,7 +80,7 @@ export default function UserAccess({
                   <PlusIcon onClick={onPlusClick} />
                 </div>
               </div>
-            </>
+            </React.Fragment>
           )}
         </Col>
       </Row>
