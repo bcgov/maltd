@@ -9,7 +9,7 @@ export default function ListElement({
 }) {
   if (title) {
     return (
-      <>
+      <React.Fragment>
         <div>
           <strong className="large-size">{title}</strong>
           {typeof onXClick === "function" && (
@@ -17,7 +17,7 @@ export default function ListElement({
           )}
         </div>
         {description && <p>{description}</p>}
-      </>
+      </React.Fragment>
     );
   }
 
