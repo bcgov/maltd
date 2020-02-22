@@ -11,6 +11,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
 
 namespace BcGov.Malt.Web
 {
@@ -19,6 +21,7 @@ namespace BcGov.Malt.Web
     /// </summary>
     public class Startup
     {
+        private static readonly ILogger _log = Serilog.Log.ForContext<Startup>();
         /// <summary>
         /// 
         /// </summary>
@@ -57,23 +60,35 @@ namespace BcGov.Malt.Web
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
+                /* TODO Add keycloak authentication params once its ready .The following may change in future
+                 * For now , Jwt:Authority = the url to your local keycloak relam , eg: Master or ISB
+                 *               Audience = the name of the client you create in keycloak relam ,e.g: maltd or demo-app 
+                 *   "Jwt":{
+                             "Authority": "http://localhost:8080/auth/realms/<Relam_Name>",
+                             "Audience": "maltd"
+                } */
                 o.Authority = Configuration["Jwt:Authority"];
                 o.Audience = Configuration["Jwt:Audience"];
-                o.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents()
+                o.Events = new JwtBearerEvents()
                 {
                     OnAuthenticationFailed = c =>
                     {
                         c.NoResult();
 
-                        c.Response.StatusCode = 500;
+                        c.Response.StatusCode = 401;
                         c.Response.ContentType = "text/plain";
-                      
-                            return c.Response.WriteAsync(c.Exception.ToString());
-                                              
+
+                        _log.Error(c.Exception, "Failed to authenticate. ");
+                                             
+
+                        return c.Response.WriteAsync("An error occured processing your authentication.");
+
+
+
                     }
                 };
             });
