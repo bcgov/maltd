@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import InputField from "../../base/InputField/InputField";
-import GeneralButton from "../../base/GeneralButton/GeneralButton";
+import InputField from "../../base/InputField/InputField.jsx";
+import GeneralButton from "../../base/GeneralButton/GeneralButton.jsx";
 import "./UserSearch.css";
 
 export default function UserSearch({

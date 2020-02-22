@@ -2,7 +2,7 @@ import React from "react";
 import { Collapse, Navbar, NavbarBrand, Nav, NavbarText } from "reactstrap";
 import PropTypes from "prop-types";
 import "./NavBar.css";
-import GeneralButton from "../GeneralButton/GeneralButton";
+import GeneralButton from "../GeneralButton/GeneralButton.jsx";
 
 const generalButton = {
   type: "submit",

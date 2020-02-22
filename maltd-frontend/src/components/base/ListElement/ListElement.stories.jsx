@@ -1,6 +1,6 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import ListElement from "./ListElement";
+import ListElement from "./ListElement.jsx";
 
 const listElement = {
   title: "MALTD"
