@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 import React, { useState } from "react";
 import axios from "axios";
 import "./MainPage.css";
