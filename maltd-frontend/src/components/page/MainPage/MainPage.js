@@ -130,7 +130,7 @@ export default function MainPage() {
 
                 setIsUserSearch(false);
               } else {
-                clearForm("hello");
+                clearForm();
               }
             })
             .catch(() => {
