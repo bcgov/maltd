@@ -26,7 +26,7 @@ export default function MainPage() {
 
   var val;
 
-  var package = "heyy";
+  var mynumber = 010;
 
   const inputField = {
     type: "text",
