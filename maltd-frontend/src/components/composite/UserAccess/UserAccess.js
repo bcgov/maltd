@@ -70,7 +70,8 @@ export default function UserAccess({
               </div>
             )}
             {(!projects || projects.length === 0) && (
-              <>
+              // eslint-disable react/jsx-fragments
+              <React.Fragment>
                 <ListElement listElement={{}} />
                 <div>
                   <Dropdown
@@ -81,7 +82,7 @@ export default function UserAccess({
                     <PlusIcon onClick={onPlusClick} />
                   </div>
                 </div>
-              </>
+              </React.Fragment>
             )}
           </td>
         </tr>
