@@ -2,7 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import { storiesOf } from "@storybook/react";
 import "bootstrap/dist/css/bootstrap.css";
-import GeneralButton from "./GeneralButton.jsx";
+import GeneralButton from "./GeneralButton";
 
 const generalButton = {
   type: "submit",

@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import InputField from "./InputField.jsx";
+import InputField from "./InputField";
 
 describe("Input Field", () => {
   test("Component renders as expected", () => {

@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Table } from "reactstrap";
-import ListElement from "../../base/ListElement/ListElement.jsx";
+import ListElement from "../../base/ListElement/ListElement";
 import PlusIcon from "../../base/PlusIcon/PlusIcon";
-import Dropdown from "../../base/Dropdown/Dropdown.jsx";
+import Dropdown from "../../base/Dropdown/Dropdown";
 import "./UserAccess.css";
 
 export default function UserAccess({

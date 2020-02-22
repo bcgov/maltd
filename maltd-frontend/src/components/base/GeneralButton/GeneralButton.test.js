@@ -1,13 +1,16 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import BackIcon from "./BackIcon.jsx";
+import GeneralButton from "./GeneralButton";
 
-describe("Back Icon", () => {
+describe("General Button", () => {
   test("Component renders as expected", () => {
     const component = renderer.create(
-      <BackIcon
-        backIcon={{
-          message: "Find another user"
+      <GeneralButton
+        generalButton={{
+          type: "submit",
+          color: "primary",
+          disabled: true,
+          label: "Find"
         }}
         onClick={() => jest.fn()}
       />

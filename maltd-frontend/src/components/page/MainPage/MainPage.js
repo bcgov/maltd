@@ -3,7 +3,7 @@ import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
-import BackIcon from "../../base/BackIcon/BackIcon.jsx";
+import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 
 export default function MainPage() {

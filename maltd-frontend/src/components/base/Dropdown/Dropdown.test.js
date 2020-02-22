@@ -2,7 +2,7 @@ import React from "react";
 import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
-import Dropdown from "./Dropdown.jsx";
+import Dropdown from "./Dropdown";
 
 Enzyme.configure({ adapter: new Adapter() });
 

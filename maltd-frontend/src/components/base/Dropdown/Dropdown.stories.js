@@ -2,7 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import "bootstrap/dist/css/bootstrap.css";
-import Dropdown from "./Dropdown.jsx";
+import Dropdown from "./Dropdown";
 
 const dropdown = {
   defaultTitle: "Choose a project",

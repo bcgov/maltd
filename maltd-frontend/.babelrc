@@ -10,7 +10,6 @@
       ],
       "only": [
         "./**/*.js",
-        "./**/*.jsx",
         "node_modules/jest-runtime"
       ]
     }
