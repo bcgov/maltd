@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState } from "react";
 import axios from "axios";
 import "./MainPage.css";
@@ -23,10 +22,6 @@ export default function MainPage() {
   const [userExists, setUserExists] = useState(null);
   const [items, setItems] = useState([]);
   const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
-
-  var val;
-
-  var mynumber = 010;
 
   const inputField = {
     type: "text",
@@ -135,7 +130,7 @@ export default function MainPage() {
 
                 setIsUserSearch(false);
               } else {
-                clearForm();
+                clearForm("hello");
               }
             })
             .catch(() => {
@@ -148,7 +143,7 @@ export default function MainPage() {
 
   function onInputChange(event) {
     setUserExists(null);
-    val = event.target.value;
+    const val = event.target.value;
 
     if (val.length === 0) {
       setInvalidInput(false);
