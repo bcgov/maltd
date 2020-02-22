@@ -180,7 +180,7 @@ export default function MainPage() {
           </div>
         )}
         <div className="my-3 p-3 rounded shadow less-spacing-top">
-          <h4>Add or Remove User</h4>
+          <h4 className="add-remove-text">Add or Remove User</h4>
           {isUserSearch && (
             <UserSearch
               userSearch={userSearch}

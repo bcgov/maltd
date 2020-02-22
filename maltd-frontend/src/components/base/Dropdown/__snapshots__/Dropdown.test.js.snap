@@ -4,11 +4,6 @@ exports[`Dropdown Component renders as expected 1`] = `
 <div
   className="dropdown"
   onKeyDown={[Function]}
-  style={
-    Object {
-      "paddingTop": "20px",
-    }
-  }
 >
   <button
     aria-expanded={false}
