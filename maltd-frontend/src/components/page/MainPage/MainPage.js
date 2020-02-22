@@ -138,9 +138,7 @@ export default function MainPage() {
             });
         }
       })
-      .catch(err => {
-        console.log(`err: ${err}`);
-      });
+      .catch(() => {});
   }
 
   function onInputChange(event) {
@@ -192,7 +190,6 @@ export default function MainPage() {
               onClick={onButtonClick}
             />
           )}
-
           {!isUserSearch && (
             <UserAccess
               userAccess={userAccess}
