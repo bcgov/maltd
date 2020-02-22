@@ -171,7 +171,7 @@ export default function MainPage() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <NavBar onClick={onLogoutClick} />
       <div className="top-spacing" id="wrapper">
         {!isUserSearch && (
@@ -201,6 +201,6 @@ export default function MainPage() {
           )}
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 }
