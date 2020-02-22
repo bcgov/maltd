@@ -1,4 +1,4 @@
-/* eslint-disable no-var */
+/* eslint-disable */
 import React, { useState } from "react";
 import axios from "axios";
 import "./MainPage.css";
@@ -25,6 +25,8 @@ export default function MainPage() {
   const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
 
   var val;
+
+  var package = "heyy";
 
   const inputField = {
     type: "text",
