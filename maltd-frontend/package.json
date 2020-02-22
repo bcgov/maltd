@@ -32,6 +32,19 @@
     "ci-test": "cross-env CI=true jest --env=jsdom --testResultsProcessor=jest-sonar-reporter --update-snapshot --runInBand --coverage"
   },
   "jest": {
+    "verbose": true,
+    "testResultsProcessor": "jest-sonar-reporter",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/components/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
+    "coverageDirectory": "coverage",
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
@@ -39,6 +52,11 @@
       "\\.(jpg|jpeg|png|PNG|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|pdf)$": "<rootDir>/src/AssetsTransformer.js",
       "\\.(css|less)$": "<rootDir>/src/AssetsTransformer.js"
     }
+  },
+  "jestSonar": {
+    "reportPath": "coverage",
+    "reportFile": "test-reporter.xml",
+    "indent": 4
   },
   "eslintConfig": {
     "extends": "react-app"
