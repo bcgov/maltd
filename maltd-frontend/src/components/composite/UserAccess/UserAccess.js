@@ -70,7 +70,6 @@ export default function UserAccess({
               </div>
             )}
             {(!projects || projects.length === 0) && (
-              // eslint-disable react/jsx-fragments
               <React.Fragment>
                 <ListElement listElement={{}} />
                 <div>

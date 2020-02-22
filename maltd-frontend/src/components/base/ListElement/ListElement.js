@@ -9,7 +9,6 @@ export default function ListElement({
 }) {
   if (title) {
     return (
-      // eslint-disable react/jsx-fragments
       <React.Fragment>
         <div>
           <strong className="large-size">{title}</strong>

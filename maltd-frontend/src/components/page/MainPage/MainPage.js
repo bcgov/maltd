@@ -171,7 +171,6 @@ export default function MainPage() {
   }
 
   return (
-    // eslint-disable react/jsx-fragments
     <React.Fragment>
       <NavBar onClick={onLogoutClick} />
       <div className="top-spacing" id="wrapper">
