@@ -23,6 +23,8 @@ export default function MainPage() {
   const [items, setItems] = useState([]);
   const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
 
+  var val;
+
   const inputField = {
     type: "text",
     name: "idir",
@@ -143,7 +145,7 @@ export default function MainPage() {
 
   function onInputChange(event) {
     setUserExists(null);
-    const val = event.target.value;
+    val = event.target.value;
 
     if (val.length === 0) {
       setInvalidInput(false);
