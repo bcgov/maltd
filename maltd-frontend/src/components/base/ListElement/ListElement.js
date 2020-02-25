@@ -11,7 +11,7 @@ export default function ListElement({
     return (
       <React.Fragment>
         <div className="project-div">
-          <div>
+          <div class="project-list-item">
             <strong className="large-size">{title}</strong>
             {description && <p>{description}</p>}
           </div>
