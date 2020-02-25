@@ -138,7 +138,7 @@ export default function MainPage() {
             });
         }
       })
-      .catch(err => {});
+      .catch(() => {});
   }
 
   function onInputChange(event) {
