@@ -138,7 +138,7 @@ export default function MainPage() {
             });
         }
       })
-      .catch(() => {});
+      .catch(err => {});
   }
 
   function onInputChange(event) {
@@ -171,7 +171,7 @@ export default function MainPage() {
   }
 
   return (
-    <React.Fragment>
+    <>
       <NavBar onClick={onLogoutClick} />
       <div className="top-spacing" id="wrapper">
         {!isUserSearch && (
@@ -190,6 +190,7 @@ export default function MainPage() {
               onClick={onButtonClick}
             />
           )}
+
           {!isUserSearch && (
             <UserAccess
               userAccess={userAccess}
@@ -201,6 +202,6 @@ export default function MainPage() {
           )}
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 }
