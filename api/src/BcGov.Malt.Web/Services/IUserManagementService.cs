@@ -10,7 +10,7 @@ namespace BcGov.Malt.Web.Services
     public interface IUserManagementService
     {
         /// <summary>
-        /// Adds a user to a project.
+        /// Adds a user to a project. The user will be added to each of the defined project resources, ie Dynamics and SharePoint
         /// </summary>
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to add the user to</param>
