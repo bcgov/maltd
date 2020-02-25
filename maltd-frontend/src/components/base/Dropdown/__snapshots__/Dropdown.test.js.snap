@@ -2,7 +2,7 @@
 
 exports[`Dropdown Component renders as expected 1`] = `
 <div
-  className="dropleft dropdown"
+  className="dropdown"
   onKeyDown={[Function]}
 >
   <button
@@ -15,10 +15,6 @@ exports[`Dropdown Component renders as expected 1`] = `
       Object {
         "backgroundColor": "white",
         "color": "black",
-        "maxWidth": "140px",
-        "overflow": "hidden",
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
       }
     }
     type="button"
