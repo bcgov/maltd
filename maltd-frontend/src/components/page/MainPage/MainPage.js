@@ -190,6 +190,7 @@ export default function MainPage() {
               onClick={onButtonClick}
             />
           )}
+
           {!isUserSearch && (
             <UserAccess
               userAccess={userAccess}

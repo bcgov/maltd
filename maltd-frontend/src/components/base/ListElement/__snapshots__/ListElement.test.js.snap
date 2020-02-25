@@ -4,13 +4,17 @@ exports[`List Element Component renders as expected 1`] = `
 <div
   className="project-div"
 >
-  <div>
+  <div
+    className="project-list-item"
+  >
     <strong
       className="large-size"
     >
       title
     </strong>
-    <p>
+    <p
+      className="project-list-item"
+    >
       description
     </p>
   </div>

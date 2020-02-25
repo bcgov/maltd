@@ -8,3 +8,9 @@
   padding-right: 2em;
   width: 100%;
 }
+
+.project-list-item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

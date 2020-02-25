@@ -54,6 +54,9 @@ export default function UserAccess({
                   </div>
                 );
               })}
+            {(!projects || projects.length === 0) && (
+              <ListElement listElement={{}} />
+            )}
           </div>
         </Col>
       </Row>
@@ -70,7 +73,6 @@ export default function UserAccess({
           )}
           {(!projects || projects.length === 0) && (
             <React.Fragment>
-              <ListElement listElement={{}} />
               <div className="drop-plus">
                 <Dropdown
                   dropdown={dropdown}
