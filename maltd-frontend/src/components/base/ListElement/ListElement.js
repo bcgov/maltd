@@ -11,9 +11,9 @@ export default function ListElement({
     return (
       <React.Fragment>
         <div className="project-div">
-          <div class="project-list-item">
+          <div className="project-list-item">
             <strong className="large-size">{title}</strong>
-            {description && <p>{description}</p>}
+            {description && <p className="project-list-item">{description}</p>}
           </div>
           <div>
             {typeof onXClick === "function" && (
