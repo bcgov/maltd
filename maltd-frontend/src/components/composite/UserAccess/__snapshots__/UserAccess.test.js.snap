@@ -23,13 +23,17 @@ exports[`User Access Component renders as expected 1`] = `
       <div
         className="project-div"
       >
-        <div>
+        <div
+          className="project-list-item"
+        >
           <strong
             className="large-size"
           >
             username
           </strong>
-          <p>
+          <p
+            className="project-list-item"
+          >
             useremail@gov.bc.ca
           </p>
         </div>
@@ -52,6 +56,11 @@ exports[`User Access Component renders as expected 1`] = `
             CURRENT PROJECTS
           </div>
         </div>
+        <div>
+          <p>
+            No projects
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -64,16 +73,11 @@ exports[`User Access Component renders as expected 1`] = `
     <div
       className="col"
     >
-      <div>
-        <p>
-          No projects
-        </p>
-      </div>
       <div
         className="drop-plus"
       >
         <div
-          className="dropdown"
+          className="dropleft dropdown"
           onKeyDown={[Function]}
         >
           <button
@@ -86,6 +90,10 @@ exports[`User Access Component renders as expected 1`] = `
               Object {
                 "backgroundColor": "white",
                 "color": "black",
+                "maxWidth": "140px",
+                "overflow": "hidden",
+                "textOverflow": "ellipsis",
+                "whiteSpace": "nowrap",
               }
             }
             type="button"
