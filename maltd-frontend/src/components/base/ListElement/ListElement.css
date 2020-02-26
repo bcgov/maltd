@@ -5,7 +5,6 @@
 .project-div {
   display: flex;
   justify-content: space-between;
-  padding-right: 2em;
   width: 100%;
 }
 
@@ -13,4 +12,8 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.project-list-item p {
+  margin-bottom: 5px;
 }
