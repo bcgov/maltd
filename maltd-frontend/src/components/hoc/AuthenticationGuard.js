@@ -1,47 +1,46 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 import Keycloak from "keycloak-js";
+import MainPage from "../page/MainPage/MainPage";
 
 const KEYCLOAK = {
-  realm: "mds",
-  "ssl-required": "external",
-  url: "<URL>",
-  clientId: "<CLIENT_ID>"
+  url: "https://sso-dev.pathfinder.gov.bc.ca/auth",
+  realm: "ezb8kej4",
+  clientId: "malt-frontend"
 };
 
 /**
  * @constant authenticationGuard - a higher order component that checks for user authorization and returns the wrapped component if the user is authenticated
  */
 
-export const AuthenticationGuard = WrappedComponent => {
-  /**
-   * Initializes the KeyCloak client and enables
-   * redirects directly to IDIR login page.
-   */
+export default function AuthenticationGuard() {
+  const [keycloak, setKeycloak] = useState(null);
 
-  class authenticationGuard extends Component {
-    componentDidMount() {
-      this.keycloakInit();
-    }
+  useEffect(() => {
+    keycloakInit();
+  }, []);
 
-    async keycloakInit() {
-      // Initialize client
-      const keycloak = Keycloak(KEYCLOAK);
-      await keycloak
-        .init({
-          onLoad: "login-required",
-          idpHint: KEYCLOAK.idpHint
-        })
-        .success(() => {
-          keycloak
-            .loadUserInfo()
-            .success(userInfo => this.props.authenticateUser(userInfo));
-          localStorage.setItem("jwt", keycloak.token);
-          this.props.storeUserAccessData(keycloak.realmAccess.roles);
-          this.props.storeKeycloakData(keycloak);
-        });
-    }
-
-    render() {}
+  async function keycloakInit() {
+    // Initialize client
+    const keycloak = Keycloak(KEYCLOAK);
+    await keycloak
+      .init({
+        onLoad: "login-required",
+        idpHint: KEYCLOAK.idpHint
+      })
+      .success(() => {
+        keycloak.loadUserInfo().success();
+        localStorage.setItem("jwt", keycloak.token);
+        // this.props.storeUserAccessData(keycloak.realmAccess.roles);
+        // this.props.storeKeycloakData(keycloak);
+        console.log(keycloak);
+        setKeycloak(keycloak);
+      });
   }
-};
+
+  return (
+    <React.Fragment>
+      {keycloak && <MainPage />}
+      {!keycloak && null}
+    </React.Fragment>
+  );
+}
