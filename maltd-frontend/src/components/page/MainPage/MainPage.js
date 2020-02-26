@@ -78,9 +78,7 @@ export default function MainPage() {
 
   function addUserToProject() {
     axios
-      .put(
-        `https://localhost:5001/api/projects/${selectedDropdownItem.id}/users/${value}`
-      )
+      .put(`//maltd-api/api/projects/${selectedDropdownItem.id}/users/${value}`)
       .then(() => {
         const updatedProjects = projects.slice(0);
         updatedProjects.push(selectedDropdownItem);
@@ -91,7 +89,7 @@ export default function MainPage() {
 
   function removeUserFromProject(projectId) {
     axios
-      .delete(`https://localhost:5001/api/projects/${projectId}/users/${value}`)
+      .delete(`//maltd-api/api/projects/${projectId}/users/${value}`)
       .then(() => {
         const updatedProjects = [];
         projects.forEach(proj => {
@@ -105,7 +103,7 @@ export default function MainPage() {
   }
 
   function onButtonClick() {
-    fetch(`https://localhost:5001/api/projects`)
+    fetch(`//maltd-api/api/projects`)
       .then(res => res.json())
       .then(resul => {
         if (resul.status !== 401) {
@@ -115,7 +113,7 @@ export default function MainPage() {
           setDisabledButton(true);
           setDisabledInput(true);
 
-          fetch(`https://localhost:5001/api/users/${value}`)
+          fetch(`//maltd-api/api/users/${value}`)
             .then(res2 => res2.json())
             .then(result => {
               if (result.status !== 404) {
