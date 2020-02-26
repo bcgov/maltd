@@ -6,8 +6,8 @@ import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 
-const baseUrl = process.env.MALTD_API
-  ? process.env.MALTD_API
+const baseUrl = process.env.REACT_APP_MALTD_API
+  ? process.env.REACT_APP_MALTD_API
   : "http://localhost:80";
 
 export default function MainPage() {
