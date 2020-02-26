@@ -6,7 +6,6 @@ import "./PlusIcon.css";
 export default function PlusIcon({ onClick }) {
   return (
     <div
-      id="main"
       role="button"
       tabIndex="0"
       onClick={onClick}

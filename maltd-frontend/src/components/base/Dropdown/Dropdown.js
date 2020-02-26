@@ -7,6 +7,8 @@ import {
   DropdownItem
 } from "reactstrap";
 
+// import "./Dropdown.css";
+
 export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
   const [selectedTitle, setSelectedTitle] = useState("Select a project");
 
@@ -23,9 +25,19 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
   ));
 
   return (
-    <UncontrolledDropdown>
+    <UncontrolledDropdown direction="left">
       <DropdownToggle
-        style={{ backgroundColor: "white", color: "black" }}
+        className="dropdown"
+        style={{
+          backgroundColor: "white",
+          color: "black",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          textOverflow: "ellipsis",
+          paddingRight: "1px",
+          marginRight: "1px",
+          width: "220px"
+        }}
         caret
       >
         {selectedTitle}
