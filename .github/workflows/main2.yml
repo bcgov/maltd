@@ -15,7 +15,7 @@ jobs:
         with:
           start: npm run start
           build: npm ci
-          wait: localhost:3000/
+          wait: maltd-frontend:3000/
           browser: chrome
           headless: true
           working-directory: maltd-frontend
