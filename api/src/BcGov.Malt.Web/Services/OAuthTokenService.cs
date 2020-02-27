@@ -6,7 +6,6 @@ using BcGov.Malt.Web.Models.Configuration;
 
 namespace BcGov.Malt.Web.Services
 {
-
     public class OAuthTokenService : ITokenService
     {
         private readonly IOAuthClient _client;
@@ -22,7 +21,7 @@ namespace BcGov.Malt.Web.Services
         public async Task<Token> GetTokenAsync(OAuthOptions configuration, CancellationToken cancellationToken)
         {
             Token token = _tokenCache.GetToken(configuration);
-            if (token != null && !token.IsExpired)
+            if (token != null && !token.IsAccessTokenExpired)
             {
                 return token;
             }
