@@ -1,124 +1,143 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User Access Component renders as expected 1`] = `
-<table
-  className="move-down table table-borderless"
+<div
+  className="move-down container"
 >
-  <thead>
-    <tr
-      className="border-bottom"
+  <div
+    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    id="user-access-row"
+  >
+    <div
+      className="cols col"
     >
-      <th>
-        <strong
-          className="big-font"
+      <div
+        className="row"
+      >
+        <div
+          className="big-font col"
         >
           USER
-        </strong>
-      </th>
-      <th>
-        <strong
-          className="big-font"
+        </div>
+      </div>
+      <div
+        className="project-div"
+      >
+        <div
+          className="project-list-item"
         >
-          CURRENT PROJECTS
-        </strong>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      id="user-access-row"
-    >
-      <td>
-        <div>
           <strong
             className="large-size"
           >
             username
           </strong>
+          <p
+            className="project-list-item"
+          >
+            useremail@gov.bc.ca
+          </p>
         </div>
-        <p>
-          useremail@gov.bc.ca
-        </p>
-      </td>
-      <td
-        id="noProjects"
+        <div />
+      </div>
+    </div>
+    <div
+      className="top-projects col"
+      id="noProjects"
+    >
+      <div
+        className="cols"
       >
+        <div
+          className="row"
+        >
+          <div
+            className="big-font col"
+          >
+            CURRENT PROJECTS
+          </div>
+        </div>
         <div>
           <p>
             No projects
           </p>
         </div>
-        <div>
-          <div
-            className="dropdown"
-            onKeyDown={[Function]}
+      </div>
+    </div>
+  </div>
+  <div
+    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+  >
+    <div
+      className="col"
+    />
+    <div
+      className="col"
+    >
+      <div
+        className="drop-plus"
+      >
+        <div
+          className="dropdown"
+          onKeyDown={[Function]}
+        >
+          <button
+            aria-expanded={false}
+            aria-haspopup={true}
+            aria-label={null}
+            className="dropdown-toggle btn btn-secondary"
+            onClick={[Function]}
             style={
               Object {
-                "paddingTop": "20px",
+                "backgroundColor": "white",
+                "color": "black",
               }
             }
+            type="button"
+          >
+            Select a project
+          </button>
+          <div
+            aria-hidden={true}
+            className="dropdown-menu"
+            role="menu"
+            tabIndex="-1"
           >
             <button
-              aria-expanded={false}
-              aria-haspopup={true}
-              aria-label={null}
-              className="dropdown-toggle btn btn-secondary"
+              className="dropdown-item"
               onClick={[Function]}
-              style={
-                Object {
-                  "backgroundColor": "white",
-                  "color": "black",
-                }
-              }
+              role="menuitem"
+              tabIndex="0"
               type="button"
             >
-              Select a project
+              name
+              -
+              type
             </button>
-            <div
-              aria-hidden={true}
-              className="dropdown-menu"
-              role="menu"
-              tabIndex="-1"
-            >
-              <button
-                className="dropdown-item"
-                onClick={[Function]}
-                role="menuitem"
-                tabIndex="0"
-                type="button"
-              >
-                name
-                -
-                type
-              </button>
-            </div>
-          </div>
-          <div
-            className="icon-alignment"
-          >
-            <div
-              className="inline-blocked"
-              id="main"
-              onClick={[Function]}
-              onKeyDown={[Function]}
-              role="button"
-              tabIndex="0"
-            >
-              <img
-                alt="plus icon"
-                height="25px"
-                src={
-                  Object {
-                    "process": [Function],
-                  }
-                }
-                width="25px"
-              />
-            </div>
           </div>
         </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <div>
+          <div
+            className="inline-blocked"
+            id="main"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            <img
+              alt="plus icon"
+              height="25px"
+              src={
+                Object {
+                  "process": [Function],
+                }
+              }
+              width="25px"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 `;

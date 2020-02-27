@@ -19,16 +19,19 @@ export default function UserSearch({
       </p>
       <p />
       {!state.isLoading && state.userExists === null && (
-        <div>
+        <div className="inner">
           <InputField inputField={inputField} onChange={onChange} />
           <p />
-          <div className="d-flex justify-content-end">
-            <GeneralButton generalButton={generalButton} onClick={onClick} />
+          <div className="error-btn-div">
+            <div />
+            <div className="d-flex justify-content-end">
+              <GeneralButton generalButton={generalButton} onClick={onClick} />
+            </div>
           </div>
         </div>
       )}
       {state.isLoading && state.userExists === null && (
-        <div>
+        <div className="inner">
           <div>
             <InputField inputField={inputField} />
             <p />
@@ -46,13 +49,13 @@ export default function UserSearch({
         </div>
       )}
       {state.userExists === false && (
-        <div>
+        <div className="inner">
           <div>
             <InputField inputField={inputField} onChange={onChange} />
             <p />
-            <div>
+            <div className="error-btn-div">
               <div className="float-left">
-                <p className="float-left">
+                <p className="">
                   <small className="error-message">
                     This user does not exist, please try again with a different
                     IDIR username.
