@@ -16,7 +16,7 @@ export default function ListElement({
             <XIcon id={id} onClick={onXClick} />
           )}
         </div>
-        {description && <p>{description}</p>}
+        {description && <p data-cy="project-info">{description}</p>}
       </>
     );
   }

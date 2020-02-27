@@ -53,7 +53,7 @@ export default function UserSearch({
             <div>
               <div className="float-left">
                 <p className="float-left">
-                  <small className="error-message">
+                  <small className="error-message" data-cy="error-text">
                     This user does not exist, please try again with a different
                     IDIR username.
                   </small>

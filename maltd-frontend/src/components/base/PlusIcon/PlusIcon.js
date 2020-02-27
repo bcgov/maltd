@@ -12,6 +12,7 @@ export default function PlusIcon({ onClick }) {
       onClick={onClick}
       onKeyDown={onClick}
       className="inline-blocked"
+      data-cy="plus-icon"
     >
       <img src={Icon} alt="plus icon" width="25px" height="25px" />
     </div>
