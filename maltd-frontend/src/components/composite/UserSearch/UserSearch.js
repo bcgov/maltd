@@ -57,12 +57,12 @@ export default function UserSearch({
               <div className="float-left">
                 <p className="">
                   <small className="error-message" data-cy="error-text">
-
-                <p className="">
-                  <small className="error-message">
-
-                    This user does not exist, please try again with a different
-                    IDIR username.
+                    <p className="">
+                      <small className="error-message">
+                        This user does not exist, please try again with a
+                        different IDIR username.
+                      </small>
+                    </p>
                   </small>
                 </p>
               </div>
