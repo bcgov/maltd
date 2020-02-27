@@ -1,4 +1,4 @@
-/* global cy, Cypress*/
+/* global cy, Cypress */
 // import UserPage from "../../support/pageObjects/user-page";
 
 // ***********************************************
