@@ -10,6 +10,12 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Net.Http;
+using System.Threading.Tasks;
+using BcGov.Malt.Web.Models.Configuration;
+using System.Threading;
+using System.Net.Http.Headers;
 
 namespace BcGov.Malt.Web
 {
@@ -18,7 +24,7 @@ namespace BcGov.Malt.Web
     /// </summary>
     public class Startup
     {
-        private static readonly ILogger _log = Serilog.Log.ForContext<Startup>();
+        private static readonly Serilog.ILogger _log = Serilog.Log.ForContext<Startup>();
         /// <summary>
         /// 
         /// </summary>
