@@ -31,46 +31,4 @@ namespace BcGov.Malt.Web.Services
             return oDataClient;
         }
     }
-
-    /// <summary>
-    /// Provides an abstraction for managing users in a specific kind of resource.
-    /// </summary>
-    public interface IResourceUserManagementService
-    {
-        /// <summary>
-        /// Adds the specified user.
-        /// </summary>
-        void Add(string user);
-
-        /// <summary>
-        /// Removes the specified user.
-        /// </summary>
-        void Remove(string user);
-    }
-
-    public class DynamicsResourceUserManagementService : IResourceUserManagementService
-    {
-        public void Add(string user)
-        {
-
-        }
-
-        public void Remove(string user)
-        {
-
-        }
-
-    }
-
-    public class SharepointResourceUserManagementService : IResourceUserManagementService
-    {
-        public void Add(string user)
-        {
-        }
-
-        public void Remove(string user)
-        {
-        }
-
-    }
 }
