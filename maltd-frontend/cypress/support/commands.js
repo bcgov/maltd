@@ -1,3 +1,4 @@
+/* global cy*/
 // import UserPage from "../../support/pageObjects/user-page";
 
 // ***********************************************
@@ -13,7 +14,7 @@
 // -- This is a parent command --
 // Cypress.Commands.add("login", (email, password) => { ... })
 Cypress.Commands.add("selectProject", project => {
-  cy.get("[data-cy=drop-down-menu]").each(($el, index, $list) => {
+  cy.get("[data-cy=drop-down-menu]").each(($el, index) => {
     if ($el.text().includes(project)) {
       cy.get("[data-cy=drop-down]").click();
       cy.get("[data-cy=drop-down-menu]").should("be.visible");
