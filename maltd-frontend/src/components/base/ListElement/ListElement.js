@@ -9,15 +9,23 @@ export default function ListElement({
 }) {
   if (title) {
     return (
-      <>
-        <div>
-          <strong className="large-size">{title}</strong>
-          {typeof onXClick === "function" && (
-            <XIcon id={id} onClick={onXClick} />
-          )}
+      <React.Fragment>
+        <div className="project-div">
+          <div className="project-list-item">
+            <strong className="large-size">{title}</strong>
+            {description && <p className="project-list-item">{description}</p>}
+          </div>
+          <div>
+            {typeof onXClick === "function" && (
+              <XIcon id={id} onClick={onXClick} />
+            )}
+          </div>
         </div>
         {description && <p data-cy="project-info">{description}</p>}
       </>
+
+      </React.Fragment>
+
     );
   }
 

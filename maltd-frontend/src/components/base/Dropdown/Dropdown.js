@@ -23,7 +23,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
   ));
 
   return (
-    <UncontrolledDropdown style={{ paddingTop: "20px" }}>
+    <UncontrolledDropdown>
       <DropdownToggle
         data-cy="drop-down"
         style={{ backgroundColor: "white", color: "black" }}

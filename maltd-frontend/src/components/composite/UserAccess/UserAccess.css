@@ -2,19 +2,23 @@ th {
   font-weight: normal;
 }
 
-.border-bottom {
-  border-bottom: "1px black solid";
-}
-
-.move-down {
-  margin-top: 30px;
-}
-
 .big-font {
   font-size: large;
 }
 
-.icon-alignment {
-  margin-top: -35px;
-  margin-left: 150px;
+.drop-plus {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-right: 2em;
+}
+
+.top-projects {
+  display: flex;
+}
+
+.cols {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }

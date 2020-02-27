@@ -8,7 +8,9 @@ exports[`User Search Component renders as expected 1`] = `
     Find a user by IDIR username and add them to or remove them from projects.
   </p>
   <p />
-  <div>
+  <div
+    className="inner"
+  >
     <input
       className="input-field my-2 form-control"
       disabled={false}
@@ -20,17 +22,22 @@ exports[`User Search Component renders as expected 1`] = `
     />
     <p />
     <div
-      className="d-flex justify-content-end"
+      className="error-btn-div"
     >
-      <button
-        aria-label={null}
-        className="general-button my-2 btn btn-primary disabled"
-        disabled={true}
-        onClick={[Function]}
-        type="submit"
+      <div />
+      <div
+        className="d-flex justify-content-end"
       >
-        Find
-      </button>
+        <button
+          aria-label={null}
+          className="general-button my-2 btn btn-primary disabled"
+          disabled={true}
+          onClick={[Function]}
+          type="submit"
+        >
+          Find
+        </button>
+      </div>
     </div>
   </div>
 </div>

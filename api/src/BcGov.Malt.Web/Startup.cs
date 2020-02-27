@@ -2,7 +2,6 @@ using BcGov.Malt.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -19,6 +18,7 @@ namespace BcGov.Malt.Web
     /// </summary>
     public class Startup
     {
+        private static readonly ILogger _log = Serilog.Log.ForContext<Startup>();
         /// <summary>
         /// 
         /// </summary>
@@ -44,7 +44,8 @@ namespace BcGov.Malt.Web
             // send header Access-Control-Allow-Origin: *
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder => {
+                options.AddDefaultPolicy(builder =>
+                {
                     builder.AllowAnyHeader();
                     builder.AllowAnyMethod();
                     builder.AllowAnyOrigin();
@@ -57,27 +58,54 @@ namespace BcGov.Malt.Web
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
+                /* TODO Add keycloak authentication params once its ready .The following may change in future
+                 * For now , Jwt:Authority = the url to your local keycloak relam , eg: Master or ISB
+                 *               Audience = the name of the client you create in keycloak relam ,e.g: maltd or demo-app 
+                 *   "Jwt":{
+                             "Authority": "http://localhost:8080/auth/realms/<Relam_Name>",
+                             "Audience": "maltd"
+                } */
                 o.Authority = Configuration["Jwt:Authority"];
                 o.Audience = Configuration["Jwt:Audience"];
-                o.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents()
+                o.Events = new JwtBearerEvents()
                 {
                     OnAuthenticationFailed = c =>
                     {
                         c.NoResult();
 
-                        c.Response.StatusCode = 500;
+                        c.Response.StatusCode = 401;
                         c.Response.ContentType = "text/plain";
-                      
-                            return c.Response.WriteAsync(c.Exception.ToString());
+
+                        return c.Response.WriteAsync(c.Exception.ToString());
                                               
                     }
                 };
             });
 
+            AddSwaggerGen(services);
+
+            services.AddMemoryCache();
+
+            // this will configure the service correctly, comment out for now until
+            // the services are working
+            //services.AddProjectAccess(Configuration);
+
+            // singleton for now since these are in memory (testing) implementations
+            services.AddSingleton<IProjectService, ProjectService>();
+            services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
+            services.AddSingleton<IUserManagementService, InMemoryUserManagementService>();
+
+            services.AddSingleton<IODataClientFactory, DefaultODataClientFactory>();
+
+            services.AddTransient<ITokenCache, TokenCache>();
+        }
+
+        private void AddSwaggerGen(IServiceCollection services)
+        {
             services.AddSwaggerGen(c =>
             {
                 // name here shows up in the OpenAPI title
@@ -105,11 +133,6 @@ namespace BcGov.Malt.Web
 
                 c.OperationFilter<ConsumesAndProductOnlyJSonContentTypeFilter>();
             });
-            
-            // singleton for now since these are in memory (testing) implementations
-            services.AddSingleton<IProjectService, InMemoryProjectService>();
-            services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
-            services.AddSingleton<IUserManagementService, InMemoryUserManagementService>();
         }
 
         /// <summary>
@@ -148,6 +171,29 @@ namespace BcGov.Malt.Web
 
         }
 
+        internal class TokenAuthorizationHandler : DelegatingHandler
+        {
+            private readonly ITokenService _tokenService;
+            public readonly OAuthOptions _options;
+
+            public TokenAuthorizationHandler(ITokenService tokenService, OAuthOptions options)
+            {
+                _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+                _options = options;
+            }
+
+            protected override async Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request,
+                CancellationToken cancellationToken)
+            {
+                // get the acess token and add it to the Authorization header of the request 
+                var token = await _tokenService.GetTokenAsync(_options, cancellationToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
+                return await base.SendAsync(request, cancellationToken);
+            }
+        }
+               
         internal class ConsumesAndProductOnlyJSonContentTypeFilter : IOperationFilter
         {
 
