@@ -25,6 +25,8 @@ body {
   /* widen box on smaller screens */
   .less-spacing-top {
     width: 90%;
+    padding-left: 60%;
+    padding-right: 60%;
   }
 
   /* To stack back button on top of current box */
@@ -43,5 +45,12 @@ body {
 @media only screen and (min-width: 701px) and (max-width: 850px) {
   .less-spacing-top {
     width: 55%;
+  }
+}
+
+/* Stop box stretch on wider screens */
+@media only screen and (min-width: 1200px) {
+  .less-spacing-top {
+    max-width: 600px;
   }
 }
