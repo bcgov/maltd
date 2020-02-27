@@ -1,4 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace BcGov.Malt.Web.Models
 {
@@ -7,11 +10,22 @@ namespace BcGov.Malt.Web.Models
     /// </summary>
     public class Project
     {
+        public Project(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Name cannot be null or empty", nameof(name));
+            }
+
+            Id = GetHash(name);
+            Name = name;
+        }
+
         /// <summary>
         /// The id of the project
         /// </summary>
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string Id { get; }
 
         /// <summary>
         /// The name of the project
@@ -19,10 +33,21 @@ namespace BcGov.Malt.Web.Models
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        /// <summary>
-        /// The type of project, ie Dynamics or SharePoint
-        /// </summary>
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
+        private static string GetHash(string value)
+        {
+            // SHA1 should be fine as we are not using this value as a password hash
+
+            using HashAlgorithm hashAlgorithm = SHA1.Create();
+            var byteArray = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
+
+            StringBuilder hex = new StringBuilder(byteArray.Length * 2);
+            foreach (byte b in byteArray)
+            {
+                hex.AppendFormat("{0:x2}", b);
+            }
+
+            return hex.ToString();
+
+        }
     }
 }
