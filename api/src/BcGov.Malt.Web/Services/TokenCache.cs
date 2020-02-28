@@ -27,15 +27,14 @@ namespace BcGov.Malt.Web.Services
 
         public void SaveToken(OAuthOptions configuration, Token token)
         {
-            if (token.ExpiresAtUtc < DateTimeOffset.Now)
+            if (token.IsAccessTokenExpired)
             {
-                // already expired
                 return;
             }
 
             string key = GetCacheKey(configuration);
 
-            _memoryCache.Set(key, token, token.ExpiresAtUtc);
+            _memoryCache.Set(key, token, token.AccessTokenExpiresAtUtc);
         }
 
         private string GetCacheKey(OAuthOptions configuration)

@@ -64,8 +64,8 @@ namespace BcGov.Malt.Web.Services
             var token = await JsonSerializer.DeserializeAsync<Token>(stream);
 
             // compute the absolute expiration time of the access and refresh tokens
-            token.ExpiresAtUtc = tokenCreatedAtUtc.AddSeconds(token.ExpiresIn);
-            token.RefreshTokenExpiresAtUtc = tokenCreatedAtUtc.AddSeconds(token.RefreshTokenExpiresIn);
+            //token.ExpiresAtUtc = tokenCreatedAtUtc.AddSeconds(token.ExpiresIn);
+            //token.RefreshTokenExpiresAtUtc = tokenCreatedAtUtc.AddSeconds(token.RefreshTokenExpiresIn);
 
             return token;
 
