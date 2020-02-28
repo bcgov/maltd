@@ -107,7 +107,7 @@ export default function MainPage() {
   }
 
   function onButtonClick() {
-    fetch(`${baseUrl}/api/projects`)
+    fetch(`https://localhost:5001/api/projects`)
       .then(res => res.json())
       .then(resul => {
         if (resul.status !== 401) {
@@ -117,7 +117,7 @@ export default function MainPage() {
           setDisabledButton(true);
           setDisabledInput(true);
 
-          fetch(`${baseUrl}/api/users/${value}`)
+          fetch(`https://localhost:5001/api/users/${value}`)
             .then(res2 => res2.json())
             .then(result => {
               if (result.status !== 404) {

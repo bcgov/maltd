@@ -7,7 +7,7 @@ import {
   DropdownItem
 } from "reactstrap";
 
-import Icon from "../../../img/caret-down-solid.svg";
+import { FaCaretDown } from "react-icons/fa";
 
 import "./Dropdown.css";
 
@@ -31,13 +31,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
       <DropdownToggle id="dropdown">
         <div id="title">{selectedTitle}</div>
         <div className="img">
-          <img
-            className="caret"
-            alt="down"
-            src={Icon}
-            height="15px"
-            width="15px"
-          />
+          <FaCaretDown />
         </div>
       </DropdownToggle>
       <DropdownMenu>{dropdownItems}</DropdownMenu>
