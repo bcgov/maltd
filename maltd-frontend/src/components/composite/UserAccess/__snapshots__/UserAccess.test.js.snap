@@ -12,7 +12,7 @@ exports[`User Access Component renders as expected 1`] = `
       className="cols col"
     >
       <div
-        className="row"
+        className="inner-row row"
       >
         <div
           className="big-font col"
@@ -65,7 +65,7 @@ exports[`User Access Component renders as expected 1`] = `
     </div>
   </div>
   <div
-    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    className="outer row row-cols-1 row-cols-sm-1 row-cols-md-2"
   >
     <div
       className="col"
@@ -77,28 +77,38 @@ exports[`User Access Component renders as expected 1`] = `
         className="drop-plus"
       >
         <div
-          className="dropleft dropdown"
+          className="dropdown"
           onKeyDown={[Function]}
         >
           <button
             aria-expanded={false}
             aria-haspopup={true}
             aria-label={null}
-            className="dropdown-toggle btn btn-secondary"
+            className="btn btn-secondary"
+            id="dropdown"
             onClick={[Function]}
-            style={
-              Object {
-                "backgroundColor": "white",
-                "color": "black",
-                "maxWidth": "140px",
-                "overflow": "hidden",
-                "textOverflow": "ellipsis",
-                "whiteSpace": "nowrap",
-              }
-            }
             type="button"
           >
-            Select a project
+            <div
+              id="title"
+            >
+              Select a project
+            </div>
+            <div
+              className="img"
+            >
+              <img
+                alt="down"
+                className="caret"
+                height="15px"
+                src={
+                  Object {
+                    "process": [Function],
+                  }
+                }
+                width="15px"
+              />
+            </div>
           </button>
           <div
             aria-hidden={true}
@@ -122,7 +132,7 @@ exports[`User Access Component renders as expected 1`] = `
         <div>
           <div
             className="inline-blocked"
-            id="main"
+            id="plus-icon"
             onClick={[Function]}
             onKeyDown={[Function]}
             role="button"

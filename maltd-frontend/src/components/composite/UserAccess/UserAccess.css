@@ -4,13 +4,14 @@ th {
 
 .big-font {
   font-size: large;
+  margin-bottom: 1vh;
+  border-bottom: 1px solid lightgrey;
 }
 
 .drop-plus {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-right: 2em;
+  align-items: center;
 }
 
 .top-projects {

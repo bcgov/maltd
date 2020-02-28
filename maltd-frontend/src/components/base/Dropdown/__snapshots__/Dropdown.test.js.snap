@@ -2,28 +2,38 @@
 
 exports[`Dropdown Component renders as expected 1`] = `
 <div
-  className="dropleft dropdown"
+  className="dropdown"
   onKeyDown={[Function]}
 >
   <button
     aria-expanded={false}
     aria-haspopup={true}
     aria-label={null}
-    className="dropdown-toggle btn btn-secondary"
+    className="btn btn-secondary"
+    id="dropdown"
     onClick={[Function]}
-    style={
-      Object {
-        "backgroundColor": "white",
-        "color": "black",
-        "maxWidth": "140px",
-        "overflow": "hidden",
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
-      }
-    }
     type="button"
   >
-    Select a project
+    <div
+      id="title"
+    >
+      Select a project
+    </div>
+    <div
+      className="img"
+    >
+      <img
+        alt="down"
+        className="caret"
+        height="15px"
+        src={
+          Object {
+            "process": [Function],
+          }
+        }
+        width="15px"
+      />
+    </div>
   </button>
   <div
     aria-hidden={true}
