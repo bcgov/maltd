@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
+// this should go in AssemblyInfo.cs
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BcGov.Malt.Web.Tests")]
+
 namespace BcGov.Malt.Web
 {
     /// <summary>

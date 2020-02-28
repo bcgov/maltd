@@ -12,6 +12,12 @@ exports[`Dropdown Component renders as expected 1`] = `
     className="btn btn-secondary"
     id="dropdown"
     onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": "white",
+        "color": "black",
+      }
+    }
     type="button"
   >
     <div
