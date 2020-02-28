@@ -6,6 +6,7 @@ import "./XIcon.css";
 export default function XIcon({ onClick, id }) {
   return (
     <div
+      id="x-icon"
       role="button"
       tabIndex="0"
       onClick={() => onClick(id)}

@@ -17,15 +17,8 @@ namespace BcGov.Malt.Web.Services
         /// </summary>
         public InMemoryProjectService()
         {
-            for (int i = 0; i < 7; i++)
-            {
-                _projects.Add(new Project { Id = Guid.NewGuid().ToString("n"), Name = $"System {i+1}", Type = "Dynamics" });
-            }
-
-            for (int i = 0; i < 7; i++)
-            {
-                _projects.Add(new Project { Id = Guid.NewGuid().ToString("n"), Name = $"System {i + 1}", Type = "SharePoint" });
-            }
+            _projects.Add(new Project("Corrections Dev"));
+            _projects.Add(new Project("Corrections Test"));
         }
 
         /// <summary>

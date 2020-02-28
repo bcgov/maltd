@@ -24,10 +24,10 @@ describe("Plus Icon", () => {
       <PlusIcon id="123" onKeyDown={onClick} onClick={onClick} />
     );
 
-    wrapper.find("#main").simulate("keydown");
+    wrapper.find("#plus-icon").simulate("keydown");
     expect(testState.isClicked).toEqual(true);
 
-    wrapper.find("#main").simulate("click");
+    wrapper.find("#plus-icon").simulate("click");
     expect(testState.isClicked).toEqual(true);
   });
 });

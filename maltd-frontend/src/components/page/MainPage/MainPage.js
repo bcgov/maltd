@@ -6,6 +6,10 @@ import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 
+const baseUrl = process.env.REACT_APP_MALTD_API
+  ? process.env.REACT_APP_MALTD_API
+  : "http://localhost:80";
+
 export default function MainPage() {
   // declare state variables, using hooks
   const [validInput, setValidInput] = useState(false);
@@ -78,7 +82,7 @@ export default function MainPage() {
 
   function addUserToProject() {
     axios
-      .put(`//maltd-api/api/projects/${selectedDropdownItem.id}/users/${value}`)
+      .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
       .then(() => {
         const updatedProjects = projects.slice(0);
         updatedProjects.push(selectedDropdownItem);
@@ -89,7 +93,7 @@ export default function MainPage() {
 
   function removeUserFromProject(projectId) {
     axios
-      .delete(`//maltd-api/api/projects/${projectId}/users/${value}`)
+      .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
       .then(() => {
         const updatedProjects = [];
         projects.forEach(proj => {
@@ -103,7 +107,7 @@ export default function MainPage() {
   }
 
   function onButtonClick() {
-    fetch(`//maltd-api/api/projects`)
+    fetch(`${baseUrl}/api/projects`)
       .then(res => res.json())
       .then(resul => {
         if (resul.status !== 401) {
@@ -113,7 +117,7 @@ export default function MainPage() {
           setDisabledButton(true);
           setDisabledInput(true);
 
-          fetch(`//maltd-api/api/users/${value}`)
+          fetch(`${baseUrl}/api/users/${value}`)
             .then(res2 => res2.json())
             .then(result => {
               if (result.status !== 404) {

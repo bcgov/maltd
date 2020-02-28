@@ -7,7 +7,9 @@ import {
   DropdownItem
 } from "reactstrap";
 
-// import "./Dropdown.css";
+import { FaCaretDown } from "react-icons/fa";
+
+import "./Dropdown.css";
 
 export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
   const [selectedTitle, setSelectedTitle] = useState("Select a project");
@@ -25,22 +27,12 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
   ));
 
   return (
-    <UncontrolledDropdown direction="left">
-      <DropdownToggle
-        className="dropdown"
-        style={{
-          backgroundColor: "white",
-          color: "black",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          textOverflow: "ellipsis",
-          paddingRight: "1px",
-          marginRight: "1px",
-          width: "220px"
-        }}
-        caret
-      >
-        {selectedTitle}
+    <UncontrolledDropdown direction="down">
+      <DropdownToggle id="dropdown">
+        <div id="title">{selectedTitle}</div>
+        <div className="img">
+          <FaCaretDown />
+        </div>
       </DropdownToggle>
       <DropdownMenu>{dropdownItems}</DropdownMenu>
     </UncontrolledDropdown>
