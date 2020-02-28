@@ -13,14 +13,10 @@ const KEYCLOAK = {
  */
 
 export default function AuthenticationGuard() {
-  const [keycloak, setKeycloak] = useState(null);
-
-  useEffect(() => {
-    keycloakInit();
-  }, []);
+  const [authedKeycloak, setAuthedKeycloak] = useState(null);
 
   function onLogoutClick() {
-    keycloak.logout({ redirectUri: "http://localhost:3001" });
+    authedKeycloak.logout({ redirectUri: "http://localhost:3001" });
   }
 
   async function keycloakInit() {
@@ -33,14 +29,18 @@ export default function AuthenticationGuard() {
       .success(() => {
         keycloak.loadUserInfo().success();
         localStorage.setItem("jwt", keycloak.token);
-        setKeycloak(keycloak);
+        setAuthedKeycloak(keycloak);
       });
   }
 
+  useEffect(() => {
+    keycloakInit();
+  }, []);
+
   return (
     <React.Fragment>
-      {keycloak && <MainPage onLogoutClick={onLogoutClick} />}
-      {!keycloak && null}
+      {authedKeycloak && <MainPage onLogoutClick={onLogoutClick} />}
+      {!authedKeycloak && null}
     </React.Fragment>
   );
 }
