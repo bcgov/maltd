@@ -117,7 +117,7 @@ export default function MainPage() {
           setDisabledButton(true);
           setDisabledInput(true);
 
-          fetch(`https://localhost:5001/api/users/${value}`)
+          fetch(`${baseUrl}/api/users/${value}`)
             .then(res2 => res2.json())
             .then(result => {
               if (result.status !== 404) {
