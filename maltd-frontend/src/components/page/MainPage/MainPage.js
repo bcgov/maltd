@@ -107,7 +107,7 @@ export default function MainPage() {
   }
 
   function onButtonClick() {
-    fetch(`https://localhost:5001/api/projects`)
+    fetch(`${baseUrl}/api/projects`)
       .then(res => res.json())
       .then(resul => {
         if (resul.status !== 401) {
