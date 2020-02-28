@@ -35,3 +35,21 @@
     max-width: 7.5em;
   }
 }
+
+@media only screen and (min-width: 451px) and (max-width: 767px) {
+  #dropdown {
+    width: 18em;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  #dropdown {
+    width: 15em;
+  }
+}
+
+@media only screen and (max-width: 384px) {
+  #dropdown {
+    max-width: 12em;
+  }
+}
