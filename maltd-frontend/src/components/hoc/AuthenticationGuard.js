@@ -19,27 +19,27 @@ export default function AuthenticationGuard() {
     keycloakInit();
   }, []);
 
+  function onLogoutClick() {
+    keycloak.logout({ redirectUri: "http://localhost:3001" });
+  }
+
   async function keycloakInit() {
     // Initialize client
     const keycloak = Keycloak(KEYCLOAK);
     await keycloak
       .init({
-        onLoad: "login-required",
-        idpHint: KEYCLOAK.idpHint
+        onLoad: "login-required"
       })
       .success(() => {
         keycloak.loadUserInfo().success();
         localStorage.setItem("jwt", keycloak.token);
-        // this.props.storeUserAccessData(keycloak.realmAccess.roles);
-        // this.props.storeKeycloakData(keycloak);
-        console.log(keycloak);
         setKeycloak(keycloak);
       });
   }
 
   return (
     <React.Fragment>
-      {keycloak && <MainPage />}
+      {keycloak && <MainPage onLogoutClick={onLogoutClick} />}
       {!keycloak && null}
     </React.Fragment>
   );

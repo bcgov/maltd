@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
@@ -10,7 +11,7 @@ const baseUrl = process.env.REACT_APP_MALTD_API
   ? process.env.REACT_APP_MALTD_API
   : "http://localhost:80";
 
-export default function MainPage() {
+export default function MainPage({ onLogoutClick }) {
   // declare state variables, using hooks
   const [validInput, setValidInput] = useState(false);
   const [invalidInput, setInvalidInput] = useState(false);
@@ -77,8 +78,6 @@ export default function MainPage() {
   function updateSelectedDropdownItem(selectedProject) {
     setSelectedDropdownItem(selectedProject);
   }
-
-  function onLogoutClick() {}
 
   function addUserToProject() {
     axios
@@ -207,3 +206,7 @@ export default function MainPage() {
     </React.Fragment>
   );
 }
+
+MainPage.propTypes = {
+  onLogoutClick: PropTypes.func.isRequired
+};
