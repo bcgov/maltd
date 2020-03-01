@@ -93,10 +93,10 @@ objects:
             <command></command>
             <args>${computer.jnlpmac} ${computer.name}</args>
             <ttyEnabled>false</ttyEnabled>
-            <resourceRequestCpu></resourceRequestCpu>
-            <resourceRequestMemory></resourceRequestMemory>
-            <resourceLimitCpu></resourceLimitCpu>
-            <resourceLimitMemory></resourceLimitMemory>
+            <resourceRequestCpu>1</resourceRequestCpu>
+            <resourceRequestMemory>1Gi</resourceRequestMemory>
+            <resourceLimitCpu>2</resourceLimitCpu>
+            <resourceLimitMemory>4Gi</resourceLimitMemory>
             <envVars/>
           </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
         </containers>
