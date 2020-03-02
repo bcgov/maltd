@@ -13,15 +13,44 @@ describe("Main page", () => {
     expect(tree).toMatchSnapshot();
   });
 
+  let wrapper;
+  let instance;
+
+  beforeEach(() => {
+    wrapper = shallow(<MainPage />);
+    instance = wrapper.instance();
+  });
+
   describe("onBackClick", () => {
     test("Function modifies local state and takes user to user search screen as expected", () => {
-      const wrapper = shallow(<MainPage />);
-      const instance = wrapper.instance();
+      const clearFormFunc = jest.spyOn(MainPage.prototype, "clearForm");
 
       wrapper.setState({ isUserSearch: false });
       wrapper.find("BackIcon").simulate("click");
 
       expect(instance.state.isUserSearch).toBe(true);
+      expect(clearFormFunc).toHaveBeenCalled();
+      expect(instance.state.userExists).toBe(null);
+      expect(instance.state.value).toBe("");
+      expect(instance.state.isLoading).toBe(false);
+      expect(instance.state.disabledButton).toBe(true);
+      expect(instance.state.disabledInput).toBe(false);
+      expect(instance.state.invalidInput).toBe(false);
+      expect(instance.state.validInput).toBe(false);
+    });
+  });
+
+  describe("updateSelectedDropdownItem", () => {
+    test("Function updates the selected dropdown item", () => {
+      const selectedProject = { id: "1", name: "project", type: "type" };
+
+      wrapper.setState({ isUserSearch: false });
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onDropdownClick(selectedProject);
+
+      expect(instance.state.selectedDropdownItem).toBe(selectedProject);
     });
   });
 });

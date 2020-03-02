@@ -215,7 +215,7 @@ export default class MainPage extends Component {
 
     return (
       <React.Fragment>
-        <NavBar onClick={} />
+        <NavBar onClick={() => {}} />
         <div className="top-spacing" id="wrapper">
           {!isUserSearch && (
             <div className="backicon-spacing">
