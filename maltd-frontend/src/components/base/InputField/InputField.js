@@ -23,6 +23,7 @@ export default function InputField({
         ...(onChange && { onChange })
       }}
       onKeyPress={onKeyEnter}
+      autoFocus
     />
   );
 }
