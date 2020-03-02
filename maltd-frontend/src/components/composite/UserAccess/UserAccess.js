@@ -91,7 +91,7 @@ UserAccess.propTypes = {
   userAccess: PropTypes.shape({
     projects: PropTypes.array.isRequired,
     userName: PropTypes.string.isRequired,
-    userEmail: PropTypes.string.isRequired
+    userEmail: PropTypes.string
   }).isRequired,
   onXClick: PropTypes.func.isRequired,
   onPlusClick: PropTypes.func.isRequired,
