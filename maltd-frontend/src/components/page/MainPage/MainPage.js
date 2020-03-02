@@ -31,19 +31,6 @@ export default class MainPage extends Component {
     };
   }
 
-  addUserToProject() {
-    const { selectedDropdownItem, value, projects } = this.state;
-
-    axios
-      .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
-      .then(() => {
-        const updatedProjects = projects.slice(0);
-        updatedProjects.push(selectedDropdownItem);
-        this.setState({ projects: updatedProjects });
-      })
-      .catch(() => {});
-  }
-
   removeUserFromProject(projectId) {
     const { value, projects } = this.state;
 
@@ -141,6 +128,19 @@ export default class MainPage extends Component {
       userExists: null,
       value: ""
     });
+  }
+
+  addUserToProject() {
+    const { selectedDropdownItem, value, projects } = this.state;
+
+    axios
+      .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
+      .then(() => {
+        const updatedProjects = projects.slice(0);
+        updatedProjects.push(selectedDropdownItem);
+        this.setState({ projects: updatedProjects });
+      })
+      .catch(() => {});
   }
 
   updateSelectedDropdownItem(selectedProject) {
