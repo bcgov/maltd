@@ -85,7 +85,7 @@ export default class MainPage extends Component {
         disabledButton: true,
         color: "primary"
       });
-    } else if (val.length < 5) {
+    } else if (val.length < 3) {
       this.setState({
         invalidInput: true,
         color: "danger"

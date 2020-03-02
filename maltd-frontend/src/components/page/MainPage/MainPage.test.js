@@ -53,4 +53,52 @@ describe("Main page", () => {
       expect(instance.state.selectedDropdownItem).toBe(selectedProject);
     });
   });
+
+  describe("onInputChange", () => {
+    test("Function updates the input field with empty input", () => {
+      const event = { target: { value: "" } };
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onChange(event);
+
+      expect(instance.state.userExists).toBe(null);
+      expect(instance.state.invalidInput).toBe(false);
+      expect(instance.state.validInput).toBe(false);
+      expect(instance.state.disabledButton).toBe(true);
+      expect(instance.state.color).toBe("primary");
+      expect(instance.state.value).toBe(event.target.value);
+    });
+
+    test("Function updates the input field with input less than 3 characters in length", () => {
+      const event = { target: { value: "aa" } };
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onChange(event);
+
+      expect(instance.state.userExists).toBe(null);
+      expect(instance.state.invalidInput).toBe(true);
+      expect(instance.state.color).toBe("danger");
+      expect(instance.state.value).toBe(event.target.value);
+    });
+
+    test("Function updates the input field with valid input", () => {
+      const event = { target: { value: "validinput" } };
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onChange(event);
+
+      expect(instance.state.userExists).toBe(null);
+      expect(instance.state.invalidInput).toBe(false);
+      expect(instance.state.validInput).toBe(true);
+      expect(instance.state.disabledButton).toBe(false);
+      expect(instance.state.color).toBe("primary");
+      expect(instance.state.value).toBe(event.target.value);
+    });
+  });
 });
