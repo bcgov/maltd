@@ -83,7 +83,7 @@ namespace BcGov.Malt.Web.Services
             Debug.Assert(projectResource != null, "Required ProjectResource is null");
             Debug.Assert(projectResource.Type == ProjectType.SharePoint, "Project type must be SharePoint");
 
-            // TODO
+            // TODO: add required additional configuration settings for accessing SharePoint
         }
 
         private static OAuthOptions CreateOAuthOptions(ProjectResource projectResource)
