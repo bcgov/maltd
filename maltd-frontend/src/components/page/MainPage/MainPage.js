@@ -144,7 +144,7 @@ export default function MainPage() {
   }
 
   function onKeyEnter(event) {
-    if (event.key === "Enter") {
+    if (!disabledButton && event.key === "Enter") {
       onButtonClick();
     }
   }
