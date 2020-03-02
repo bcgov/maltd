@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -77,7 +78,7 @@ namespace BcGov.Malt.Web.Models.Dynamics
                     return buffer.ToString();
                 }
 
-                return SystemUserId.ToString("n");
+                return SystemUserId.ToString("n", CultureInfo.InvariantCulture);
 
             }
         }

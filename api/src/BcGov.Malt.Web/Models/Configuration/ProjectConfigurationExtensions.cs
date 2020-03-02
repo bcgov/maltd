@@ -52,13 +52,13 @@ namespace BcGov.Malt.Web.Models.Configuration
                 projectName = projectConfiguration.Name;
             }
 
-            if (projectConfiguration.Resources == null || projectConfiguration.Resources.Length == 0)
+            if (projectConfiguration.Resources == null || projectConfiguration.Resources.Count == 0)
             {
                 errors.Add("No project resources defined");
             }
             else
             {
-                for (int i = 0; i < projectConfiguration.Resources.Length; i++)
+                for (int i = 0; i < projectConfiguration.Resources.Count; i++)
                 {
                     ProjectResource projectResource = projectConfiguration.Resources[i];
                     if (projectResource.Resource == null)
