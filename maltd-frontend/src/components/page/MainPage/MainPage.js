@@ -31,23 +31,6 @@ export default class MainPage extends Component {
     };
   }
 
-  removeUserFromProject(projectId) {
-    const { value, projects } = this.state;
-
-    axios
-      .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
-      .then(() => {
-        const updatedProjects = [];
-        projects.forEach(proj => {
-          if (proj.id !== projectId) {
-            updatedProjects.push(proj);
-          }
-        });
-        this.setState({ projects: updatedProjects });
-      })
-      .catch(() => {});
-  }
-
   onButtonClick() {
     const { value } = this.state;
 
@@ -128,6 +111,23 @@ export default class MainPage extends Component {
       userExists: null,
       value: ""
     });
+  }
+
+  removeUserFromProject(projectId) {
+    const { value, projects } = this.state;
+
+    axios
+      .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
+      .then(() => {
+        const updatedProjects = [];
+        projects.forEach(proj => {
+          if (proj.id !== projectId) {
+            updatedProjects.push(proj);
+          }
+        });
+        this.setState({ projects: updatedProjects });
+      })
+      .catch(() => {});
   }
 
   addUserToProject() {
