@@ -31,10 +31,6 @@ export default class MainPage extends Component {
     };
   }
 
-  updateSelectedDropdownItem(selectedProject) {
-    this.setState({ selectedDropdownItem: selectedProject });
-  }
-
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
 
@@ -145,6 +141,10 @@ export default class MainPage extends Component {
       userExists: null,
       value: ""
     });
+  }
+
+  updateSelectedDropdownItem(selectedProject) {
+    this.setState({ selectedDropdownItem: selectedProject });
   }
 
   clearForm() {
