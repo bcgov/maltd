@@ -65,6 +65,7 @@ Array [
             disabled={false}
             name="idir"
             onChange={[Function]}
+            onKeyPress={[Function]}
             placeholder="Enter IDIR username to find"
             type="text"
             value=""

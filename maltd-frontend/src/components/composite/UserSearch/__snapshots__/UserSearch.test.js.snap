@@ -16,6 +16,7 @@ exports[`User Search Component renders as expected 1`] = `
       disabled={false}
       name="myinputfield"
       onChange={[Function]}
+      onKeyPress={[Function]}
       placeholder="placeholder"
       type="text"
       value="idir"

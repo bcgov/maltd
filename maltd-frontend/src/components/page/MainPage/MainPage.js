@@ -143,6 +143,12 @@ export default function MainPage() {
       .catch(() => {});
   }
 
+  function onKeyEnter(event) {
+    if (event.key === "Enter") {
+      onButtonClick();
+    }
+  }
+
   function onInputChange(event) {
     setUserExists(null);
     const val = event.target.value;
@@ -190,6 +196,7 @@ export default function MainPage() {
               onChange={onInputChange}
               generalButton={generalButton}
               onClick={onButtonClick}
+              onKeyEnter={onKeyEnter}
             />
           )}
 

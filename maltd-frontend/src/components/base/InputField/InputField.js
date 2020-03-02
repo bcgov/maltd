@@ -6,7 +6,8 @@ import "./InputField.css";
 
 export default function InputField({
   inputField: { name, type, placeholder, valid, invalid, value, disabled },
-  onChange
+  onChange,
+  onKeyEnter
 }) {
   return (
     <Input
@@ -21,6 +22,7 @@ export default function InputField({
       {...{
         ...(onChange && { onChange })
       }}
+      onKeyPress={onKeyEnter}
     />
   );
 }
@@ -35,9 +37,11 @@ InputField.propTypes = {
     value: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired
   }).isRequired,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onKeyEnter: PropTypes.func
 };
 
 InputField.defaultProps = {
-  onChange: () => {}
+  onChange: () => {},
+  onKeyEnter: () => {}
 };
