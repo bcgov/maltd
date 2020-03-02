@@ -9,12 +9,12 @@ namespace BcGov.Malt.Web.Models.Configuration
         private Dictionary<string, ProjectConfiguration> _items =
             new Dictionary<string, ProjectConfiguration>(StringComparer.OrdinalIgnoreCase);
 
-        public int Count => _items.Count;
-
-        public ProjectConfigurationCollection()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectConfigurationCollection"/> class.
+        /// </summary>
+        /// <param name="items">The items.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="items"/> is null.</exception>
+        /// <exception cref="ArgumentException">An more than one item has the same name.</exception>
         public ProjectConfigurationCollection(IEnumerable<ProjectConfiguration> items)
         {
             if (items is null)
@@ -28,14 +28,20 @@ namespace BcGov.Malt.Web.Models.Configuration
             }
         }
 
-        public void Add(ProjectConfiguration item)
+        /// <summary>
+        /// Adds the specified item.
+        /// </summary>
+        /// <param name="item">The item to be added.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="item"/> is null.</exception>
+        /// <exception cref="ArgumentException">An item with the same name has already been added.</exception>
+        private void Add(ProjectConfiguration item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
 
             _items.Add(item.Name, item);
         }
 
-        public bool Contains(ProjectConfiguration item)
+        private bool Contains(ProjectConfiguration item)
         {
             return _items.ContainsKey(item.Name);
         }
@@ -46,7 +52,7 @@ namespace BcGov.Malt.Web.Models.Configuration
             return _items.Values.GetEnumerator();
         }
 
-        public bool Remove(ProjectConfiguration item)
+        private bool Remove(ProjectConfiguration item)
         {
             return _items.Remove(item.Name);
         }
