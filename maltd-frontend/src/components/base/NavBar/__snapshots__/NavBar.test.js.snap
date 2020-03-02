@@ -7,11 +7,6 @@ exports[`NavBar Component renders as expected 1`] = `
   <nav
     className="navbar navbar-expand-md"
   >
-    <a
-      className="navbar-brand"
-    >
-      MALT
-    </a>
     <div
       className="collapse show navbar-collapse"
       style={Object {}}

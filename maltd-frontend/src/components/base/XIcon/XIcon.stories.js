@@ -5,5 +5,5 @@ import "bootstrap/dist/css/bootstrap.css";
 import XIcon from "./XIcon";
 
 storiesOf("XIcon", module).add("default", () => (
-  <XIcon onClick={action("x icon clicked")} />
+  <XIcon id="12" onClick={action("x icon clicked")} />
 ));
