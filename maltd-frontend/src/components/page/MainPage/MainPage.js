@@ -31,22 +31,9 @@ export default class MainPage extends Component {
     };
   }
 
-  clearForm() {
-    this.setState({
-      userExists: false,
-      isLoading: false,
-      disabledButton: true,
-      disabledInput: false,
-      invalidInput: false,
-      validInput: false
-    });
-  }
-
   updateSelectedDropdownItem(selectedProject) {
     this.setState({ selectedDropdownItem: selectedProject });
   }
-
-  onLogoutClick() {}
 
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
@@ -160,6 +147,17 @@ export default class MainPage extends Component {
     });
   }
 
+  clearForm() {
+    this.setState({
+      userExists: false,
+      isLoading: false,
+      disabledButton: true,
+      disabledInput: false,
+      invalidInput: false,
+      validInput: false
+    });
+  }
+
   render() {
     const {
       validInput,
@@ -217,7 +215,7 @@ export default class MainPage extends Component {
 
     return (
       <React.Fragment>
-        <NavBar onClick={() => this.onLogoutClick()} />
+        <NavBar onClick={} />
         <div className="top-spacing" id="wrapper">
           {!isUserSearch && (
             <div className="backicon-spacing">
