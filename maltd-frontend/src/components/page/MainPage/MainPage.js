@@ -105,7 +105,6 @@ export default function MainPage() {
       })
       .catch(() => {});
   }
-
   function onButtonClick() {
     fetch(`${baseUrl}/api/projects`)
       .then(res => res.json())
@@ -144,7 +143,7 @@ export default function MainPage() {
   }
 
   function onKeyEnter(event) {
-    if (!disabledButton && event.key === "Enter") {
+    if (event.key === "Enter" && !disabledButton) {
       onButtonClick();
     }
   }
