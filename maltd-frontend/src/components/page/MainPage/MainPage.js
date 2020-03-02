@@ -58,7 +58,7 @@ export default function MainPage() {
   };
 
   const backIcon = {
-    message: "Find another user"
+    message: "Find a user"
   };
 
   const dropdown = {
