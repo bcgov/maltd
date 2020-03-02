@@ -105,6 +105,7 @@ export default function MainPage() {
       })
       .catch(() => {});
   }
+  
   function onButtonClick() {
     fetch(`${baseUrl}/api/projects`)
       .then(res => res.json())

@@ -138,8 +138,7 @@ exports[`User Access Component renders as expected 1`] = `
         </div>
         <div>
           <div
-            className="inline-blocked"
-            id="plus-icon"
+            className="icon"
             onClick={[Function]}
             onKeyDown={[Function]}
             role="button"
