@@ -17,11 +17,6 @@ namespace BcGov.Malt.Web.Models
         [JsonPropertyName("username")]
         public string UserName { get; set; }
 
-        /// <summary>Gets or sets the enabled flag of the user.</summary>
-        /// <value>The enabled.</value>
-        [JsonPropertyName("enabled")]
-        public bool? Enabled { get; set; }
-
         /// <summary>Gets or sets the first name.</summary>
         /// <value>The first name.</value>
         [JsonPropertyName("firstName")]
