@@ -101,9 +101,10 @@ namespace BcGov.Malt.Web
             services.AddProjectAccess(Configuration);
 
             services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IUserSearchService, LdapUserSearchService>();
 
             // singleton for now since these are in memory (testing) implementations
-            services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
+            //services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
             services.AddSingleton<IUserManagementService, InMemoryUserManagementService>();
 
             services.AddSingleton<IODataClientFactory, DefaultODataClientFactory>();
