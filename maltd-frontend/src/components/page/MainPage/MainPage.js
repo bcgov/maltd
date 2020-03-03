@@ -37,50 +37,37 @@ export default class MainPage extends Component {
     return axios
       .get(`${baseUrl}/api/projects`)
       .then(res => {
-        if (res.status !== 200) {
-          return;
-        }
-
         this.setState({
           items: res.data,
           isLoading: true,
           disabledButton: true,
           disabledInput: true
         });
+      })
+      .then(() => {
+        axios.get(`${baseUrl}/api/users?q=${value}`);
+      })
+      .then(() => {
+        return axios.get(`${baseUrl}/api/users/${value}`).then(result => {
+          this.setState({
+            projects: result.projects,
+            isUserSearch: false
+          });
 
-        return axios.get(`${baseUrl}/api/users?q=${value}`).then(res2 => {
-          if (res2.status !== 200) {
-            return;
+          if (result.email) {
+            this.setState({ userEmail: result.email });
           }
 
-          return axios
-            .get(`${baseUrl}/api/users/${value}`)
-            .then(result => {
-              if (result.status === 200) {
-                this.setState({
-                  projects: result.projects,
-                  isUserSearch: false
-                });
-
-                if (result.email) {
-                  this.setState({ userEmail: result.email });
-                }
-
-                if (result.firstName && result.lastName) {
-                  this.setState({
-                    userName: `${result.firstName} ${result.lastName}`
-                  });
-                }
-              } else {
-                this.clearForm();
-              }
-            })
-            .catch(() => {
-              this.clearForm();
+          if (result.firstName && result.lastName) {
+            this.setState({
+              userName: `${result.firstName} ${result.lastName}`
             });
+          }
         });
       })
-      .catch(() => {});
+      .catch(() => {
+        this.clearForm();
+      });
   }
 
   onInputChange(event) {
@@ -125,9 +112,10 @@ export default class MainPage extends Component {
   removeUserFromProject(projectId) {
     const { value, projects } = this.state;
 
-    axios
+    return axios
       .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
       .then(() => {
+        console.log("in here");
         const updatedProjects = [];
         projects.forEach(proj => {
           if (proj.id !== projectId) {
@@ -142,7 +130,7 @@ export default class MainPage extends Component {
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
 
-    axios
+    return axios
       .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
       .then(() => {
         const updatedProjects = projects.slice(0);

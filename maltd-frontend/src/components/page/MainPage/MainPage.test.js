@@ -110,69 +110,54 @@ describe("Main page", () => {
   });
 
   describe("onButtonClick", () => {
-    test("Returns data when /api/projects endpoint is called successfully", () => {
+    test("Catches error when /api/projects endpoint is not called successfully", () => {
+      const clearFormFunc = jest.spyOn(MainPage.prototype, "clearForm");
       const data = { response: true };
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data);
+      mock.onGet(`${baseUrl}/api/projects`).reply(400, data);
 
       wrapper
         .find("UserSearch")
         .props()
         .onClick()
-        .then(res => {
-          expect(res).toBe(response);
-          expect(instance.state.isLoading).toBe(true);
+        .catch(() => {
+          expect(clearFormFunc).toHaveBeenCalled();
         });
     });
+  });
 
-    test("Does not return data when /api/projects endpoint is called unsucessfully", () => {
-      const data = { response: true };
-      mock.onGet(`${baseUrl}/api/projects`).reply(401, data);
+  describe("removeUserFromProject", () => {
+    test("Function is called when x icon is clicked", () => {
+      const removeUserFromProject = jest.spyOn(
+        MainPage.prototype,
+        "removeUserFromProject"
+      );
+      const id = 123;
 
+      wrapper.setState({ isUserSearch: false });
       wrapper
-        .find("UserSearch")
+        .find("UserAccess")
         .props()
-        .onClick()
-        .then(res => {
-          expect(res).toBe(response);
-          expect(instance.state.isLoading).toBe(false);
-        });
+        .onXClick(id);
+
+      expect(removeUserFromProject).toHaveBeenCalled();
     });
+  });
 
-    test("Makes the second call when /api/projects endpoint is called sucessfully", () => {
-      const data = { response: true };
-      wrapper.setState({ value: "valuser" });
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data);
+  describe("addUserToProject", () => {
+    test("Function is called when plus icon is clicked", () => {
+      const addUserToProject = jest.spyOn(
+        MainPage.prototype,
+        "addUserToProject"
+      );
+      wrapper.setState({ selectedDropdownItem: { id: 122 } });
 
+      wrapper.setState({ isUserSearch: false });
       wrapper
-        .find("UserSearch")
+        .find("UserAccess")
         .props()
-        .onClick()
-        .then(res => {
-          expect(res).toBe(response);
-          expect(axios.get).toHaveBeenCalledWith(
-            `${baseUrl}/api/users?q=${instance.state.value}`
-          );
-        });
-    });
+        .onPlusClick();
 
-    test("Makes the third call when /api/projects and /api/users?q= endpoints are called sucessfully", () => {
-      const data = { response: true };
-      wrapper.setState({ value: "valuser" });
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data);
-      mock
-        .onGet(`${baseUrl}/api/users?q=${instance.state.value}`)
-        .reply(200, data);
-
-      wrapper
-        .find("UserSearch")
-        .props()
-        .onClick()
-        .then(res => {
-          expect(res).toBe(response);
-          expect(axios.get).toHaveBeenCalledWith(
-            `${baseUrl}/api/users/${instance.state.value}`
-          );
-        });
+      expect(addUserToProject).toHaveBeenCalled();
     });
   });
 });
