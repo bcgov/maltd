@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
@@ -10,88 +10,112 @@ const baseUrl = process.env.REACT_APP_MALTD_API
   ? process.env.REACT_APP_MALTD_API
   : "http://localhost:80";
 
-export default function MainPage() {
-  // declare state variables, using hooks
-  const [validInput, setValidInput] = useState(false);
-  const [invalidInput, setInvalidInput] = useState(false);
-  const [value, setValue] = useState("");
-  const [disabledInput, setDisabledInput] = useState(false);
-  const [disabledButton, setDisabledButton] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUserSearch, setIsUserSearch] = useState(true);
-  const [projects, setProjects] = useState([]);
-  const [userEmail, setUserEmail] = useState(null);
-  const [userName, setUserName] = useState("");
-  const [color, setColor] = useState("primary");
-  const [userExists, setUserExists] = useState(null);
-  const [items, setItems] = useState([]);
-  const [selectedDropdownItem, setSelectedDropdownItem] = useState(null);
-
-  const inputField = {
-    type: "text",
-    name: "idir",
-    placeholder: "Enter IDIR username to find",
-    valid: validInput,
-    invalid: invalidInput,
-    value,
-    disabled: disabledInput
-  };
-
-  const generalButton = {
-    type: "submit",
-    color,
-    disabled: disabledButton,
-    label: "Find"
-  };
-
-  const userSearch = {
-    state: {
-      isLoading,
-      userExists
-    }
-  };
-
-  const userAccess = {
-    projects,
-    userName,
-    userEmail
-  };
-
-  const backIcon = {
-    message: "Find a user"
-  };
-
-  const dropdown = {
-    items
-  };
-
-  function clearForm() {
-    setUserExists(false);
-    setIsLoading(false);
-    setDisabledButton(true);
-    setDisabledInput(false);
-    setInvalidInput(false);
-    setValidInput(false);
+export default class MainPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      validInput: false,
+      invalidInput: false,
+      value: "",
+      disabledInput: false,
+      disabledButton: true,
+      isLoading: false,
+      isUserSearch: true,
+      projects: [],
+      userEmail: null,
+      userName: "",
+      color: "primary",
+      userExists: null,
+      items: [],
+      selectedDropdownItem: null
+    };
   }
 
-  function updateSelectedDropdownItem(selectedProject) {
-    setSelectedDropdownItem(selectedProject);
-  }
+  onButtonClick() {
+    const { value } = this.state;
 
-  function onLogoutClick() {}
+    fetch(`${baseUrl}/api/projects`)
+      .then(res => res.json())
+      .then(resul => {
+        if (resul.status !== 401) {
+          this.setState({
+            items: resul,
+            isLoading: true,
+            disabledButton: true,
+            disabledInput: true
+          });
 
-  function addUserToProject() {
-    axios
-      .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
-      .then(() => {
-        const updatedProjects = projects.slice(0);
-        updatedProjects.push(selectedDropdownItem);
-        setProjects(updatedProjects);
+          fetch(`${baseUrl}/api/users/${value}`)
+            .then(res2 => res2.json())
+            .then(result => {
+              if (result.status !== 404) {
+                this.setState({
+                  projects: result.projects,
+                  isUserSearch: false
+                });
+
+                if (result.email) {
+                  this.setState({ userEmail: result.email });
+                }
+                if (result.firstName && result.lastName) {
+                  this.setState({
+                    userName: `${result.firstName} ${result.lastName}`
+                  });
+                }
+              } else {
+                this.clearForm();
+              }
+            })
+            .catch(() => {
+              this.clearForm();
+            });
+        }
       })
       .catch(() => {});
   }
 
-  function removeUserFromProject(projectId) {
+  onInputChange(event) {
+    this.setState({ userExists: null });
+    const val = event.target.value;
+
+    if (val.length === 0) {
+      this.setState({
+        invalidInput: false,
+        validInput: false,
+        disabledButton: true,
+        color: "primary"
+      });
+    } else if (val.length < 3) {
+      this.setState({
+        invalidInput: true,
+        color: "danger"
+      });
+    } else {
+      this.setState({
+        invalidInput: false,
+        validInput: true,
+        disabledButton: false,
+        color: "primary"
+      });
+    }
+
+    this.setState({ value: event.target.value });
+  }
+
+  onBackClick() {
+    this.setState({ isUserSearch: true });
+
+    this.clearForm();
+
+    this.setState({
+      userExists: null,
+      value: ""
+    });
+  }
+
+  removeUserFromProject(projectId) {
+    const { value, projects } = this.state;
+
     axios
       .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
       .then(() => {
@@ -101,109 +125,130 @@ export default function MainPage() {
             updatedProjects.push(proj);
           }
         });
-        setProjects(updatedProjects);
+        this.setState({ projects: updatedProjects });
       })
       .catch(() => {});
   }
 
-  function onButtonClick() {
-    fetch(`${baseUrl}/api/projects`)
-      .then(res => res.json())
-      .then(resul => {
-        if (resul.status !== 401) {
-          setItems(resul);
+  addUserToProject() {
+    const { selectedDropdownItem, value, projects } = this.state;
 
-          setIsLoading(true);
-          setDisabledButton(true);
-          setDisabledInput(true);
-
-          fetch(`${baseUrl}/api/users/${value}`)
-            .then(res2 => res2.json())
-            .then(result => {
-              if (result.status !== 404) {
-                setProjects(result.projects);
-
-                if (result.email) {
-                  setUserEmail(result.email);
-                }
-                if (result.firstName && result.lastName) {
-                  setUserName(`${result.firstName} ${result.lastName}`);
-                }
-
-                setIsUserSearch(false);
-              } else {
-                clearForm();
-              }
-            })
-            .catch(() => {
-              clearForm();
-            });
-        }
+    axios
+      .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
+      .then(() => {
+        const updatedProjects = projects.slice(0);
+        updatedProjects.push(selectedDropdownItem);
+        this.setState({ projects: updatedProjects });
       })
       .catch(() => {});
   }
 
-  function onInputChange(event) {
-    setUserExists(null);
-    const val = event.target.value;
-
-    if (val.length === 0) {
-      setInvalidInput(false);
-      setValidInput(false);
-      setDisabledButton(true);
-      setColor("primary");
-    } else if (val.length < 5) {
-      setInvalidInput(true);
-      setColor("danger");
-    } else {
-      setInvalidInput(false);
-      setValidInput(true);
-      setDisabledButton(false);
-      setColor("primary");
-    }
-
-    setValue(event.target.value);
+  updateSelectedDropdownItem(selectedProject) {
+    this.setState({ selectedDropdownItem: selectedProject });
   }
 
-  function onBackClick() {
-    setIsUserSearch(true);
-    clearForm();
-    setUserExists(null);
-    setValue("");
+  clearForm() {
+    this.setState({
+      userExists: false,
+      isLoading: false,
+      disabledButton: true,
+      disabledInput: false,
+      invalidInput: false,
+      validInput: false
+    });
   }
 
-  return (
-    <React.Fragment>
-      <NavBar onClick={onLogoutClick} />
-      <div className="top-spacing" id="wrapper">
-        {!isUserSearch && (
-          <div className="backicon-spacing">
-            <BackIcon backIcon={backIcon} onClick={onBackClick} />
-          </div>
-        )}
-        <div className="my-3 p-3 rounded shadow less-spacing-top">
-          <h4 className="add-remove-text">Add or Remove User</h4>
-          {isUserSearch && (
-            <UserSearch
-              userSearch={userSearch}
-              inputField={inputField}
-              onChange={onInputChange}
-              generalButton={generalButton}
-              onClick={onButtonClick}
-            />
-          )}
+  render() {
+    const {
+      validInput,
+      invalidInput,
+      value,
+      disabledInput,
+      disabledButton,
+      isLoading,
+      isUserSearch,
+      projects,
+      userEmail,
+      userName,
+      color,
+      userExists,
+      items
+    } = this.state;
 
+    const inputField = {
+      type: "text",
+      name: "idir",
+      placeholder: "Enter IDIR username to find",
+      valid: validInput,
+      invalid: invalidInput,
+      value,
+      disabled: disabledInput
+    };
+
+    const generalButton = {
+      type: "submit",
+      color,
+      disabled: disabledButton,
+      label: "Find"
+    };
+
+    const userSearch = {
+      state: {
+        isLoading,
+        userExists
+      }
+    };
+
+    const userAccess = {
+      projects,
+      userName,
+      userEmail
+    };
+
+    const backIcon = {
+      message: "Find a user"
+    };
+
+    const dropdown = {
+      items
+    };
+
+    return (
+      <React.Fragment>
+        <NavBar onClick={() => {}} />
+        <div className="top-spacing" id="wrapper">
           {!isUserSearch && (
-            <UserAccess
-              userAccess={userAccess}
-              onXClick={removeUserFromProject}
-              onPlusClick={addUserToProject}
-              onDropdownClick={updateSelectedDropdownItem}
-              dropdown={dropdown}
-            />
+            <div className="backicon-spacing">
+              <BackIcon
+                backIcon={backIcon}
+                onClick={() => this.onBackClick()}
+              />
+            </div>
           )}
+          <div className="my-3 p-3 rounded shadow less-spacing-top">
+            <h4 className="add-remove-text">Add or Remove User</h4>
+            {isUserSearch && (
+              <UserSearch
+                userSearch={userSearch}
+                inputField={inputField}
+                onChange={e => this.onInputChange(e)}
+                generalButton={generalButton}
+                onClick={() => this.onButtonClick()}
+              />
+            )}
+
+            {!isUserSearch && (
+              <UserAccess
+                userAccess={userAccess}
+                onXClick={id => this.removeUserFromProject(id)}
+                onPlusClick={() => this.addUserToProject()}
+                onDropdownClick={item => this.updateSelectedDropdownItem(item)}
+                dropdown={dropdown}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </React.Fragment>
-  );
+      </React.Fragment>
+    );
+  }
 }
