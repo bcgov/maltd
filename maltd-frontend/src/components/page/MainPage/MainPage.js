@@ -113,6 +113,13 @@ export default class MainPage extends Component {
     });
   }
 
+  onKeyEnter(event) {
+    const { disabledButton } = this.state;
+    if (event.key === "Enter" && !disabledButton) {
+      this.onButtonClick();
+    }
+  }
+
   removeUserFromProject(projectId) {
     const { value, projects } = this.state;
 
@@ -156,12 +163,6 @@ export default class MainPage extends Component {
       invalidInput: false,
       validInput: false
     });
-  }
-
-  onKeyEnter(event) {
-    if (event.key === "Enter" && !this.state.disabledButton) {
-      this.onButtonClick();
-    }
   }
 
   render() {
