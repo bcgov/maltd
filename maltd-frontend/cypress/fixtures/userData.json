@@ -2,7 +2,6 @@
   "userName": {
     "valid": ["pbolduc", "nyang", "choban", "sdevalapurkar"],
     "invalid": [
-      "jblaze",
       "lChris",
       "&***&",
       ".",

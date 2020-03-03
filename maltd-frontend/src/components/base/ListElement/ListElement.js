@@ -21,6 +21,7 @@ export default function ListElement({
             )}
           </div>
         </div>
+        {description && <p data-cy="project-info">{description}</p>}
       </React.Fragment>
     );
   }
