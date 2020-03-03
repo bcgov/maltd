@@ -8,7 +8,7 @@ import UserAccess from "../../composite/UserAccess/UserAccess";
 
 const baseUrl = process.env.REACT_APP_MALTD_API
   ? process.env.REACT_APP_MALTD_API
-  : "http://localhost:80";
+  : "https://localhost:5001";
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -34,21 +34,29 @@ export default class MainPage extends Component {
   onButtonClick() {
     const { value } = this.state;
 
-    fetch(`${baseUrl}/api/projects`)
-      .then(res => res.json())
-      .then(resul => {
-        if (resul.status !== 401) {
-          this.setState({
-            items: resul,
-            isLoading: true,
-            disabledButton: true,
-            disabledInput: true
-          });
+    return axios
+      .get(`${baseUrl}/api/projects`)
+      .then(res => {
+        if (res.status !== 200) {
+          return;
+        }
 
-          fetch(`${baseUrl}/api/users/${value}`)
-            .then(res2 => res2.json())
+        this.setState({
+          items: res.data,
+          isLoading: true,
+          disabledButton: true,
+          disabledInput: true
+        });
+
+        return axios.get(`${baseUrl}/api/users?q=${value}`).then(res2 => {
+          if (res2.status !== 200) {
+            return;
+          }
+
+          return axios
+            .get(`${baseUrl}/api/users/${value}`)
             .then(result => {
-              if (result.status !== 404) {
+              if (result.status === 200) {
                 this.setState({
                   projects: result.projects,
                   isUserSearch: false
@@ -57,6 +65,7 @@ export default class MainPage extends Component {
                 if (result.email) {
                   this.setState({ userEmail: result.email });
                 }
+
                 if (result.firstName && result.lastName) {
                   this.setState({
                     userName: `${result.firstName} ${result.lastName}`
@@ -69,7 +78,7 @@ export default class MainPage extends Component {
             .catch(() => {
               this.clearForm();
             });
-        }
+        });
       })
       .catch(() => {});
   }
