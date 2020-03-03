@@ -42,7 +42,14 @@ https://localhost:44323/swagger/v1/swagger.json
         }
       ]
     }
-  ]
+  ],
+
+  "LDAP": {
+    "Server": "",
+    "DistinguishedName": "",
+    "Username": "",
+    "Password": ""
+  }
 }
 ```
 
@@ -79,6 +86,11 @@ dotnet user-secrets set Projects:1:Resources:0:ClientId         "<client-id>"
 dotnet user-secrets set Projects:1:Resources:0:ClientSecret     "<client-secret>"
 dotnet user-secrets set Projects:1:Resources:0:Username         "<username>"
 dotnet user-secrets set Projects:1:Resources:0:Password         "<password>"
+
+dotnet user-secrets set LDAP:Server ""
+dotnet user-secrets set LDAP:DistinguishedName ""
+dotnet user-secrets set LDAP:Username ""
+dotnet user-secrets set LDAP:Password ""
 ```
 
 ## Environment Variables
@@ -92,4 +104,10 @@ PROJECTS__0__RESOURCES__0__CLIENTID
 PROJECTS__0__RESOURCES__0__CLIENTSECRET
 PROJECTS__0__RESOURCES__0__USERNAME
 PROJECTS__0__RESOURCES__0__PASSWORD
+
+LDAP__SERVER
+LDAP__DISTINGUISHEDNAME
+LDAP__USERNAME
+LDAP__PASSWORD
+
 ```

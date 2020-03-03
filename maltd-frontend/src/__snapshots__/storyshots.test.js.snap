@@ -1,0 +1,978 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots BackIcon default 1`] = `
+<div
+  id="main"
+  onClick={[Function]}
+  onKeyDown={[Function]}
+  role="button"
+  tabIndex="0"
+>
+  <svg
+    className="size-large"
+    fill="currentColor"
+    height="1em"
+    stroke="currentColor"
+    strokeWidth="0"
+    style={
+      Object {
+        "color": undefined,
+      }
+    }
+    viewBox="0 0 256 512"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"
+    />
+  </svg>
+  <div
+    className="limit-width"
+  >
+    <h5>
+      Back
+    </h5>
+    <p>
+      Find another user
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Dropdown default 1`] = `
+<div
+  className="dropdown"
+  onKeyDown={[Function]}
+>
+  <button
+    aria-expanded={false}
+    aria-haspopup={true}
+    aria-label={null}
+    className="btn btn-secondary"
+    id="dropdown"
+    onClick={[Function]}
+    type="button"
+  >
+    <div
+      id="title"
+    >
+      Select a project
+    </div>
+    <div
+      className="img"
+    >
+      <svg
+        fill="currentColor"
+        height="1em"
+        stroke="currentColor"
+        strokeWidth="0"
+        style={
+          Object {
+            "color": undefined,
+          }
+        }
+        viewBox="0 0 320 512"
+        width="1em"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+        />
+      </svg>
+    </div>
+  </button>
+  <div
+    aria-hidden={true}
+    className="dropdown-menu"
+    role="menu"
+    tabIndex="-1"
+  >
+    <button
+      className="dropdown-item"
+      onClick={[Function]}
+      role="menuitem"
+      tabIndex="0"
+      type="button"
+    >
+      System 1
+      -
+      Dynamics
+    </button>
+    <button
+      className="dropdown-item"
+      onClick={[Function]}
+      role="menuitem"
+      tabIndex="0"
+      type="button"
+    >
+      System 2
+      -
+      Sharepoint
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Storyshots GeneralButton default 1`] = `
+<button
+  aria-label={null}
+  className="general-button my-2 btn btn-primary disabled"
+  disabled={true}
+  onClick={[Function]}
+  type="submit"
+>
+  Find
+</button>
+`;
+
+exports[`Storyshots GeneralButton invalid 1`] = `
+<button
+  aria-label={null}
+  className="general-button my-2 btn btn-danger disabled"
+  disabled={true}
+  onClick={[Function]}
+  type="submit"
+>
+  Find
+</button>
+`;
+
+exports[`Storyshots GeneralButton valid 1`] = `
+<button
+  aria-label={null}
+  className="general-button my-2 btn btn-primary"
+  disabled={false}
+  onClick={[Function]}
+  type="submit"
+>
+  Find
+</button>
+`;
+
+exports[`Storyshots InputField default 1`] = `
+<input
+  className="input-field my-2 form-control"
+  disabled={false}
+  name="idir"
+  onChange={[Function]}
+  placeholder="Enter IDIR username to find"
+  type="text"
+  value=""
+/>
+`;
+
+exports[`Storyshots InputField disabled 1`] = `
+<input
+  className="input-field my-2 form-control"
+  disabled={true}
+  name="idir"
+  onChange={[Function]}
+  placeholder="Enter IDIR username to find"
+  type="text"
+  value=""
+/>
+`;
+
+exports[`Storyshots InputField invalid 1`] = `
+<input
+  className="input-field my-2 is-invalid form-control"
+  disabled={false}
+  name="idir"
+  onChange={[Function]}
+  placeholder="Enter IDIR username to find"
+  type="text"
+  value="a"
+/>
+`;
+
+exports[`Storyshots InputField valid 1`] = `
+<input
+  className="input-field my-2 is-valid form-control"
+  disabled={false}
+  name="idir"
+  onChange={[Function]}
+  placeholder="Enter IDIR username to find"
+  type="text"
+  value="IDIR/testuser"
+/>
+`;
+
+exports[`Storyshots List Element current project 1`] = `
+<div
+  className="project-div"
+>
+  <div
+    className="project-list-item"
+  >
+    <strong
+      className="large-size"
+    >
+      MALTD
+    </strong>
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots List Element empty 1`] = `
+<div>
+  <p>
+    No projects
+  </p>
+</div>
+`;
+
+exports[`Storyshots List Element user 1`] = `
+<div
+  className="project-div"
+>
+  <div
+    className="project-list-item"
+  >
+    <strong
+      className="large-size"
+    >
+      User name
+    </strong>
+    <p
+      className="project-list-item"
+    >
+      user@gov.bc.ca
+    </p>
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots NavBar default 1`] = `
+<div
+  className="nav-div"
+>
+  <nav
+    className="navbar navbar-expand-md"
+  >
+    <div
+      className="collapse show navbar-collapse"
+      style={Object {}}
+    >
+      <ul
+        className="mr-auto navbar-nav"
+      >
+        <span
+          className="navbar-text"
+        >
+          Account and License Management Tool
+        </span>
+      </ul>
+      <button
+        aria-label={null}
+        className="general-button my-2 btn btn-danger"
+        disabled={false}
+        onClick={[Function]}
+        type="submit"
+      >
+        Logout
+      </button>
+    </div>
+  </nav>
+</div>
+`;
+
+exports[`Storyshots PlusIcon default 1`] = `
+<div
+  className="inline-blocked"
+  id="plus-icon"
+  onClick={[Function]}
+  onKeyDown={[Function]}
+  role="button"
+  tabIndex="0"
+>
+  <img
+    alt="plus icon"
+    height="25px"
+    src={
+      Object {
+        "process": [Function],
+      }
+    }
+    width="25px"
+  />
+</div>
+`;
+
+exports[`Storyshots UserAccess default 1`] = `
+<div
+  className="move-down container"
+>
+  <div
+    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    id="user-access-row"
+  >
+    <div
+      className="cols col"
+    >
+      <div
+        className="inner-row row"
+      >
+        <div
+          className="big-font col"
+        >
+          USER
+        </div>
+      </div>
+      <div
+        className="project-div"
+      >
+        <div
+          className="project-list-item"
+        >
+          <strong
+            className="large-size"
+          >
+            User Name
+          </strong>
+          <p
+            className="project-list-item"
+          >
+            user@gov.bc.ca
+          </p>
+        </div>
+        <div />
+      </div>
+    </div>
+    <div
+      className="top-projects col"
+      id="projects"
+    >
+      <div
+        className="cols"
+      >
+        <div
+          className="row"
+        >
+          <div
+            className="big-font col"
+          >
+            CURRENT PROJECTS
+          </div>
+        </div>
+        <div>
+          <div
+            className="project-div"
+          >
+            <div
+              className="project-list-item"
+            >
+              <strong
+                className="large-size"
+              >
+                Project1
+              </strong>
+            </div>
+            <div>
+              <div
+                className="inline-block"
+                id="x-icon"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="button"
+                tabIndex="0"
+              >
+                <img
+                  alt="x icon"
+                  height="25px"
+                  src={
+                    Object {
+                      "process": [Function],
+                    }
+                  }
+                  width="25px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div
+            className="project-div"
+          >
+            <div
+              className="project-list-item"
+            >
+              <strong
+                className="large-size"
+              >
+                Project2
+              </strong>
+            </div>
+            <div>
+              <div
+                className="inline-block"
+                id="x-icon"
+                onClick={[Function]}
+                onKeyDown={[Function]}
+                role="button"
+                tabIndex="0"
+              >
+                <img
+                  alt="x icon"
+                  height="25px"
+                  src={
+                    Object {
+                      "process": [Function],
+                    }
+                  }
+                  width="25px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="outer row row-cols-1 row-cols-sm-1 row-cols-md-2"
+  >
+    <div
+      className="col"
+    />
+    <div
+      className="col"
+    >
+      <div
+        className="drop-plus"
+      >
+        <div
+          className="dropdown"
+          onKeyDown={[Function]}
+        >
+          <button
+            aria-expanded={false}
+            aria-haspopup={true}
+            aria-label={null}
+            className="btn btn-secondary"
+            id="dropdown"
+            onClick={[Function]}
+            type="button"
+          >
+            <div
+              id="title"
+            >
+              Select a project
+            </div>
+            <div
+              className="img"
+            >
+              <svg
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                strokeWidth="0"
+                style={
+                  Object {
+                    "color": undefined,
+                  }
+                }
+                viewBox="0 0 320 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                />
+              </svg>
+            </div>
+          </button>
+          <div
+            aria-hidden={true}
+            className="dropdown-menu"
+            role="menu"
+            tabIndex="-1"
+          >
+            <button
+              className="dropdown-item"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="0"
+              type="button"
+            >
+              System 1
+              -
+              Dynamics
+            </button>
+            <button
+              className="dropdown-item"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="0"
+              type="button"
+            >
+              System 2
+              -
+              Sharepoint
+            </button>
+          </div>
+        </div>
+        <div
+          className="inline-blocked"
+          id="plus-icon"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          role="button"
+          tabIndex="0"
+        >
+          <img
+            alt="plus icon"
+            height="25px"
+            src={
+              Object {
+                "process": [Function],
+              }
+            }
+            width="25px"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots UserAccess no projects 1`] = `
+<div
+  className="move-down container"
+>
+  <div
+    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    id="user-access-row"
+  >
+    <div
+      className="cols col"
+    >
+      <div
+        className="inner-row row"
+      >
+        <div
+          className="big-font col"
+        >
+          USER
+        </div>
+      </div>
+      <div
+        className="project-div"
+      >
+        <div
+          className="project-list-item"
+        >
+          <strong
+            className="large-size"
+          >
+            User Name
+          </strong>
+          <p
+            className="project-list-item"
+          >
+            user@gov.bc.ca
+          </p>
+        </div>
+        <div />
+      </div>
+    </div>
+    <div
+      className="top-projects col"
+      id="noProjects"
+    >
+      <div
+        className="cols"
+      >
+        <div
+          className="row"
+        >
+          <div
+            className="big-font col"
+          >
+            CURRENT PROJECTS
+          </div>
+        </div>
+        <div>
+          <p>
+            No projects
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="outer row row-cols-1 row-cols-sm-1 row-cols-md-2"
+  >
+    <div
+      className="col"
+    />
+    <div
+      className="col"
+    >
+      <div
+        className="drop-plus"
+      >
+        <div
+          className="dropdown"
+          onKeyDown={[Function]}
+        >
+          <button
+            aria-expanded={false}
+            aria-haspopup={true}
+            aria-label={null}
+            className="btn btn-secondary"
+            id="dropdown"
+            onClick={[Function]}
+            type="button"
+          >
+            <div
+              id="title"
+            >
+              Select a project
+            </div>
+            <div
+              className="img"
+            >
+              <svg
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                strokeWidth="0"
+                style={
+                  Object {
+                    "color": undefined,
+                  }
+                }
+                viewBox="0 0 320 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                />
+              </svg>
+            </div>
+          </button>
+          <div
+            aria-hidden={true}
+            className="dropdown-menu"
+            role="menu"
+            tabIndex="-1"
+          >
+            <button
+              className="dropdown-item"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="0"
+              type="button"
+            >
+              System 1
+              -
+              Dynamics
+            </button>
+            <button
+              className="dropdown-item"
+              onClick={[Function]}
+              role="menuitem"
+              tabIndex="0"
+              type="button"
+            >
+              System 2
+              -
+              Sharepoint
+            </button>
+          </div>
+        </div>
+        <div>
+          <div
+            className="inline-blocked"
+            id="plus-icon"
+            onClick={[Function]}
+            onKeyDown={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            <img
+              alt="plus icon"
+              height="25px"
+              src={
+                Object {
+                  "process": [Function],
+                }
+              }
+              width="25px"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots UserSearch default 1`] = `
+<div
+  className="move-down"
+>
+  <p>
+    Find a user by IDIR username and add them to or remove them from projects.
+  </p>
+  <p />
+  <div
+    className="inner"
+  >
+    <input
+      className="input-field my-2 form-control"
+      disabled={false}
+      name="idir"
+      onChange={[Function]}
+      placeholder="Enter IDIR username to find"
+      type="text"
+      value=""
+    />
+    <p />
+    <div
+      className="error-btn-div"
+    >
+      <div />
+      <div
+        className="d-flex justify-content-end"
+      >
+        <button
+          aria-label={null}
+          className="general-button my-2 btn btn-primary disabled"
+          disabled={true}
+          onClick={[Function]}
+          type="submit"
+        >
+          Find
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots UserSearch invalid 1`] = `
+<div
+  className="move-down"
+>
+  <p>
+    Find a user by IDIR username and add them to or remove them from projects.
+  </p>
+  <p />
+  <div
+    className="inner"
+  >
+    <input
+      className="input-field my-2 is-invalid form-control"
+      disabled={false}
+      name="idir"
+      onChange={[Function]}
+      placeholder="Enter IDIR username to find"
+      type="text"
+      value="a"
+    />
+    <p />
+    <div
+      className="error-btn-div"
+    >
+      <div />
+      <div
+        className="d-flex justify-content-end"
+      >
+        <button
+          aria-label={null}
+          className="general-button my-2 btn btn-danger disabled"
+          disabled={true}
+          onClick={[Function]}
+          type="submit"
+        >
+          Find
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots UserSearch loading 1`] = `
+<div
+  className="move-down"
+>
+  <p>
+    Find a user by IDIR username and add them to or remove them from projects.
+  </p>
+  <p />
+  <div
+    className="inner"
+  >
+    <div>
+      <input
+        className="input-field my-2 is-valid form-control"
+        disabled={true}
+        name="idir"
+        onChange={[Function]}
+        placeholder="Enter IDIR username to find"
+        type="text"
+        value="IDIR/validuser"
+      />
+      <p />
+      <div>
+        <div
+          className="float-left"
+        >
+          <p
+            className="float-left"
+          >
+            <small
+              id="loading"
+            >
+              Loading...
+            </small>
+          </p>
+        </div>
+        <div
+          className="d-flex justify-content-end"
+        >
+          <button
+            aria-label={null}
+            className="general-button my-2 btn btn-primary disabled"
+            disabled={true}
+            onClick={[Function]}
+            type="submit"
+          >
+            Find
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots UserSearch user does not exist 1`] = `
+<div
+  className="move-down"
+>
+  <p>
+    Find a user by IDIR username and add them to or remove them from projects.
+  </p>
+  <p />
+  <div
+    className="inner"
+  >
+    <div>
+      <input
+        className="input-field my-2 form-control"
+        disabled={false}
+        name="idir"
+        onChange={[Function]}
+        placeholder="Enter IDIR username to find"
+        type="text"
+        value=""
+      />
+      <p />
+      <div
+        className="error-btn-div"
+      >
+        <div
+          className="float-left"
+        >
+          <p
+            className=""
+          >
+            <small
+              className="error-message"
+            >
+              This user does not exist, please try again with a different IDIR username.
+            </small>
+          </p>
+        </div>
+        <div
+          className="d-flex justify-content-end"
+        >
+          <button
+            aria-label={null}
+            className="general-button my-2 btn btn-primary disabled"
+            disabled={true}
+            onClick={[Function]}
+            type="submit"
+          >
+            Find
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots UserSearch valid 1`] = `
+<div
+  className="move-down"
+>
+  <p>
+    Find a user by IDIR username and add them to or remove them from projects.
+  </p>
+  <p />
+  <div
+    className="inner"
+  >
+    <input
+      className="input-field my-2 is-valid form-control"
+      disabled={false}
+      name="idir"
+      onChange={[Function]}
+      placeholder="Enter IDIR username to find"
+      type="text"
+      value="IDIR/validuser"
+    />
+    <p />
+    <div
+      className="error-btn-div"
+    >
+      <div />
+      <div
+        className="d-flex justify-content-end"
+      >
+        <button
+          aria-label={null}
+          className="general-button my-2 btn btn-primary"
+          disabled={false}
+          onClick={[Function]}
+          type="submit"
+        >
+          Find
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots XIcon default 1`] = `
+<div
+  className="inline-block"
+  id="x-icon"
+  onClick={[Function]}
+  onKeyDown={[Function]}
+  role="button"
+  tabIndex="0"
+>
+  <img
+    alt="x icon"
+    height="25px"
+    src={
+      Object {
+        "process": [Function],
+      }
+    }
+    width="25px"
+  />
+</div>
+`;
