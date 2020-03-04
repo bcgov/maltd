@@ -85,3 +85,7 @@ npx cypress run --headed
 ```
 npx cypress run -b chrome
 ```
+
+## Environment Variables
+
+In order to ensure the app runs successfully, you will be required to set some environment variables as specified in the `.env.example` file. Please setup a `.env.development` file for local dev and populate the fields shown with the appropriate values.
