@@ -49,18 +49,20 @@ export default class MainPage extends Component {
       })
       .then(() => {
         return axios.get(`${baseUrl}/api/users/${value}`).then(result => {
+          const { data } = result;
+
           this.setState({
-            projects: result.projects,
+            projects: data.projects,
             isUserSearch: false
           });
 
-          if (result.email) {
-            this.setState({ userEmail: result.email });
+          if (data.email) {
+            this.setState({ userEmail: data.email });
           }
 
-          if (result.firstName && result.lastName) {
+          if (data.firstName && data.lastName) {
             this.setState({
-              userName: `${result.firstName} ${result.lastName}`
+              userName: `${data.firstName} ${data.lastName}`
             });
           }
         });

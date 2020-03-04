@@ -133,17 +133,26 @@ describe("Main page", () => {
         items: []
       });
 
-      const data = { response: true };
+      const data1 = [{ id: "1222", name: "Item name" }];
 
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data);
+      const data2 = {
+        projects: [{ id: 123, name: "project" }],
+        id: "1111",
+        username: "LMA",
+        firstName: "Let",
+        lastName: "Me",
+        email: "letme@example.ca"
+      };
+
+      mock.onGet(`${baseUrl}/api/projects`).reply(200, data1);
 
       mock
         .onGet(`${baseUrl}/api/users?q=${wrapper.state().value}`)
-        .reply(200, data);
+        .reply(200, data1);
 
       mock
         .onGet(`${baseUrl}/api/users/${wrapper.state().value}`)
-        .reply(200, data);
+        .reply(200, data2);
 
       wrapper
         .find("UserSearch")
@@ -156,7 +165,12 @@ describe("Main page", () => {
 
       expect(wrapper.state().isLoading).toEqual(true);
       expect(wrapper.state().isUserSearch).toEqual(false);
-      expect(wrapper.state().items).toEqual(data);
+      expect(wrapper.state().items).toEqual(data1);
+      expect(wrapper.state().projects).toEqual(data2.projects);
+      expect(wrapper.state().userEmail).toEqual(data2.email);
+      expect(wrapper.state().userName).toEqual(
+        `${data2.firstName} ${data2.lastName}`
+      );
       done();
     });
   });
