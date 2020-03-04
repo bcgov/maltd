@@ -21,9 +21,6 @@ describe("Main page", () => {
   let wrapper;
   let instance;
   let mock;
-  const baseUrl = process.env.REACT_APP_MALTD_API
-    ? process.env.REACT_APP_MALTD_API
-    : "https://localhost:5001";
 
   beforeEach(() => {
     wrapper = shallow(<MainPage onLogoutClick={() => jest.fn()} />);
@@ -116,7 +113,7 @@ describe("Main page", () => {
     test("Catches error when /api/projects endpoint is not called successfully", () => {
       const clearFormFunc = jest.spyOn(MainPage.prototype, "clearForm");
       const data = { response: true };
-      mock.onGet(`${baseUrl}/api/projects`).reply(400, data);
+      mock.onGet(`/api/projects`).reply(400, data);
 
       wrapper
         .find("UserSearch")
@@ -146,15 +143,11 @@ describe("Main page", () => {
         email: "letme@example.ca"
       };
 
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data1);
+      mock.onGet(`/api/projects`).reply(200, data1);
 
-      mock
-        .onGet(`${baseUrl}/api/users?q=${wrapper.state().value}`)
-        .reply(200, data1);
+      mock.onGet(`/api/users?q=${wrapper.state().value}`).reply(200, data1);
 
-      mock
-        .onGet(`${baseUrl}/api/users/${wrapper.state().value}`)
-        .reply(200, data2);
+      mock.onGet(`/api/users/${wrapper.state().value}`).reply(200, data2);
 
       wrapper
         .find("UserSearch")
@@ -192,15 +185,11 @@ describe("Main page", () => {
         username: "LMA"
       };
 
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data1);
+      mock.onGet(`/api/projects`).reply(200, data1);
 
-      mock
-        .onGet(`${baseUrl}/api/users?q=${wrapper.state().value}`)
-        .reply(200, data1);
+      mock.onGet(`/api/users?q=${wrapper.state().value}`).reply(200, data1);
 
-      mock
-        .onGet(`${baseUrl}/api/users/${wrapper.state().value}`)
-        .reply(200, data2);
+      mock.onGet(`/api/users/${wrapper.state().value}`).reply(200, data2);
 
       wrapper
         .find("UserSearch")
@@ -264,9 +253,9 @@ describe("Main page", () => {
       });
       mock
         .onPut(
-          `${baseUrl}/api/projects/${
-            wrapper.state().selectedDropdownItem.id
-          }/users/${wrapper.state().value}`
+          `/api/projects/${wrapper.state().selectedDropdownItem.id}/users/${
+            wrapper.state().value
+          }`
         )
         .reply(200);
 
