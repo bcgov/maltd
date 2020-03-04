@@ -4,6 +4,7 @@ import axios from "axios";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
 import MockAdapter from "axios-mock-adapter";
+import waitUntil from "async-wait-until";
 import MainPage from "./MainPage";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -158,6 +159,37 @@ describe("Main page", () => {
         .onPlusClick();
 
       expect(addUserToProject).toHaveBeenCalled();
+    });
+
+    test("Function should make network request and should update state on success", async done => {
+      const mock = new MockAdapter(axios);
+
+      expect(wrapper.state().projects).toEqual([]);
+
+      wrapper.setState({
+        isUserSearch: false,
+        selectedDropdownItem: { id: 123 },
+        value: "val"
+      });
+      mock
+        .onPut(
+          `${baseUrl}/api/projects/${
+            wrapper.state().selectedDropdownItem.id
+          }/users/${wrapper.state().value}`
+        )
+        .reply(200);
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick();
+
+      await waitUntil(() => {
+        return wrapper.state().projects;
+      });
+
+      expect(wrapper.state().projects).toEqual([{ id: 123 }]);
+      done();
     });
   });
 });
