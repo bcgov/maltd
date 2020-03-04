@@ -1,3 +1,8 @@
-.inline-blocked {
-  padding-left: 2px;
+.icon {
+  display: flex;
+  justify-content: stretch;
+}
+
+.icon:hover {
+  cursor: pointer;
 }
