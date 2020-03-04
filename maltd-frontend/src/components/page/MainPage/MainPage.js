@@ -115,7 +115,6 @@ export default class MainPage extends Component {
     return axios
       .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
       .then(() => {
-        console.log("in here");
         const updatedProjects = [];
         projects.forEach(proj => {
           if (proj.id !== projectId) {
