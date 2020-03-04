@@ -1,14 +1,11 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import "./MainPage.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
-
-const baseUrl = process.env.REACT_APP_MALTD_API
-  ? process.env.REACT_APP_MALTD_API
-  : "https://localhost:5001";
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -35,7 +32,7 @@ export default class MainPage extends Component {
     const { value } = this.state;
 
     return axios
-      .get(`${baseUrl}/api/projects`)
+      .get(`/api/projects`)
       .then(res => {
         this.setState({
           items: res.data,
@@ -45,10 +42,10 @@ export default class MainPage extends Component {
         });
       })
       .then(() => {
-        axios.get(`${baseUrl}/api/users?q=${value}`);
+        axios.get(`/api/users?q=${value}`);
       })
       .then(() => {
-        return axios.get(`${baseUrl}/api/users/${value}`).then(result => {
+        return axios.get(`/api/users/${value}`).then(result => {
           const { data } = result;
 
           this.setState({
@@ -122,7 +119,7 @@ export default class MainPage extends Component {
     const { value, projects } = this.state;
 
     return axios
-      .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
+      .delete(`/api/projects/${projectId}/users/${value}`)
       .then(() => {
         const updatedProjects = [];
         projects.forEach(proj => {
@@ -139,7 +136,7 @@ export default class MainPage extends Component {
     const { selectedDropdownItem, value, projects } = this.state;
 
     return axios
-      .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
+      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`)
       .then(() => {
         const updatedProjects = projects.slice(0);
         updatedProjects.push(selectedDropdownItem);
@@ -179,6 +176,8 @@ export default class MainPage extends Component {
       userExists,
       items
     } = this.state;
+
+    const { onLogoutClick } = this.props;
 
     const inputField = {
       type: "text",
@@ -220,7 +219,7 @@ export default class MainPage extends Component {
 
     return (
       <React.Fragment>
-        <NavBar onClick={() => {}} />
+        <NavBar onClick={() => onLogoutClick()} />
         <div className="top-spacing" id="wrapper">
           {!isUserSearch && (
             <div className="backicon-spacing">
@@ -257,3 +256,7 @@ export default class MainPage extends Component {
     );
   }
 }
+
+MainPage.propTypes = {
+  onLogoutClick: PropTypes.func.isRequired
+};

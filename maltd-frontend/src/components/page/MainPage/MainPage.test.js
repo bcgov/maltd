@@ -11,7 +11,9 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe("Main page", () => {
   test("Component renders as expected", () => {
-    const component = renderer.create(<MainPage />);
+    const component = renderer.create(
+      <MainPage onLogoutClick={() => jest.fn()} />
+    );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
@@ -19,12 +21,9 @@ describe("Main page", () => {
   let wrapper;
   let instance;
   let mock;
-  const baseUrl = process.env.REACT_APP_MALTD_API
-    ? process.env.REACT_APP_MALTD_API
-    : "https://localhost:5001";
 
   beforeEach(() => {
-    wrapper = shallow(<MainPage />);
+    wrapper = shallow(<MainPage onLogoutClick={() => jest.fn()} />);
     instance = wrapper.instance();
     mock = new MockAdapter(axios);
   });
@@ -114,7 +113,7 @@ describe("Main page", () => {
     test("Catches error when /api/projects endpoint is not called successfully", () => {
       const clearFormFunc = jest.spyOn(MainPage.prototype, "clearForm");
       const data = { response: true };
-      mock.onGet(`${baseUrl}/api/projects`).reply(400, data);
+      mock.onGet(`/api/projects`).reply(400, data);
 
       wrapper
         .find("UserSearch")
@@ -125,7 +124,7 @@ describe("Main page", () => {
         });
     });
 
-    test("Function should make network request and should update state on success", async done => {
+    test("Function should make network request and should update state on success when all fields exist in response", async done => {
       wrapper.setState({
         isLoading: false,
         value: "val",
@@ -144,15 +143,11 @@ describe("Main page", () => {
         email: "letme@example.ca"
       };
 
-      mock.onGet(`${baseUrl}/api/projects`).reply(200, data1);
+      mock.onGet(`/api/projects`).reply(200, data1);
 
-      mock
-        .onGet(`${baseUrl}/api/users?q=${wrapper.state().value}`)
-        .reply(200, data1);
+      mock.onGet(`/api/users?q=${wrapper.state().value}`).reply(200, data1);
 
-      mock
-        .onGet(`${baseUrl}/api/users/${wrapper.state().value}`)
-        .reply(200, data2);
+      mock.onGet(`/api/users/${wrapper.state().value}`).reply(200, data2);
 
       wrapper
         .find("UserSearch")
@@ -171,6 +166,44 @@ describe("Main page", () => {
       expect(wrapper.state().userName).toEqual(
         `${data2.firstName} ${data2.lastName}`
       );
+      done();
+    });
+
+    test("Function should make network request and should update specific state only on success when some fields exist in response", async done => {
+      wrapper.setState({
+        isLoading: false,
+        value: "val",
+        isUserSearch: true,
+        items: []
+      });
+
+      const data1 = [{ id: "1222", name: "Item name" }];
+
+      const data2 = {
+        projects: [{ id: 123, name: "project" }],
+        id: "1111",
+        username: "LMA"
+      };
+
+      mock.onGet(`/api/projects`).reply(200, data1);
+
+      mock.onGet(`/api/users?q=${wrapper.state().value}`).reply(200, data1);
+
+      mock.onGet(`/api/users/${wrapper.state().value}`).reply(200, data2);
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onClick();
+
+      await waitUntil(() => {
+        return wrapper.state().isLoading;
+      });
+
+      expect(wrapper.state().isLoading).toEqual(true);
+      expect(wrapper.state().isUserSearch).toEqual(false);
+      expect(wrapper.state().items).toEqual(data1);
+      expect(wrapper.state().projects).toEqual(data2.projects);
       done();
     });
   });
@@ -220,9 +253,9 @@ describe("Main page", () => {
       });
       mock
         .onPut(
-          `${baseUrl}/api/projects/${
-            wrapper.state().selectedDropdownItem.id
-          }/users/${wrapper.state().value}`
+          `/api/projects/${wrapper.state().selectedDropdownItem.id}/users/${
+            wrapper.state().value
+          }`
         )
         .reply(200);
 
