@@ -49,7 +49,7 @@ export default class MainPage extends Component {
       })
       .then(() => {
         return axios.get(`${baseUrl}/api/users/${value}`).then(result => {
-          const data = result.data;
+          const { data } = result;
 
           this.setState({
             projects: data.projects,
