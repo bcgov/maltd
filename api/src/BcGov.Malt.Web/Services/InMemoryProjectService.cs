@@ -17,8 +17,8 @@ namespace BcGov.Malt.Web.Services
         /// </summary>
         public InMemoryProjectService()
         {
-            _projects.Add(new Project("Corrections Dev"));
-            _projects.Add(new Project("Corrections Test"));
+            _projects.Add(new Project("a", "Corrections Dev"));
+            _projects.Add(new Project("b", "Corrections Test"));
         }
 
         /// <summary>

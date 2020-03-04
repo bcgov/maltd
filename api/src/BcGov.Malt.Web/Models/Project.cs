@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -10,14 +11,23 @@ namespace BcGov.Malt.Web.Models
     /// </summary>
     public class Project
     {
-        public Project(string name)
+        public Project()
         {
+        }
+
+        public Project(string id, string name)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("Id cannot be null or empty", nameof(id));
+            }
+
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentException("Name cannot be null or empty", nameof(name));
             }
 
-            Id = GetHash(name);
+            Id = id;
             Name = name;
         }
 
@@ -25,29 +35,12 @@ namespace BcGov.Malt.Web.Models
         /// The id of the project
         /// </summary>
         [JsonPropertyName("id")]
-        public string Id { get; }
+        public string Id { get; set; }
 
         /// <summary>
         /// The name of the project
         /// </summary>
         [JsonPropertyName("name")]
         public string Name { get; set; }
-
-        private static string GetHash(string value)
-        {
-            // SHA1 should be fine as we are not using this value as a password hash
-
-            using HashAlgorithm hashAlgorithm = SHA1.Create();
-            var byteArray = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
-
-            StringBuilder hex = new StringBuilder(byteArray.Length * 2);
-            foreach (byte b in byteArray)
-            {
-                hex.AppendFormat("{0:x2}", b);
-            }
-
-            return hex.ToString();
-
-        }
     }
 }

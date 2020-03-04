@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using BcGov.Malt.Web.Models.Authorization;
@@ -61,15 +62,17 @@ namespace BcGov.Malt.Web.Services
 
         private static string GetHash(string value)
         {
+#pragma warning disable CA5350 // a weak cryptographic algorithm SHA1
             // SHA1 should be fine as we are not using this value as a password hash
-
             using HashAlgorithm hashAlgorithm = SHA1.Create();
+#pragma warning restore CA5350
+            
             var byteArray = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
 
             StringBuilder hex = new StringBuilder(byteArray.Length * 2);
             foreach (byte b in byteArray)
             {
-                hex.AppendFormat("{0:x2}", b);
+                hex.AppendFormat(CultureInfo.InvariantCulture, "{0:x2}", b);
             }
 
             return hex.ToString();

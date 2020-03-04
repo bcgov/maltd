@@ -25,7 +25,7 @@ export default function UserAccess({
     <Container className="move-down">
       <Row xs="1" sm="1" md="2" id="user-access-row">
         <Col className="cols">
-          <Row>
+          <Row className="inner-row">
             <Col className="big-font">USER</Col>
           </Row>
           <ListElement listElement={userListElement} />
@@ -50,7 +50,6 @@ export default function UserAccess({
                       listElement={listElement}
                       onXClick={onXClick}
                     />
-                    <p />
                   </div>
                 );
               })}
@@ -60,15 +59,13 @@ export default function UserAccess({
           </div>
         </Col>
       </Row>
-      <Row xs="1" sm="1" md="2">
+      <Row xs="1" sm="1" md="2" className="outer">
         <Col />
         <Col>
           {projects && projects.length > 0 && (
             <div className="drop-plus" key={key}>
               <Dropdown dropdown={dropdown} onDropdownClick={onDropdownClick} />
-              <div>
-                <PlusIcon onClick={onPlusClick} />
-              </div>
+              <PlusIcon onClick={onPlusClick} />
             </div>
           )}
           {(!projects || projects.length === 0) && (
@@ -94,7 +91,7 @@ UserAccess.propTypes = {
   userAccess: PropTypes.shape({
     projects: PropTypes.array.isRequired,
     userName: PropTypes.string.isRequired,
-    userEmail: PropTypes.string.isRequired
+    userEmail: PropTypes.string
   }).isRequired,
   onXClick: PropTypes.func.isRequired,
   onPlusClick: PropTypes.func.isRequired,

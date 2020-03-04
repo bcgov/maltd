@@ -22,7 +22,6 @@ namespace BcGov.Malt.Web.Models
             LastName = user.LastName;
             Email = user.Email;
             UserName = user.UserName;
-            Enabled = true;
             Projects = projects != null ? projects.ToArray() : Array.Empty<Project>();
         }
 

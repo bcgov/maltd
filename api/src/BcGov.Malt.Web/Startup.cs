@@ -98,11 +98,13 @@ namespace BcGov.Malt.Web
 
             // this will configure the service correctly, comment out for now until
             // the services are working
-            //services.AddProjectAccess(Configuration);
+            services.AddProjectAccess(Configuration);
+
+            services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<IUserSearchService, LdapUserSearchService>();
 
             // singleton for now since these are in memory (testing) implementations
-            services.AddSingleton<IProjectService, ProjectService>();
-            services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
+            //services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
             services.AddSingleton<IUserManagementService, InMemoryUserManagementService>();
 
             services.AddSingleton<IODataClientFactory, DefaultODataClientFactory>();
@@ -175,29 +177,6 @@ namespace BcGov.Malt.Web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dynamics Account Management API V1");
             });
 
-        }
-
-        internal class TokenAuthorizationHandler : DelegatingHandler
-        {
-            private readonly ITokenService _tokenService;
-            public readonly OAuthOptions _options;
-
-            public TokenAuthorizationHandler(ITokenService tokenService, OAuthOptions options)
-            {
-                _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-                _options = options;
-            }
-
-            protected override async Task<HttpResponseMessage> SendAsync(
-                HttpRequestMessage request,
-                CancellationToken cancellationToken)
-            {
-                // get the acess token and add it to the Authorization header of the request 
-                var token = await _tokenService.GetTokenAsync(_options, cancellationToken);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-
-                return await base.SendAsync(request, cancellationToken);
-            }
         }
                
         internal class ConsumesAndProductOnlyJSonContentTypeFilter : IOperationFilter

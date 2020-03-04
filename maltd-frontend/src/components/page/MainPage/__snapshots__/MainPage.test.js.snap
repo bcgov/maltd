@@ -8,11 +8,6 @@ Array [
     <nav
       className="navbar navbar-expand-md"
     >
-      <a
-        className="navbar-brand"
-      >
-        MALT
-      </a>
       <div
         className="collapse show navbar-collapse"
         style={Object {}}
@@ -61,10 +56,12 @@ Array [
           className="inner"
         >
           <input
+            autoFocus={true}
             className="input-field my-2 form-control"
             disabled={false}
             name="idir"
             onChange={[Function]}
+            onKeyPress={[Function]}
             placeholder="Enter IDIR username to find"
             type="text"
             value=""

@@ -2,8 +2,7 @@
 
 exports[`X Icon Component renders as expected 1`] = `
 <div
-  className="inline-block"
-  id="main"
+  className="icon"
   onClick={[Function]}
   onKeyDown={[Function]}
   role="button"

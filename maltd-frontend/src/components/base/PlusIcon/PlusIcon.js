@@ -6,12 +6,11 @@ import "./PlusIcon.css";
 export default function PlusIcon({ onClick }) {
   return (
     <div
-      id="main"
       role="button"
       tabIndex="0"
       onClick={onClick}
       onKeyDown={onClick}
-      className="inline-blocked"
+      className="icon"
     >
       <img src={Icon} alt="plus icon" width="25px" height="25px" />
     </div>

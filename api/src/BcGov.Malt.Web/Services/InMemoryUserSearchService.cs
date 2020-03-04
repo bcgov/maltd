@@ -1,5 +1,6 @@
 ﻿using BcGov.Malt.Web.Models;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,12 +12,12 @@ namespace BcGov.Malt.Web.Services
     {
         private readonly User[] _users = new []
         {
-            new User { UserName = "pbolduc", Id = Guid.NewGuid().ToString("d"),FirstName= "Phil",LastName= "Bolduc",Email = "phil.bolduc@example.com" },
-            new User { UserName = "tclausen", Id = Guid.NewGuid().ToString("d"),FirstName= "Taylor", LastName= "Clausen",Email = "taylor.clausen@example.org" },
-            new User { UserName = "choban", Id = Guid.NewGuid().ToString("d"),FirstName= "Chris",LastName= "Hoban",Email = "chris.hoban@example.net" },
-            new User { UserName = "nyang", Id = Guid.NewGuid().ToString("d"),FirstName= "Nan",LastName= "Yang",Email = "nan.yang@example.ca" },
-            new User { UserName = "ckelso", Id = Guid.NewGuid().ToString("d"),FirstName= "Charlotte",LastName= "Kelso", Email = "charlotte.kelso@example.com" },
-            new User { UserName = "sdevalapurkar", Id = Guid.NewGuid().ToString("d"),FirstName= "Shreyas",LastName="Devalapurkar",Email = "shreyas.devalapurkar@example" },
+            new User { UserName = "pbolduc", Id = Guid.NewGuid().ToString("d", CultureInfo.InvariantCulture),FirstName= "Phil",LastName= "Bolduc",Email = "phil.bolduc@example.com" },
+            new User { UserName = "tclausen", Id = Guid.NewGuid().ToString("d", CultureInfo.InvariantCulture),FirstName= "Taylor", LastName= "Clausen",Email = "taylor.clausen@example.org" },
+            new User { UserName = "choban", Id = Guid.NewGuid().ToString("d", CultureInfo.InvariantCulture),FirstName= "Chris",LastName= "Hoban",Email = "chris.hoban@example.net" },
+            new User { UserName = "nyang", Id = Guid.NewGuid().ToString("d", CultureInfo.InvariantCulture),FirstName= "Nan",LastName= "Yang",Email = "nan.yang@example.ca" },
+            new User { UserName = "ckelso", Id = Guid.NewGuid().ToString("d", CultureInfo.InvariantCulture),FirstName= "Charlotte",LastName= "Kelso", Email = "charlotte.kelso@example.com" },
+            new User { UserName = "sdevalapurkar", Id = Guid.NewGuid().ToString("d", CultureInfo.InvariantCulture),FirstName= "Shreyas",LastName="Devalapurkar",Email = "shreyas.devalapurkar@example" },
 
         };
 

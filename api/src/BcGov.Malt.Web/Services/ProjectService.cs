@@ -21,12 +21,10 @@ namespace BcGov.Malt.Web.Services
         public Task<List<Project>> GetProjectsAsync()
         {
             var projects = _projects
-                .Select(_ => new Project(_.Name))
+                .Select(_ => new Project(_.Id, _.Name))
                 .ToList();
 
             return Task.FromResult(projects);
         }
-
     }
-
 }

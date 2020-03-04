@@ -26,10 +26,10 @@ describe("X Icon", () => {
       <XIcon id="123" onKeyDown={onClick} onClick={onClick} />
     );
 
-    wrapper.find("#main").simulate("keydown");
+    wrapper.find(".icon").simulate("keydown");
     expect(testState.isClicked).toEqual(true);
 
-    wrapper.find("#main").simulate("click");
+    wrapper.find(".icon").simulate("click");
     expect(testState.isClicked).toEqual(true);
   });
 });
