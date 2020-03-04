@@ -162,8 +162,6 @@ describe("Main page", () => {
     });
 
     test("Function should make network request and should update state on success", async done => {
-      const mock = new MockAdapter(axios);
-
       expect(wrapper.state().projects).toEqual([]);
 
       wrapper.setState({

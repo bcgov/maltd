@@ -110,7 +110,6 @@ export default class MainPage extends Component {
   }
 
   removeUserFromProject(projectId) {
-    console.log(projectId);
     const { value, projects } = this.state;
 
     return axios
