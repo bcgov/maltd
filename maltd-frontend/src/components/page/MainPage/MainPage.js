@@ -8,7 +8,7 @@ import UserAccess from "../../composite/UserAccess/UserAccess";
 
 const baseUrl = process.env.REACT_APP_MALTD_API
   ? process.env.REACT_APP_MALTD_API
-  : "http://localhost:80";
+  : "https://localhost:5001";
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -34,44 +34,40 @@ export default class MainPage extends Component {
   onButtonClick() {
     const { value } = this.state;
 
-    fetch(`${baseUrl}/api/projects`)
-      .then(res => res.json())
-      .then(resul => {
-        if (resul.status !== 401) {
+    return axios
+      .get(`${baseUrl}/api/projects`)
+      .then(res => {
+        this.setState({
+          items: res.data,
+          isLoading: true,
+          disabledButton: true,
+          disabledInput: true
+        });
+      })
+      .then(() => {
+        axios.get(`${baseUrl}/api/users?q=${value}`);
+      })
+      .then(() => {
+        return axios.get(`${baseUrl}/api/users/${value}`).then(result => {
           this.setState({
-            items: resul,
-            isLoading: true,
-            disabledButton: true,
-            disabledInput: true
+            projects: result.projects,
+            isUserSearch: false
           });
 
-          fetch(`${baseUrl}/api/users/${value}`)
-            .then(res2 => res2.json())
-            .then(result => {
-              if (result.status !== 404) {
-                this.setState({
-                  projects: result.projects,
-                  isUserSearch: false
-                });
+          if (result.email) {
+            this.setState({ userEmail: result.email });
+          }
 
-                if (result.email) {
-                  this.setState({ userEmail: result.email });
-                }
-                if (result.firstName && result.lastName) {
-                  this.setState({
-                    userName: `${result.firstName} ${result.lastName}`
-                  });
-                }
-              } else {
-                this.clearForm();
-              }
-            })
-            .catch(() => {
-              this.clearForm();
+          if (result.firstName && result.lastName) {
+            this.setState({
+              userName: `${result.firstName} ${result.lastName}`
             });
-        }
+          }
+        });
       })
-      .catch(() => {});
+      .catch(() => {
+        this.clearForm();
+      });
   }
 
   onInputChange(event) {
@@ -116,7 +112,7 @@ export default class MainPage extends Component {
   removeUserFromProject(projectId) {
     const { value, projects } = this.state;
 
-    axios
+    return axios
       .delete(`${baseUrl}/api/projects/${projectId}/users/${value}`)
       .then(() => {
         const updatedProjects = [];
@@ -133,7 +129,7 @@ export default class MainPage extends Component {
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
 
-    axios
+    return axios
       .put(`${baseUrl}/api/projects/${selectedDropdownItem.id}/users/${value}`)
       .then(() => {
         const updatedProjects = projects.slice(0);

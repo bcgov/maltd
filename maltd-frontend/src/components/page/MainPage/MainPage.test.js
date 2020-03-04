@@ -1,7 +1,10 @@
 import React from "react";
 import renderer from "react-test-renderer";
+import axios from "axios";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
+import MockAdapter from "axios-mock-adapter";
+import waitUntil from "async-wait-until";
 import MainPage from "./MainPage";
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -15,10 +18,15 @@ describe("Main page", () => {
 
   let wrapper;
   let instance;
+  let mock;
+  const baseUrl = process.env.REACT_APP_MALTD_API
+    ? process.env.REACT_APP_MALTD_API
+    : "https://localhost:5001";
 
   beforeEach(() => {
     wrapper = shallow(<MainPage />);
     instance = wrapper.instance();
+    mock = new MockAdapter(axios);
   });
 
   describe("onBackClick", () => {
@@ -99,6 +107,122 @@ describe("Main page", () => {
       expect(instance.state.disabledButton).toBe(false);
       expect(instance.state.color).toBe("primary");
       expect(instance.state.value).toBe(event.target.value);
+    });
+  });
+
+  describe("onButtonClick", () => {
+    test("Catches error when /api/projects endpoint is not called successfully", () => {
+      const clearFormFunc = jest.spyOn(MainPage.prototype, "clearForm");
+      const data = { response: true };
+      mock.onGet(`${baseUrl}/api/projects`).reply(400, data);
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onClick()
+        .catch(() => {
+          expect(clearFormFunc).toHaveBeenCalled();
+        });
+    });
+
+    test("Function should make network request and should update state on success", async done => {
+      wrapper.setState({
+        isLoading: false,
+        value: "val",
+        isUserSearch: true,
+        items: []
+      });
+
+      const data = { response: true };
+
+      mock.onGet(`${baseUrl}/api/projects`).reply(200, data);
+
+      mock
+        .onGet(`${baseUrl}/api/users?q=${wrapper.state().value}`)
+        .reply(200, data);
+
+      mock
+        .onGet(`${baseUrl}/api/users/${wrapper.state().value}`)
+        .reply(200, data);
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onClick();
+
+      await waitUntil(() => {
+        return wrapper.state().isLoading;
+      });
+
+      expect(wrapper.state().isLoading).toEqual(true);
+      expect(wrapper.state().isUserSearch).toEqual(false);
+      expect(wrapper.state().items).toEqual(data);
+      done();
+    });
+  });
+
+  describe("removeUserFromProject", () => {
+    test("Function is called when x icon is clicked", () => {
+      const removeUserFromProject = jest.spyOn(
+        MainPage.prototype,
+        "removeUserFromProject"
+      );
+      const id = 123;
+
+      wrapper.setState({ isUserSearch: false });
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onXClick(id);
+
+      expect(removeUserFromProject).toHaveBeenCalled();
+    });
+  });
+
+  describe("addUserToProject", () => {
+    test("Function is called when plus icon is clicked", () => {
+      const addUserToProject = jest.spyOn(
+        MainPage.prototype,
+        "addUserToProject"
+      );
+      wrapper.setState({ selectedDropdownItem: { id: 122 } });
+
+      wrapper.setState({ isUserSearch: false });
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick();
+
+      expect(addUserToProject).toHaveBeenCalled();
+    });
+
+    test("Function should make network request and should update state on success", async done => {
+      expect(wrapper.state().projects).toEqual([]);
+
+      wrapper.setState({
+        isUserSearch: false,
+        selectedDropdownItem: { id: 123 },
+        value: "val"
+      });
+      mock
+        .onPut(
+          `${baseUrl}/api/projects/${
+            wrapper.state().selectedDropdownItem.id
+          }/users/${wrapper.state().value}`
+        )
+        .reply(200);
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick();
+
+      await waitUntil(() => {
+        return wrapper.state().projects;
+      });
+
+      expect(wrapper.state().projects).toEqual([{ id: 123 }]);
+      done();
     });
   });
 });
