@@ -124,6 +124,41 @@ describe("Main page", () => {
           expect(clearFormFunc).toHaveBeenCalled();
         });
     });
+
+    test("Function should make network request and should update state on success", async done => {
+      wrapper.setState({
+        isLoading: false,
+        value: "val",
+        isUserSearch: true,
+        items: []
+      });
+
+      const data = { response: true };
+
+      mock.onGet(`${baseUrl}/api/projects`).reply(200, data);
+
+      mock
+        .onGet(`${baseUrl}/api/users?q=${wrapper.state().value}`)
+        .reply(200, data);
+
+      mock
+        .onGet(`${baseUrl}/api/users/${wrapper.state().value}`)
+        .reply(200, data);
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onClick();
+
+      await waitUntil(() => {
+        return wrapper.state().isLoading;
+      });
+
+      expect(wrapper.state().isLoading).toEqual(true);
+      expect(wrapper.state().isUserSearch).toEqual(false);
+      expect(wrapper.state().items).toEqual(data);
+      done();
+    });
   });
 
   describe("removeUserFromProject", () => {
