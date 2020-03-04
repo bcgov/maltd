@@ -2,10 +2,18 @@ import React, { useState, useEffect } from "react";
 import Keycloak from "keycloak-js";
 import MainPage from "../page/MainPage/MainPage";
 
+let url, realm, clientId;
+if (process.env.REACT_APP_KEYCLOAK_URL)
+  url = process.env.REACT_APP_KEYCLOAK_URL;
+if (process.env.REACT_APP_KEYCLOAK_REALM)
+  realm = process.env.REACT_APP_KEYCLOAK_REALM;
+if (process.env.REACT_APP_KEYCLOAK_CLIENT_ID)
+  clientId = process.env.REACT_APP_KEYCLOAK_CLIENT_ID;
+
 const KEYCLOAK = {
-  url: "https://sso-dev.pathfinder.gov.bc.ca/auth",
-  realm: "ezb8kej4",
-  clientId: "malt-frontend"
+  url,
+  realm,
+  clientId
 };
 
 /**
@@ -14,9 +22,14 @@ const KEYCLOAK = {
 
 export default function AuthenticationGuard() {
   const [authedKeycloak, setAuthedKeycloak] = useState(null);
+  let redirectUri;
+
+  if (process.env.REACT_APP_KEYCLOAK_REDIRECT_URI) {
+    redirectUri = process.env.REACT_APP_KEYCLOAK_REDIRECT_URI;
+  }
 
   function onLogoutClick() {
-    authedKeycloak.logout({ redirectUri: "http://localhost:3001" });
+    authedKeycloak.logout({ redirectUri });
   }
 
   async function keycloakInit() {
