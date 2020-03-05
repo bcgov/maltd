@@ -1,5 +1,6 @@
 /* global cy, before */
 // / <reference types="Cypress" />
+
 import LandingPage from "../../support/pageObjects/landing-page";
 import UserPage from "../../support/pageObjects/user-page";
 
@@ -9,88 +10,31 @@ describe("Add projects to user", () => {
     cy.fixture("userData.json").as("users");
   });
 
-  it("Add project", () => {
+  it("Adds project to the user and removes", () => {
     // Launches the url
     cy.visit("/");
 
     cy.get("@users").then(users => {
       const validUser = users.userName.valid;
 
+      // Validate the email address based on domain name
       LandingPage.getInputField().type(validUser[1]);
       LandingPage.getFindButton().click();
-      UserPage.getProjectInfo().contains("@example");
+      UserPage.getEmailInfo().should("be.visible");
+      UserPage.getEmailInfo().contains("@gov.bc.ca");
 
-      // cy.selectProject('Dynamics');
-
+      // Add and remove project for the user
       UserPage.getDropDown().click();
       UserPage.getDropDownMenu().should("be.visible");
       UserPage.getDropDownItem()
-        .eq(4)
-        .contains("Dynamics")
+        .contains("Corrections Dev")
         .click();
       UserPage.getPlusIcon().click();
-      UserPage.getProjectInfo().contains("Dynamics");
+      UserPage.getProjectInfo().contains("Corrections Dev");
       UserPage.getCloseIcon()
         .should("be.visible")
         .click();
-      UserPage.getProjectInfo().should("not.have.value", "Dynamics");
-      UserPage.getBackNav().click();
-
-      LandingPage.getInputField().type(validUser[3]);
-      LandingPage.getFindButton().click();
-      UserPage.getProjectInfo().contains("@example");
-
-      UserPage.getDropDown().click();
-      UserPage.getDropDownMenu().should("be.visible");
-      UserPage.getDropDownItem()
-        .eq(9)
-        .contains("SharePoint")
-        .click();
-      UserPage.getPlusIcon().click();
-      UserPage.getProjectInfo().contains("SharePoint");
-      UserPage.getCloseIcon()
-        .should("be.visible")
-        .click();
-      UserPage.getProjectInfo().should("not.have.value", "SharePoint");
-      UserPage.getBackNav().click();
-
-      LandingPage.getInputField().type(validUser[2]);
-      LandingPage.getFindButton().click();
-
-      UserPage.getProjectInfo().contains("@example");
-      UserPage.getDropDown().click();
-      UserPage.getDropDownMenu().should("be.visible");
-      UserPage.getDropDownItem()
-        .eq(12)
-        .contains("SharePoint")
-        .click();
-      UserPage.getPlusIcon().click();
-      UserPage.getProjectInfo().contains("SharePoint");
-      UserPage.getBackNav().click();
-
-      LandingPage.getInputField().type(validUser[2]);
-      LandingPage.getFindButton().click();
-      UserPage.getProjectInfo().contains("@example");
-
-      UserPage.getDropDown().click();
-      UserPage.getDropDownMenu().should("be.visible");
-      UserPage.getDropDownItem()
-        .eq(6)
-        .contains("Dynamics")
-        .click();
-      UserPage.getPlusIcon().click();
-      UserPage.getProjectInfo().contains("Dynamics");
-      UserPage.getBackNav().click();
-
-      LandingPage.getInputField().type(validUser[2]);
-      LandingPage.getFindButton().click();
-      UserPage.getProjectInfo().contains("@example");
-
-      cy.wait(1000);
-      UserPage.getCloseIcon()
-        .should("be.visible")
-        .click({ multiple: true });
-      cy.wait(1000);
+      UserPage.getProjectInfo().should("not.have.value", "Corrections Dev");
       UserPage.getBackNav().click();
     });
   });

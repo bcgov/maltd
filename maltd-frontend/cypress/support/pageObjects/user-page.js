@@ -2,7 +2,7 @@
 
 class UserPage {
   static getDropDown() {
-    return cy.get("[data-cy=drop-down]");
+    return cy.get("#dropdown");
   }
 
   static getDropDownMenu() {
@@ -10,7 +10,7 @@ class UserPage {
   }
 
   static getDropDownItem() {
-    return cy.get(".dropdown-item");
+    return cy.get('button[role="menuitem"]');
   }
 
   static getPlusIcon() {
@@ -18,7 +18,13 @@ class UserPage {
   }
 
   static getProjectInfo() {
-    return cy.get("[data-cy=project-info]");
+    return cy.get(
+      ":nth-child(2) > .project-div > [data-cy=project-info] > .large-size"
+    );
+  }
+
+  static getEmailInfo() {
+    return cy.get("[data-cy=email-info]");
   }
 
   static getCloseIcon() {

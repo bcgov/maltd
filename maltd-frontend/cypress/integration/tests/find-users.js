@@ -3,13 +3,13 @@
 
 import LandingPage from "../../support/pageObjects/landing-page";
 
-describe("The landing pages tests", () => {
+describe("Invalid user test", () => {
   // Runs once before all tests in the block
   before(() => {
     cy.fixture("userData.json").as("users");
   });
 
-  it("Finds users", () => {
+  it("Asserts invalid usernames are not accepted", () => {
     // Launches the url
     cy.visit("/");
 

@@ -11,9 +11,13 @@ export default function ListElement({
     return (
       <React.Fragment>
         <div className="project-div">
-          <div className="project-list-item">
+          <div data-cy="project-info" className="project-list-item">
             <strong className="large-size">{title}</strong>
-            {description && <p className="project-list-item">{description}</p>}
+            {description && (
+              <p data-cy="email-info" className="project-list-item">
+                {description}
+              </p>
+            )}
           </div>
           <div>
             {typeof onXClick === "function" && (
@@ -21,7 +25,7 @@ export default function ListElement({
             )}
           </div>
         </div>
-        {description && <p data-cy="project-info">{description}</p>}
+        {description && <p>{description}</p>}
       </React.Fragment>
     );
   }
