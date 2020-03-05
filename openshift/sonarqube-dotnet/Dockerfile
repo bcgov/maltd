@@ -20,6 +20,7 @@ WORKDIR /
 
 # Install SonarQube Scanner as the running user
 RUN dotnet tool install --global dotnet-sonarscanner
+RUN dotnet tool install --global coverlet.console
 ENV PATH="${PATH}:$HOME/.dotnet/tools"
 
 RUN chown -R 1000:0 /usr/local/bin && \
