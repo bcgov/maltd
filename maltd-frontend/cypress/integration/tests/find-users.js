@@ -26,7 +26,7 @@ describe("Invalid user test", () => {
         i -= 1;
         LandingPage.getInputField().type(invalidUser[i]);
 
-        if (invalidUser[i].length < 5) {
+        if (invalidUser[i].length < 3) {
           LandingPage.getFindRedButton().should("be.disabled");
           LandingPage.getInputField().clear();
         } else {

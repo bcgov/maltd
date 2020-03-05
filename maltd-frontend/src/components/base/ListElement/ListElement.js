@@ -25,7 +25,6 @@ export default function ListElement({
             )}
           </div>
         </div>
-        {description && <p>{description}</p>}
       </React.Fragment>
     );
   }
