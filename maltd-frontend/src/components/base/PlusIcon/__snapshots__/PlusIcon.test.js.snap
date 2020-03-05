@@ -3,6 +3,7 @@
 exports[`Plus Icon Component renders as expected 1`] = `
 <div
   className="icon"
+  data-cy="plus-icon"
   onClick={[Function]}
   onKeyDown={[Function]}
   role="button"

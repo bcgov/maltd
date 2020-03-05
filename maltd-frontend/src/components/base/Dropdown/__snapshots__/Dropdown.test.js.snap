@@ -45,6 +45,7 @@ exports[`Dropdown Component renders as expected 1`] = `
   <div
     aria-hidden={true}
     className="dropdown-menu"
+    data-cy="drop-down-menu"
     role="menu"
     tabIndex="-1"
   >

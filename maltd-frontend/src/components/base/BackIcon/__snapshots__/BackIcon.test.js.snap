@@ -29,6 +29,7 @@ exports[`Back Icon Component renders as expected 1`] = `
   </svg>
   <div
     className="limit-width"
+    data-cy="back-nav"
   >
     <h5>
       Back
