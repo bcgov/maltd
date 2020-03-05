@@ -24,7 +24,7 @@ namespace BcGov.Malt.Web.Services
         /// <summary>Searches for a user asynchronously.</summary>
         /// <param name="query">The username to query for</param>
         /// <returns>The found user or null if not found.</returns>
-        public async Task<User> SearchAsync(string query)
+        public Task<User> SearchAsync(string query)
         {
             User user = null;
 
@@ -38,9 +38,24 @@ namespace BcGov.Malt.Web.Services
                 return null;
             }
 
-            await Task.Delay(0); // to suppress warning CS1998: This async method lacks 'await'
+            return Task.FromResult(user);
+        }
 
-            return user;
+        public Task<string> GetUserPrincipalNameAsync(string samAccountName)
+        {
+            User user = null;
+
+            if (!string.IsNullOrEmpty(samAccountName))
+            {
+                user = _users.FirstOrDefault(_ => StringComparer.OrdinalIgnoreCase.Equals(_.UserName, samAccountName));
+            }
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return Task.FromResult(user.Email); // UPN is not the same as Email, but good enough for testing
         }
     }
 }
