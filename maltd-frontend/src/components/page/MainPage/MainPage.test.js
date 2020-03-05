@@ -272,4 +272,28 @@ describe("Main page", () => {
       done();
     });
   });
+
+  describe("onKeyEnter", () => {
+    test("Function works as expected under case where button click should not be called", () => {
+      const event = { key: "Fake" };
+      const onButtonClick = jest.spyOn(MainPage.prototype, "onButtonClick");
+
+      wrapper.setState({ disabledButton: true });
+
+      wrapper.instance().onKeyEnter(event);
+
+      expect(onButtonClick).toHaveBeenCalledTimes(0);
+    });
+
+    test("Function works as expected under case where button click should be called", () => {
+      const event = { key: "Enter" };
+      const onButtonClickSpy = jest.spyOn(MainPage.prototype, "onButtonClick");
+
+      wrapper.setState({ disabledButton: false });
+
+      wrapper.instance().onKeyEnter(event);
+
+      expect(onButtonClickSpy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
