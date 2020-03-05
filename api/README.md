@@ -18,61 +18,28 @@ In dotnet, there are multiple options for configuring applications. For non-Visu
 
 ## Environment Variables
 
-```
-PROJECTS__0__NAME
-PROJECTS__0__RESOURCES__0__RESOURCE
-PROJECTS__0__RESOURCES__0__TYPE
-PROJECTS__0__RESOURCES__0__AUTHORIZATIONURI
-PROJECTS__0__RESOURCES__0__CLIENTID
-PROJECTS__0__RESOURCES__0__CLIENTSECRET
-PROJECTS__0__RESOURCES__0__USERNAME
-PROJECTS__0__RESOURCES__0__PASSWORD
+Below, _n_ and _m_ are place holders for array indexes, 0, 1, 2, etc
 
-LDAP__SERVER
-LDAP__DISTINGUISHEDNAME
-LDAP__USERNAME
-LDAP__PASSWORD
+| Variable Name | Description |
+| -- | -- |
+| PROJECTS\_\__n_\_\_NAME | The unique name of the project. This will be displayed to the users. |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_RESOURCE | The URL of the resource. Dynamics or Sharepoint site urls |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_TYPE | The type of the resource, Dynamics or Sharepoint  |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_AUTHORIZATIONURI | The URL where authenication occurs, STS/SAML or OAuth endpoints |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_USERNAME | The authentication username |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_PASSWORD | The authentication password |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_CLIENTID | Dynamics only. The client id for OAuth |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_CLIENTSECRET | Dynamics only. The  client secret for OAuth |
+| PROJECTS\_\__n_\_\_RESOURCES\_\__m_\_\_RELYINGPARTYIDENTIFIER | Sharepoint only. The relying party identifier for SAML auth |
+| LDAP\_\_SERVER | The host name of the Active Directory server |
+| LDAP\_\_DISTINGUISHEDNAME | The distinguished name of the directory to search |
+| LDAP\_\_USERNAME | The username of the user to authenicate to Active Directory with |
+| LDAP\_\_PASSWORD | The password of the user to authenicate to Active Directory with |
 
-```
+All values are required except for these cases,
 
-## JSON
-
-```json
-{
-  "Projects": [
-    {
-      "Name": "<name>",
-      "Resources": [
-        {
-          "Type": "Dynamics",
-          "Resource": "",
-          "AuthorizationUri": "",
-          "ClientId": "",
-          "ClientSecret": "",
-          "Username": "",
-          "Password": ""
-        },
-        {
-          "Type": "SharePoint",
-          "Resource": "",
-          "AuthorizationUri": "",
-          "ClientId": "",
-          "ClientSecret": "",
-          "Username": "",
-          "Password": ""
-        }
-      ]
-    }
-  ],
-
-  "LDAP": {
-    "Server": "",
-    "DistinguishedName": "",
-    "Username": "",
-    "Password": ""
-  }
-}
-```
+- Dynamics connections require CLIENTID and CLIENTSECRET.
+- Sharepoint connections require RELYINGPARTYIDENTIFIER.
 
 ## User Secrets
 
@@ -83,30 +50,21 @@ for more information. User secrets are only used for local development. At prese
 You will need to run these commands from the `BcGov.Malt.Web` directory.
 
 ```
-dotnet user-secrets set Projects:0:Name             "<name-0>"
+dotnet user-secrets set Projects:0:Name                         "<name-0>"
 dotnet user-secrets set Projects:0:Resources:0:Resource         "<name-0-resource-1>"
-dotnet user-secrets set Projects:0:Resources:0:Type             "<name-0-type-1>"
+dotnet user-secrets set Projects:0:Resources:0:Type             "Dynamics"
 dotnet user-secrets set Projects:0:Resources:0:AuthorizationUri "https://sts4.gov.bc.ca/adfs/oauth2/token/"
 dotnet user-secrets set Projects:0:Resources:0:ClientId         "<client-id>"
 dotnet user-secrets set Projects:0:Resources:0:ClientSecret     "<client-secret>"
 dotnet user-secrets set Projects:0:Resources:0:Username         "<username>"
 dotnet user-secrets set Projects:0:Resources:0:Password         "<password>"
 
-dotnet user-secrets set Projects:0:Resources::Resource         "<name-0-resource-2>"
-dotnet user-secrets set Projects:0:Resources::Type             "<name-0-type-2>"
-dotnet user-secrets set Projects:0:Resources:1:AuthorizationUri "https://sts4.gov.bc.ca/adfs/oauth2/token/"
-dotnet user-secrets set Projects:0:Resources:1:ClientId         "<client-id>"
-dotnet user-secrets set Projects:0:Resources:1:ClientSecret     "<client-secret>"
-dotnet user-secrets set Projects:0:Resources:1:Username         "<username>"
-dotnet user-secrets set Projects:0:Resources:1:Password         "<password>"
-
-dotnet user-secrets set Projects:1:Name             "<name-1>"
-dotnet user-secrets set Projects:1:Resources:0:Resource         "<name-1-resource-1>"
-dotnet user-secrets set Projects:1:Resources:0:AuthorizationUri "<client-id>"
-dotnet user-secrets set Projects:1:Resources:0:ClientId         "<client-id>"
-dotnet user-secrets set Projects:1:Resources:0:ClientSecret     "<client-secret>"
-dotnet user-secrets set Projects:1:Resources:0:Username         "<username>"
-dotnet user-secrets set Projects:1:Resources:0:Password         "<password>"
+dotnet user-secrets set Projects:0:Resources::Resource                "<name-0-resource-2>"
+dotnet user-secrets set Projects:0:Resources::Type                    "Sharepoint"
+dotnet user-secrets set Projects:0:Resources:1:AuthorizationUri       "https://sts4.gov.bc.ca/adfs/oauth2/token/"
+dotnet user-secrets set Projects:0:Resources:1:RelyingPartyIdentifier "urn:..."
+dotnet user-secrets set Projects:0:Resources:1:Username               "<username>"
+dotnet user-secrets set Projects:0:Resources:1:Password               "<password>"
 
 dotnet user-secrets set LDAP:Server ""
 dotnet user-secrets set LDAP:DistinguishedName ""

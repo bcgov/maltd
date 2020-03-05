@@ -22,7 +22,18 @@ namespace BcGov.Malt.Web.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<User> SearchAsync(string query)
+        public Task<User> SearchAsync(string samAccountName)
+        {
+            return SearchForAsync(samAccountName, MapSearchResult);
+        }
+
+
+        public Task<string> GetUserPrincipalNameAsync(string samAccountName)
+        {
+            return SearchForAsync(samAccountName, MapToUpn);
+        }
+
+        private async Task<T> SearchForAsync<T>(string query, Func<SearchResultEntry, T> mappingFunc) where T : class
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -50,7 +61,7 @@ namespace BcGov.Malt.Web.Services
                 return null;
             }
 
-            return MapSearchResult(entry);
+            return mappingFunc(entry);
         }
 
         private LdapConfiguration GetLdapConfiguration()
@@ -134,7 +145,12 @@ namespace BcGov.Malt.Web.Services
 
             return user;
         }
-        
+
+        private string MapToUpn(SearchResultEntry entry)
+        {
+            return GetAttributeValue(entry, "userPrincipalName") ?? string.Empty;
+        }
+
         private string GetAttributeValue(SearchResultEntry entry, string attributeName)
         {
             DirectoryAttribute attribute = entry.Attributes[attributeName];

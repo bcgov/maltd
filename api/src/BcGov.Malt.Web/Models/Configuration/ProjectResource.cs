@@ -21,7 +21,21 @@ namespace BcGov.Malt.Web.Models.Configuration
 
         public string Username { get; set; }
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the client identifier used in OAuth authentication.
+        /// </summary>
         public string ClientId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the client secret used in OAuth authentication.
+        /// </summary>
         public string ClientSecret { get; set; }
+
+        /// <summary>
+        /// Gets or sets the relying party identifier used in ADFS SAML based
+        /// authentication.
+        /// </summary>
+        public string RelyingPartyIdentifier { get; set; }
     }
 }
