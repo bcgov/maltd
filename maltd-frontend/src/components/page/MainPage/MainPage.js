@@ -109,7 +109,6 @@ export default class MainPage extends Component {
   }
 
   onKeyEnter(event) {
-    console.log(event, this.state.disabledButton);
     const { disabledButton } = this.state;
     if (event.key === "Enter" && !disabledButton) {
       this.onButtonClick();
