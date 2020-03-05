@@ -11,6 +11,7 @@ export default function PlusIcon({ onClick }) {
       onClick={onClick}
       onKeyDown={onClick}
       className="icon"
+      data-cy="plus-icon"
     >
       <img src={Icon} alt="plus icon" width="25px" height="25px" />
     </div>

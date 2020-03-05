@@ -34,7 +34,7 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
           <FaCaretDown />
         </div>
       </DropdownToggle>
-      <DropdownMenu>{dropdownItems}</DropdownMenu>
+      <DropdownMenu data-cy="drop-down-menu">{dropdownItems}</DropdownMenu>
     </UncontrolledDropdown>
   );
 }

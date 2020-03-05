@@ -86,8 +86,6 @@ namespace BcGov.Malt.Web.Services
 
             if (missingSettings.Count != 0)
             {
-                _logger.LogError("Missing LDAP configuration settings {Settings}", missingSettings);
-
                 string joinedSettings = string.Join(", ", missingSettings.ToArray());
                 throw new ConfigurationErrorsException("Missing LDAP configuration settings: " + joinedSettings + ".");
             }

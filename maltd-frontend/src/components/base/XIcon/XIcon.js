@@ -11,6 +11,7 @@ export default function XIcon({ onClick, id }) {
       onClick={() => onClick(id)}
       onKeyDown={() => onClick(id)}
       className="icon"
+      data-cy="close-icon"
     >
       <img src={Icon} alt="x icon" width="25px" height="25px" />
     </div>

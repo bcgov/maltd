@@ -25,6 +25,7 @@ exports[`User Access Component renders as expected 1`] = `
       >
         <div
           className="project-list-item"
+          id="project-info"
         >
           <strong
             className="large-size"
@@ -33,6 +34,7 @@ exports[`User Access Component renders as expected 1`] = `
           </strong>
           <p
             className="project-list-item"
+            id="email-info"
           >
             useremail@gov.bc.ca
           </p>
@@ -120,6 +122,7 @@ exports[`User Access Component renders as expected 1`] = `
           <div
             aria-hidden={true}
             className="dropdown-menu"
+            data-cy="drop-down-menu"
             role="menu"
             tabIndex="-1"
           >
@@ -139,6 +142,7 @@ exports[`User Access Component renders as expected 1`] = `
         <div>
           <div
             className="icon"
+            data-cy="plus-icon"
             onClick={[Function]}
             onKeyDown={[Function]}
             role="button"

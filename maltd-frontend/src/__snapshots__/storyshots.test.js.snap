@@ -29,6 +29,7 @@ exports[`Storyshots BackIcon default 1`] = `
   </svg>
   <div
     className="limit-width"
+    data-cy="back-nav"
   >
     <h5>
       Back
@@ -85,6 +86,7 @@ exports[`Storyshots Dropdown default 1`] = `
   <div
     aria-hidden={true}
     className="dropdown-menu"
+    data-cy="drop-down-menu"
     role="menu"
     tabIndex="-1"
   >
@@ -212,6 +214,7 @@ exports[`Storyshots List Element current project 1`] = `
 >
   <div
     className="project-list-item"
+    id="project-info"
   >
     <strong
       className="large-size"
@@ -237,6 +240,7 @@ exports[`Storyshots List Element user 1`] = `
 >
   <div
     className="project-list-item"
+    id="project-info"
   >
     <strong
       className="large-size"
@@ -245,6 +249,7 @@ exports[`Storyshots List Element user 1`] = `
     </strong>
     <p
       className="project-list-item"
+      id="email-info"
     >
       user@gov.bc.ca
     </p>
@@ -290,6 +295,7 @@ exports[`Storyshots NavBar default 1`] = `
 exports[`Storyshots PlusIcon default 1`] = `
 <div
   className="icon"
+  data-cy="plus-icon"
   onClick={[Function]}
   onKeyDown={[Function]}
   role="button"
@@ -333,6 +339,7 @@ exports[`Storyshots UserAccess default 1`] = `
       >
         <div
           className="project-list-item"
+          id="project-info"
         >
           <strong
             className="large-size"
@@ -341,6 +348,7 @@ exports[`Storyshots UserAccess default 1`] = `
           </strong>
           <p
             className="project-list-item"
+            id="email-info"
           >
             user@gov.bc.ca
           </p>
@@ -370,6 +378,7 @@ exports[`Storyshots UserAccess default 1`] = `
           >
             <div
               className="project-list-item"
+              id="project-info"
             >
               <strong
                 className="large-size"
@@ -380,6 +389,7 @@ exports[`Storyshots UserAccess default 1`] = `
             <div>
               <div
                 className="icon"
+                data-cy="close-icon"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="button"
@@ -405,6 +415,7 @@ exports[`Storyshots UserAccess default 1`] = `
           >
             <div
               className="project-list-item"
+              id="project-info"
             >
               <strong
                 className="large-size"
@@ -415,6 +426,7 @@ exports[`Storyshots UserAccess default 1`] = `
             <div>
               <div
                 className="icon"
+                data-cy="close-icon"
                 onClick={[Function]}
                 onKeyDown={[Function]}
                 role="button"
@@ -493,6 +505,7 @@ exports[`Storyshots UserAccess default 1`] = `
           <div
             aria-hidden={true}
             className="dropdown-menu"
+            data-cy="drop-down-menu"
             role="menu"
             tabIndex="-1"
           >
@@ -522,6 +535,7 @@ exports[`Storyshots UserAccess default 1`] = `
         </div>
         <div
           className="icon"
+          data-cy="plus-icon"
           onClick={[Function]}
           onKeyDown={[Function]}
           role="button"
@@ -569,6 +583,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
       >
         <div
           className="project-list-item"
+          id="project-info"
         >
           <strong
             className="large-size"
@@ -577,6 +592,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
           </strong>
           <p
             className="project-list-item"
+            id="email-info"
           >
             user@gov.bc.ca
           </p>
@@ -664,6 +680,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
           <div
             aria-hidden={true}
             className="dropdown-menu"
+            data-cy="drop-down-menu"
             role="menu"
             tabIndex="-1"
           >
@@ -694,6 +711,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
         <div>
           <div
             className="icon"
+            data-cy="plus-icon"
             onClick={[Function]}
             onKeyDown={[Function]}
             role="button"
@@ -899,6 +917,7 @@ exports[`Storyshots UserSearch user does not exist 1`] = `
           >
             <small
               className="error-message"
+              data-cy="error-text"
             >
               This user does not exist, please try again with a different IDIR username.
             </small>
@@ -971,6 +990,7 @@ exports[`Storyshots UserSearch valid 1`] = `
 exports[`Storyshots XIcon default 1`] = `
 <div
   className="icon"
+  data-cy="close-icon"
   onClick={[Function]}
   onKeyDown={[Function]}
   role="button"
