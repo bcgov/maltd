@@ -10,7 +10,6 @@ export default function PlusIcon({ onClick }) {
       tabIndex="0"
       onClick={onClick}
       onKeyDown={onClick}
-
       className="icon"
       data-cy="plus-icon"
     >
