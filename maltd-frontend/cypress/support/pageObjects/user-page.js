@@ -18,13 +18,11 @@ class UserPage {
   }
 
   static getProjectInfo() {
-    return cy.get(
-      ":nth-child(2) > .project-div > [data-cy=project-info] > .large-size"
-    );
+    return cy.get(":nth-child(2) > .project-div > #project-info > .large-size");
   }
 
   static getEmailInfo() {
-    return cy.get("[data-cy=email-info]");
+    return cy.get("#email-info");
   }
 
   static getCloseIcon() {

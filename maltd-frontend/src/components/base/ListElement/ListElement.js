@@ -11,10 +11,10 @@ export default function ListElement({
     return (
       <React.Fragment>
         <div className="project-div">
-          <div className="project-list-item" data-cy="project-info">
+          <div className="project-list-item" id="project-info">
             <strong className="large-size">{title}</strong>
             {description && (
-              <p className="project-list-item" data-cy="email-info">
+              <p className="project-list-item" id="email-info">
                 {description}
               </p>
             )}
