@@ -41,9 +41,6 @@ exports[`User Access Component renders as expected 1`] = `
         </div>
         <div />
       </div>
-      <p>
-        useremail@gov.bc.ca
-      </p>
     </div>
     <div
       className="top-projects col"

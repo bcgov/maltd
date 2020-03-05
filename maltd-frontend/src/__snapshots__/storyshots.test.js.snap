@@ -235,32 +235,27 @@ exports[`Storyshots List Element empty 1`] = `
 `;
 
 exports[`Storyshots List Element user 1`] = `
-Array [
+<div
+  className="project-div"
+>
   <div
-    className="project-div"
+    className="project-list-item"
+    id="project-info"
   >
-    <div
-      className="project-list-item"
-      id="project-info"
+    <strong
+      className="large-size"
     >
-      <strong
-        className="large-size"
-      >
-        User name
-      </strong>
-      <p
-        className="project-list-item"
-        id="email-info"
-      >
-        user@gov.bc.ca
-      </p>
-    </div>
-    <div />
-  </div>,
-  <p>
-    user@gov.bc.ca
-  </p>,
-]
+      User name
+    </strong>
+    <p
+      className="project-list-item"
+      id="email-info"
+    >
+      user@gov.bc.ca
+    </p>
+  </div>
+  <div />
+</div>
 `;
 
 exports[`Storyshots NavBar default 1`] = `
@@ -360,9 +355,6 @@ exports[`Storyshots UserAccess default 1`] = `
         </div>
         <div />
       </div>
-      <p>
-        user@gov.bc.ca
-      </p>
     </div>
     <div
       className="top-projects col"
@@ -607,9 +599,6 @@ exports[`Storyshots UserAccess no projects 1`] = `
         </div>
         <div />
       </div>
-      <p>
-        user@gov.bc.ca
-      </p>
     </div>
     <div
       className="top-projects col"
@@ -930,15 +919,7 @@ exports[`Storyshots UserSearch user does not exist 1`] = `
               className="error-message"
               data-cy="error-text"
             >
-              <p
-                className=""
-              >
-                <small
-                  className="error-message"
-                >
-                  This user does not exist, please try again with a different IDIR username.
-                </small>
-              </p>
+              This user does not exist, please try again with a different IDIR username.
             </small>
           </p>
         </div>
