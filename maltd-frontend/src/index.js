@@ -1,9 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import axios from "axios";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
+
+if (process.env.REACT_APP_MALTD_API) {
+  axios.defaults.baseURL = process.env.REACT_APP_MALTD_API;
+}
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

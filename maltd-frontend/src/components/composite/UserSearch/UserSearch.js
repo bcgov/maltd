@@ -9,7 +9,8 @@ export default function UserSearch({
   inputField,
   generalButton,
   onClick,
-  onChange
+  onChange,
+  onKeyEnter
 }) {
   return (
     <div className="move-down">
@@ -20,7 +21,11 @@ export default function UserSearch({
       <p />
       {!state.isLoading && state.userExists === null && (
         <div className="inner">
-          <InputField inputField={inputField} onChange={onChange} />
+          <InputField
+            inputField={inputField}
+            onChange={onChange}
+            onKeyEnter={onKeyEnter}
+          />
           <p />
           <div className="error-btn-div">
             <div />
@@ -96,10 +101,12 @@ UserSearch.propTypes = {
     label: PropTypes.any.isRequired
   }).isRequired,
   onClick: PropTypes.func,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onKeyEnter: PropTypes.func
 };
 
 UserSearch.defaultProps = {
   onClick: () => {},
-  onChange: () => {}
+  onChange: () => {},
+  onKeyEnter: () => {}
 };

@@ -12,10 +12,12 @@ exports[`User Search Component renders as expected 1`] = `
     className="inner"
   >
     <input
+      autoFocus={true}
       className="input-field my-2 form-control"
       disabled={false}
       name="myinputfield"
       onChange={[Function]}
+      onKeyPress={[Function]}
       placeholder="placeholder"
       type="text"
       value="idir"
