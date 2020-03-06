@@ -23,7 +23,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <summary>
         /// Gets the XML RequestSecurityTokenResponse from the ADFS Secure Token Service (STS).
         /// </summary>
-        /// <param name="spSiteUrl"></param>
+        /// <param name="relyingParty"></param>
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <param name="stsUrl"></param>
@@ -35,9 +35,9 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
             // generate the WS-Trust security token request SOAP message 
             string samlSoapRequest = CreateSamlSoapRequest(relyingParty, username, password, stsUrl);
-            var content = new StringContent(samlSoapRequest, System.Text.Encoding.UTF8, "application/soap+xml");
+            using var content = new StringContent(samlSoapRequest, System.Text.Encoding.UTF8, "application/soap+xml");
 
-            var client = new HttpClient();
+            using var client = new HttpClient();
             var responseMessage = await client.PostAsync(stsUrl, content);
 
             // A valid response needs to be a SOAP element, Content Type = application/soap+xml
@@ -164,7 +164,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <summary>
         /// Create a SOAP Envelope message for requesting a SAML token
         /// </summary>
-        /// <param name="url"></param>
+        /// <param name="relyingParty"></param>
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <param name="toUrl"></param>

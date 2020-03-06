@@ -6,16 +6,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Services
 {
     public class OAuthClient : IOAuthClient
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger<OAuthClient> _logger;
 
-        public OAuthClient(HttpClient httpClient)
+        public OAuthClient(HttpClient httpClient, ILogger<OAuthClient> logger)
         {
-            this._httpClient = httpClient;
+            this._httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Token> GetTokenAsync(OAuthOptions options, CancellationToken cancellationToken)
@@ -38,17 +41,17 @@ namespace BcGov.Malt.Web.Services
 
             using var content = new FormUrlEncodedContent(data);
 
-            // grab the time before so when computing the exiration,
-            // the expiration date/time will be 
-            DateTimeOffset tokenCreatedAtUtc = DateTimeOffset.UtcNow;
-
             var response = await _httpClient.PostAsync(options.AuthorizationUri, content, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
-                var responseData = response.Content == null
-                    ? null
-                    : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                // {"error":"invalid_client","error_description":"MSIS9607: The \u0027client_id\u0027 parameter in the request is invalid. No registered client is found with this identifier."}
+                var responseData = string.Empty;
+
+                if (response.Content != null)
+                {
+                    responseData = await response.Content.ReadAsStringAsync();
+                }
 
                 //throw new OAuthApiException(
                 //    "The HTTP status code of the response was not expected (" + (int)response.StatusCode + ").",
@@ -56,19 +59,14 @@ namespace BcGov.Malt.Web.Services
                 //    responseData,
                 //    response.Headers.ToDictionary(x => x.Key, x => x.Value), null);
 
-                throw new OAuthApiException();
+                _logger.LogError("Error getting getting OAuth for {Resource} using {ClientId} : {HttpStatus} - {ErrorMessage}", options.Resource, options.ClientId, response.StatusCode, responseData);
+                throw new OAuthApiException("Error getting OAuth token", (int)response.StatusCode, responseData, new Dictionary<string, string>(), string.Empty);
             }
 
             using var stream = await response.Content.ReadAsStreamAsync();
 
             var token = await JsonSerializer.DeserializeAsync<Token>(stream);
-
-            // compute the absolute expiration time of the access and refresh tokens
-            //token.ExpiresAtUtc = tokenCreatedAtUtc.AddSeconds(token.ExpiresIn);
-            //token.RefreshTokenExpiresAtUtc = tokenCreatedAtUtc.AddSeconds(token.RefreshTokenExpiresIn);
-
             return token;
-
         }
 
     }

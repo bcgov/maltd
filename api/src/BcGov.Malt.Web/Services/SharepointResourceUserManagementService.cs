@@ -1,14 +1,28 @@
-﻿namespace BcGov.Malt.Web.Services
+﻿using System.Threading.Tasks;
+using BcGov.Malt.Web.Models.Configuration;
+
+namespace BcGov.Malt.Web.Services
 {
-    public class SharepointResourceUserManagementService : IResourceUserManagementService
+    public class SharepointResourceUserManagementService : ResourceUserManagementService
     {
-        public void Add(string user)
+        public SharepointResourceUserManagementService(ProjectConfiguration project, ProjectResource projectResource) 
+            : base(project, projectResource)
         {
         }
 
-        public void Remove(string user)
+        public override Task AddUserAsync(string user)
         {
+            return Task.CompletedTask;
         }
 
+        public override Task RemoveUserAsync(string user)
+        {
+            return Task.CompletedTask;
+        }
+
+        public override Task<bool> UserHasAccessAsync(string user)
+        {
+            return Task.FromResult(false);
+        }
     }
 }
