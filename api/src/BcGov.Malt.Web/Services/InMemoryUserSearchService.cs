@@ -35,7 +35,7 @@ namespace BcGov.Malt.Web.Services
 
             if (user == null)
             {
-                return null;
+                return Task.FromResult(user);
             }
 
             return Task.FromResult(user);
@@ -52,7 +52,8 @@ namespace BcGov.Malt.Web.Services
 
             if (user == null)
             {
-                return null;
+                string nullString = null;
+                return Task.FromResult(nullString);
             }
 
             return Task.FromResult(user.Email); // UPN is not the same as Email, but good enough for testing
