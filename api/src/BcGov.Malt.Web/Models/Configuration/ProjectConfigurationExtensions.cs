@@ -71,14 +71,19 @@ namespace BcGov.Malt.Web.Models.Configuration
                         errors.Add($"Project resource type is invalid at index {i}");
                     }
 
-                    if (string.IsNullOrEmpty(projectResource.ClientId))
+                    if (projectResource.Type == ProjectType.Dynamics && string.IsNullOrEmpty(projectResource.ClientId))
                     {
-                        errors.Add($"Project resource ClientId is missing at index {i}");
+                        errors.Add($"Dynamics Project resource ClientId is missing at index {i}");
                     }
 
-                    if (string.IsNullOrEmpty(projectResource.ClientSecret))
+                    if (projectResource.Type == ProjectType.Dynamics && string.IsNullOrEmpty(projectResource.ClientSecret))
                     {
-                        errors.Add($"Project resource ClientSecret is missing at index {i}");
+                        errors.Add($"Dynamics Project resource ClientSecret is missing at index {i}");
+                    }
+
+                    if (projectResource.Type == ProjectType.SharePoint && string.IsNullOrEmpty(projectResource.RelyingPartyIdentifier))
+                    {
+                        errors.Add($"SharePoint Project resource RelyingPartyIdentifier is missing at index {i}");
                     }
 
                     if (string.IsNullOrEmpty(projectResource.Username))
