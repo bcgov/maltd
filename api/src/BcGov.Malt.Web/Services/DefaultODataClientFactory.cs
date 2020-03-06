@@ -22,7 +22,7 @@ namespace BcGov.Malt.Web.Services
                 throw new System.ArgumentNullException(nameof(name));
             }
 
-            HttpClient httpClient = _httpClientFactory.CreateClient(name + "-dynamics"); // -dynamics is a hack for now
+            HttpClient httpClient = _httpClientFactory.CreateClient(name);
 
             ODataClientSettings settings = new ODataClientSettings(httpClient);
 

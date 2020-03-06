@@ -5,6 +5,7 @@ using System.Net.Http;
 using BcGov.Malt.Web.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Services
 {
@@ -68,8 +69,9 @@ namespace BcGov.Malt.Web.Services
                     HttpClient httpClient = httpClientFactory.CreateClient(projectResourceKey + "-authorization");
 
                     // create the handler that will authenticate the call and add authorization header
+                    ILogger<OAuthClient> logger = serviceProvider.GetRequiredService<ILogger<OAuthClient>>();
                     ITokenCache tokenCache = serviceProvider.GetRequiredService<ITokenCache>();
-                    ITokenService tokenService = new OAuthTokenService(new OAuthClient(httpClient), tokenCache);
+                    ITokenService tokenService = new OAuthTokenService(new OAuthClient(httpClient, logger), tokenCache);
                     var handler = new TokenAuthorizationHandler(tokenService, CreateOAuthOptions(projectResource));
                     return handler;
                 });

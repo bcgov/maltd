@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
-using BcGov.Malt.Web.Services;
+using BcGov.Malt.Web.Features.Users;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -17,22 +18,18 @@ namespace BcGov.Malt.Web.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserSearchService _userSearchService;
-        private readonly IUserManagementService _userManagementService;
+        private readonly IMediator _mediator;
         private readonly ILogger<UsersController> _logger;
 
         /// <summary>Initializes a new instance of the <see cref="UsersController" /> class.</summary>
-        /// <param name="userSearchService">The user search service.</param>
-        /// <param name="userManagementService">The user management service</param>
+        /// <param name="mediator"></param>
         /// <param name="logger">The logger.</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="userSearchService" />, <paramref name="userManagementService" /> 
-        /// or <paramref name="logger" /> is null.
+        /// <paramref name="mediator" /> or <paramref name="logger" /> is null.
         /// </exception>
-        public UsersController(IUserSearchService userSearchService, IUserManagementService userManagementService, ILogger<UsersController> logger)
+        public UsersController(IMediator mediator, ILogger<UsersController> logger)
         {
-            _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
-            _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -55,9 +52,9 @@ namespace BcGov.Malt.Web.Controllers
                 return BadRequest();
             }
 
-            var user = await _userSearchService.SearchAsync(query);
-
             _logger.LogDebug("Searching for user using {query}", query);
+
+            var user = await _mediator.Send(new Search.Request(query));
 
             if (user == null)
             {
@@ -90,18 +87,7 @@ namespace BcGov.Malt.Web.Controllers
 
             _logger.LogDebug("Looking up user {username}", username);
 
-            var user = await _userSearchService.SearchAsync(username);
-
-            if (user == null)
-            {
-                _logger.LogDebug("Lookup for {username} returned null, returning 404 Not Found", username);
-                return NotFound();
-            }
-
-            _logger.LogDebug("Getting the current projects for {username}", user.UserName);
-            var projects = await _userManagementService.GetProjectsForUserAsync(user);
-
-            DetailedUser result = new DetailedUser(user, projects);
+            DetailedUser result = await _mediator.Send(new Lookup.Request(username));
 
             return result;
         }

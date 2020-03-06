@@ -6,6 +6,7 @@ using BcGov.Malt.Web.Models;
 
 namespace BcGov.Malt.Web.Services
 {
+
     /// <summary>
     /// A mock, in memory user management service.
     /// </summary>

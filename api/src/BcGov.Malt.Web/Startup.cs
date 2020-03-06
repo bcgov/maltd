@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
 using System.Threading;
 using System.Net.Http.Headers;
+using MediatR;
 
 namespace BcGov.Malt.Web
 {
@@ -92,6 +93,9 @@ namespace BcGov.Malt.Web
                 };
             });
 
+            // add all the handlers in this project
+            services.AddMediatR(GetType().Assembly);
+
             AddSwaggerGen(services);
 
             services.AddMemoryCache();
@@ -105,9 +109,10 @@ namespace BcGov.Malt.Web
 
             // singleton for now since these are in memory (testing) implementations
             //services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
-            services.AddSingleton<IUserManagementService, InMemoryUserManagementService>();
+            //services.AddTransient<IUserManagementService, InMemoryUserManagementService>();
 
-            services.AddSingleton<IODataClientFactory, DefaultODataClientFactory>();
+            services.AddTransient<IUserManagementService, UserManagementService>();
+            services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
 
             services.AddTransient<ITokenCache, TokenCache>();
         }

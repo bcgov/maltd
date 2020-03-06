@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace BcGov.Malt.Web.Models
@@ -42,5 +40,37 @@ namespace BcGov.Malt.Web.Models
         /// </summary>
         [JsonPropertyName("name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the resources.
+        /// </summary>
+        /// <value>
+        /// The resources.
+        /// </value>
+        [JsonPropertyName("resources")]
+        public List<ProjectResourceStatus> Resources { get; set; }
+    }
+
+    public class ProjectResourceStatus
+    {
+        ////public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the resource
+        /// </summary>
+        /// <value>
+        /// The type will be Dynamics or Sharepoint
+        /// </value>
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        /// <value>
+        /// The status can be: member, not-member, error
+        /// </value>
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
     }
 }
