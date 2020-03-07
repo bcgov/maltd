@@ -4,9 +4,21 @@ import XIcon from "../XIcon/XIcon";
 import "./ListElement.css";
 
 export default function ListElement({
-  listElement: { title, description, id },
+  listElement: { title, description, resources, id },
   onXClick
 }) {
+  let memberOfResources = "";
+
+  if (resources && resources.length > 0) {
+    resources.forEach((resource, index) => {
+      if (index !== resources.length - 1) {
+        memberOfResources += `${resource}, `;
+      } else {
+        memberOfResources += resource;
+      }
+    });
+  }
+
   if (title) {
     return (
       <React.Fragment>
@@ -16,6 +28,11 @@ export default function ListElement({
             {description && (
               <p className="project-list-item" id="email-info">
                 {description}
+              </p>
+            )}
+            {memberOfResources && (
+              <p className="project-list-item" id="email-info">
+                {memberOfResources}
               </p>
             )}
           </div>
@@ -40,6 +57,7 @@ ListElement.propTypes = {
   listElement: PropTypes.shape({
     title: PropTypes.string,
     description: PropTypes.string,
+    resources: PropTypes.array,
     id: PropTypes.string
   }).isRequired,
   onXClick: PropTypes.func

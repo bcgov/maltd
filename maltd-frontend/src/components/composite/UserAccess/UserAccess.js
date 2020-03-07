@@ -19,6 +19,8 @@ export default function UserAccess({
   };
   const projectExists =
     projects && projects.length > 0 ? "projects" : "noProjects";
+
+  let resources = [];
   let key = null;
 
   return (
@@ -38,12 +40,26 @@ export default function UserAccess({
             {projects &&
               projects.length > 0 &&
               projects.map(value => {
+                resources.push(value.resources);
+                let memberOfResources = [];
+
+                if (resources && resources.length > 0) {
+                  resources.forEach(resource => {
+                    resource.map(value => {
+                      if (value.status === "member")
+                        memberOfResources.push(value.type);
+                    });
+                  });
+                }
+
                 const listElement = {
                   title: value.name,
-                  description: value.type,
+                  resources: memberOfResources,
                   id: value.id
                 };
+
                 key = listElement.id;
+
                 return (
                   <div key={key}>
                     <ListElement

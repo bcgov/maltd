@@ -238,6 +238,7 @@ export default class MainPage extends Component {
                 onChange={e => this.onInputChange(e)}
                 generalButton={generalButton}
                 onClick={() => this.onButtonClick()}
+                onKeyEnter={e => this.onKeyEnter(e)}
               />
             )}
 
