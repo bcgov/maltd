@@ -44,10 +44,12 @@ export default function UserAccess({
                 const memberOfResources = [];
 
                 if (resources && resources.length > 0) {
-                  resources.forEach(function(resource) {
-                    resource.map(function(res) {
+                  resources.forEach(resource => {
+                    resource.map(res => {
                       if (res.status === "member")
                         memberOfResources.push(res.type);
+
+                      return true;
                     });
                   });
                 }
