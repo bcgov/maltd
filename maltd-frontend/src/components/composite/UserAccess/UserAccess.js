@@ -20,7 +20,7 @@ export default function UserAccess({
   const projectExists =
     projects && projects.length > 0 ? "projects" : "noProjects";
 
-  let resources = [];
+  const resources = [];
   let key = null;
 
   return (
@@ -41,13 +41,13 @@ export default function UserAccess({
               projects.length > 0 &&
               projects.map(value => {
                 resources.push(value.resources);
-                let memberOfResources = [];
+                const memberOfResources = [];
 
                 if (resources && resources.length > 0) {
-                  resources.forEach(resource => {
-                    resource.map(value => {
-                      if (value.status === "member")
-                        memberOfResources.push(value.type);
+                  resources.forEach(function(resource) {
+                    resource.map(function(res) {
+                      if (res.status === "member")
+                        memberOfResources.push(res.type);
                     });
                   });
                 }
