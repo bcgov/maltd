@@ -163,10 +163,11 @@ namespace BcGov.Malt.Web
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            // Apply CORS policies to all endpoints
+            // Apply CORS policies to all endpoints,
+            // ensure this is set before the call to UseRouting
             app.UseCors();
+
+            app.UseRouting();
 
             app.UseAuthorization();
 
