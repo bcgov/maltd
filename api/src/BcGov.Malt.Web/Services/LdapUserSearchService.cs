@@ -1,18 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.DirectoryServices.Protocols;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Novell.Directory.Ldap;
 
 namespace BcGov.Malt.Web.Services
 {
     public class LdapUserSearchService : IUserSearchService
     {
+        private static readonly string[] LdapSearchAttributes = new[]
+        {
+            "bcgovGUID",          // id
+            "sAMAccountName",     // username
+            "sn",                 // lastname
+            "givenName",          // firstname
+            "mail"                // email address
+        };
+
+        private static readonly string[] LdapUpnAttributes = new[]
+{
+            "userPrincipalName",  // UPN
+        };
+
         private readonly IConfiguration _configuration;
         private readonly ILogger<LdapUserSearchService> _logger;
 
@@ -24,16 +37,15 @@ namespace BcGov.Malt.Web.Services
 
         public Task<User> SearchAsync(string samAccountName)
         {
-            return SearchForAsync(samAccountName, MapSearchResult);
+            return SearchForAsync(samAccountName, LdapSearchAttributes, MapSearchResult);
         }
-
-
+        
         public Task<string> GetUserPrincipalNameAsync(string samAccountName)
         {
-            return SearchForAsync(samAccountName, MapToUpn);
+            return SearchForAsync(samAccountName, LdapUpnAttributes, MapToUpn);
         }
 
-        private async Task<T> SearchForAsync<T>(string query, Func<SearchResultEntry, T> mappingFunc) where T : class
+        private async Task<T> SearchForAsync<T>(string query, string[] attributes, Func<LdapEntry, T> mappingFunc) where T : class
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -48,20 +60,25 @@ namespace BcGov.Malt.Web.Services
 
             LdapConfiguration configuration = GetLdapConfiguration();
 
-            LdapDirectoryIdentifier directory = new LdapDirectoryIdentifier(configuration.Server);
-            NetworkCredential credentials = new NetworkCredential(configuration.Username, configuration.Password);
+            using LdapConnection connection = new LdapConnection();
+            connection.Connect(configuration.Server, 389);
+            connection.Bind(configuration.Username, configuration.Password);
 
-            SearchRequest searchRequest = CreateSearchRequest(configuration.DistinguishedName, query);
+            var searchResults = connection.Search(
+                configuration.DistinguishedName,
+                LdapConnection.ScopeSub,
+                $"(&(objectCategory=person)(objectClass=user)(sAMAccountName={query}))",
+                attributes, 
+                false);
 
-            using LdapConnection connection = new LdapConnection(directory, credentials);
-            SearchResultEntry entry = await SendRequestAsync(connection, searchRequest);
-
-            if (entry == null)
+            if (searchResults.HasMore())
             {
-                return null;
+                LdapEntry entry = searchResults.Next();
+                return mappingFunc(entry);
             }
 
-            return mappingFunc(entry);
+            return null; // not found
+
         }
 
         private LdapConfiguration GetLdapConfiguration()
@@ -93,69 +110,23 @@ namespace BcGov.Malt.Web.Services
             return configuration;
         }
 
-        private Task<SearchResultEntry> SendRequestAsync(LdapConnection connection, SearchRequest searchRequest)
-        {
-            // convert Begin/End to async
-            // example from https://github.com/dotnet/runtime/issues/28470
-            return Task.Factory.FromAsync((callback, state) =>
-            {
-                return connection.BeginSendRequest(searchRequest, PartialResultProcessing.ReturnPartialResultsAndNotifyCallback, callback, state);
-            },
-            (asyncresult) =>
-            {
-                SearchResponse searchResponse = (SearchResponse)connection.EndSendRequest(asyncresult);
-                if (searchResponse.ResultCode == ResultCode.Success && searchResponse.Entries.Count != 0)
-                {
-                    return searchResponse.Entries[0];
-                }
-
-                return null;
-            },
-            null);
-        }
-
-        private SearchRequest CreateSearchRequest(string distinguishedName, string username)
-        {
-            SearchRequest searchRequest = new SearchRequest();
-            searchRequest.DistinguishedName = distinguishedName;
-            searchRequest.Filter = $"(&(objectCategory=person)(objectClass=user)(sAMAccountName={username}))";
-
-            searchRequest.Attributes.Add("bcgovGUID");          // id
-            searchRequest.Attributes.Add("sAMAccountName");     // username
-            searchRequest.Attributes.Add("userPrincipalName");  // UPN
-            searchRequest.Attributes.Add("sn");                 // lastname
-            searchRequest.Attributes.Add("givenName");          // firstname
-            searchRequest.Attributes.Add("mail");               // email address
-
-            return searchRequest;
-        }
-
-        private User MapSearchResult(SearchResultEntry entry)
+        private User MapSearchResult(LdapEntry entry)
         {
             var user = new User
             {
-                Id = GetAttributeValue(entry, "bcgovGUID") ?? string.Empty,
-                UserName = GetAttributeValue(entry, "sAMAccountName") ?? string.Empty,
-                FirstName = GetAttributeValue(entry, "givenName") ?? string.Empty,
-                LastName = GetAttributeValue(entry, "sn") ?? string.Empty,
-                Email = GetAttributeValue(entry, "mail") ?? string.Empty,
+                Id = entry.GetAttribute("bcgovGUID")?.StringValue ?? string.Empty,
+                UserName = entry.GetAttribute("sAMAccountName")?.StringValue ?? string.Empty,
+                FirstName = entry.GetAttribute("givenName")?.StringValue ?? string.Empty,
+                LastName = entry.GetAttribute("sn")?.StringValue ?? string.Empty,
+                Email = entry.GetAttribute("mail")?.StringValue ?? string.Empty,
             };
 
             return user;
         }
 
-        private string MapToUpn(SearchResultEntry entry)
+        private string MapToUpn(LdapEntry entry)
         {
-            return GetAttributeValue(entry, "userPrincipalName") ?? string.Empty;
-        }
-
-        private string GetAttributeValue(SearchResultEntry entry, string attributeName)
-        {
-            DirectoryAttribute attribute = entry.Attributes[attributeName];
-
-            object[] values = attribute?.GetValues(typeof(string));
-
-            return values != null && values.Length == 1 ? (string)values[0] : null;
+            return entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty;
         }
     }
 
