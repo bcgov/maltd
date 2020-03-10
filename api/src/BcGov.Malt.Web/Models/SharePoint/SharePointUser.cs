@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace BcGov.Malt.Web.Models.SharePoint
 {
-
     public class SharepointUser
     {
         [JsonPropertyName("d")]
-        public SharepointUserData Userdata { get; set; }
+        public SharepointUserData Data { get; set; }
     }
 
     public class SharepointUserData
     {
-        [JsonPropertyName("results")] 
-        public SharepointUserResult[] results { get; set; }
+        [JsonPropertyName("results")]
+        public SharepointUserResult[] Results { get; set; }
     }
 
     public class SharepointUserResult
     {
         [JsonIgnore]
         public SharepointUserMetadata __metadata { get; set; }
+
         [JsonIgnore]
         public SharepointUserGroups Groups { get; set; }
+
         [JsonPropertyName("Id")]
         public int Id { get; set; }
+
         public bool IsHiddenInUI { get; set; }
         public string LoginName { get; set; }
         public string Title { get; set; }
@@ -39,8 +37,13 @@ namespace BcGov.Malt.Web.Models.SharePoint
 
     public class SharepointUserMetadata
     {
-        public string id { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("uri")]
         public string uri { get; set; }
+
+        [JsonPropertyName("id")]
         public string type { get; set; }
     }
 

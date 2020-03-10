@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace BcGov.Malt.Web.Models.SharePoint
 {
-         
     public class SiteGroup
     {
         [JsonPropertyName("d")]
@@ -17,6 +12,7 @@ namespace BcGov.Malt.Web.Models.SharePoint
     {
         [JsonPropertyName("__metadata")] 
         public SiteGroupMetadata SiteGroupmetadata { get; set; }
+
         [JsonPropertyName("Id")]
         public int Id { get; set; }
     }
@@ -25,8 +21,10 @@ namespace BcGov.Malt.Web.Models.SharePoint
     {
         [JsonPropertyName("id")]
         public string id { get; set; }
+
         [JsonPropertyName("uri")]
         public string uri { get; set; }
+
         [JsonPropertyName("type")]
         public string type { get; set; }
     }

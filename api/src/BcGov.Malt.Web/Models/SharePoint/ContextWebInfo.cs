@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace BcGov.Malt.Web.Models.SharePoint
 {
@@ -23,16 +19,22 @@ namespace BcGov.Malt.Web.Models.SharePoint
     {
         [JsonIgnore]
         public ResponseMetadata Responsemetadata { get; set; }
+
         [JsonPropertyName("FormDigestTimeoutSeconds")]
         public int FormDigestTimeoutSeconds { get; set; }
+
         [JsonPropertyName("FormDigestValue")]
         public string FormDigestValue { get; set; }
+
         [JsonIgnore]
         public string LibraryVersion { get; set; }
+
         [JsonIgnore]
         public string SiteFullUrl { get; set; }
+
         [JsonIgnore]
         public Supportedschemaversions SupportedSchemaVersions { get; set; }
+
         [JsonIgnore]
         public string WebFullUrl { get; set; }
     }
