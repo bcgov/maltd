@@ -7,8 +7,16 @@ import "./UserAccess.css";
 
 const userAccess = {
   projects: [
-    { name: "Project1", id: "1" },
-    { name: "Project2", id: "2" }
+    {
+      name: "Project1",
+      id: "1",
+      resources: [{ type: "Dyn", status: "member" }]
+    },
+    {
+      name: "Project2",
+      id: "2",
+      resources: [{ type: "Dyn", status: "member" }]
+    }
   ],
   userName: "User Name",
   userEmail: "user@gov.bc.ca"

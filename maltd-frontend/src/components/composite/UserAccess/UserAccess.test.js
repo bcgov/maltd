@@ -63,8 +63,16 @@ describe("User Access", () => {
       <UserAccess
         userAccess={{
           projects: [
-            { name: "Project1", id: "123" },
-            { name: "Project2", id: "1234" }
+            {
+              name: "Project1",
+              id: "123",
+              resources: [{ type: "Dyn", status: "member" }]
+            },
+            {
+              name: "Project2",
+              id: "1234",
+              resources: [{ type: "Dyn", status: "member" }]
+            }
           ],
           userName,
           userEmail
