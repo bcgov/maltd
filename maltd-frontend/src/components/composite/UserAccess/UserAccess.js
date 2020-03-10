@@ -37,12 +37,9 @@ export default function UserAccess({
             </Row>
             {projectExists === "projects" &&
               projects.map(value => {
-                const resources = [];
                 const memberOfResources = [];
 
-                resources.push(value.resources);
-
-                resources.forEach(resource => {
+                value.resources.forEach(resource => {
                   resource.map(res => {
                     if (res.status === "member")
                       memberOfResources.push(res.type);
