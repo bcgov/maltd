@@ -98,8 +98,6 @@ exports[`Storyshots Dropdown default 1`] = `
       type="button"
     >
       System 1
-      -
-      Dynamics
     </button>
     <button
       className="dropdown-item"
@@ -109,8 +107,6 @@ exports[`Storyshots Dropdown default 1`] = `
       type="button"
     >
       System 2
-      -
-      Sharepoint
     </button>
   </div>
 </div>
@@ -532,8 +528,6 @@ exports[`Storyshots UserAccess default 1`] = `
               type="button"
             >
               System 1
-              -
-              Dynamics
             </button>
             <button
               className="dropdown-item"
@@ -543,8 +537,6 @@ exports[`Storyshots UserAccess default 1`] = `
               type="button"
             >
               System 2
-              -
-              Sharepoint
             </button>
           </div>
         </div>
@@ -708,8 +700,6 @@ exports[`Storyshots UserAccess no projects 1`] = `
               type="button"
             >
               System 1
-              -
-              Dynamics
             </button>
             <button
               className="dropdown-item"
@@ -719,8 +709,6 @@ exports[`Storyshots UserAccess no projects 1`] = `
               type="button"
             >
               System 2
-              -
-              Sharepoint
             </button>
           </div>
         </div>

@@ -57,8 +57,6 @@ exports[`Dropdown Component renders as expected 1`] = `
       type="button"
     >
       System 1
-      -
-      Dynamics
     </button>
   </div>
 </div>
