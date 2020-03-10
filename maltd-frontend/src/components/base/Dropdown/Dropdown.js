@@ -17,12 +17,12 @@ export default function Dropdown({ dropdown: { items }, onDropdownClick }) {
   const dropdownItems = items.map(item => (
     <DropdownItem
       onClick={() => {
-        setSelectedTitle(`${item.name} - ${item.type}`);
+        setSelectedTitle(item.name);
         onDropdownClick(item);
       }}
       key={item.id}
     >
-      {item.name}-{item.type}
+      {item.name}
     </DropdownItem>
   ));
 
