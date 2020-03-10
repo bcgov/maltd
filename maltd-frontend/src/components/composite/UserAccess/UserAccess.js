@@ -19,8 +19,6 @@ export default function UserAccess({
   };
   const projectExists =
     projects && projects.length > 0 ? "projects" : "noProjects";
-
-  const resources = [];
   let key = null;
 
   return (
@@ -37,22 +35,15 @@ export default function UserAccess({
             <Row>
               <Col className="big-font">CURRENT PROJECTS</Col>
             </Row>
-            {projects &&
-              projects.length > 0 &&
+            {projectExists === "projects" &&
               projects.map(value => {
-                resources.push(value.resources);
                 const memberOfResources = [];
 
-                if (resources && resources.length > 0) {
-                  resources.forEach(resource => {
-                    resource.map(res => {
-                      if (res.status === "member")
-                        memberOfResources.push(res.type);
+                value.resources.map(res => {
+                  if (res.status === "member") memberOfResources.push(res.type);
 
-                      return true;
-                    });
-                  });
-                }
+                  return true;
+                });
 
                 const listElement = {
                   title: value.name,
