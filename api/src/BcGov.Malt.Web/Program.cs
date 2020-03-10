@@ -66,13 +66,15 @@ namespace BcGov.Malt.Web
 
         private static void ConfigureLogging()
         {
-            var configuration = new LoggerConfiguration()
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .Enrich.FromLogContext();
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-            configuration.WriteTo.Console();
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
 
-            Log.Logger = configuration.CreateLogger();
+            Log.Logger = logger;
         }
     }
 }
