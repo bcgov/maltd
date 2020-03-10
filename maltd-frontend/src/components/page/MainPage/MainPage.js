@@ -7,6 +7,8 @@ import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 
+const token = localStorage.getItem("jwt");
+
 export default class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +34,7 @@ export default class MainPage extends Component {
     const { value } = this.state;
 
     return axios
-      .get(`/api/projects`)
+      .get(`/api/projects`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
         this.setState({
           items: res.data,
@@ -42,27 +44,33 @@ export default class MainPage extends Component {
         });
       })
       .then(() => {
-        axios.get(`/api/users?q=${value}`);
+        axios.get(`/api/users?q=${value}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
       })
       .then(() => {
-        return axios.get(`/api/users/${value}`).then(result => {
-          const { data } = result;
+        return axios
+          .get(`/api/users/${value}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          .then(result => {
+            const { data } = result;
 
-          this.setState({
-            projects: data.projects,
-            isUserSearch: false
-          });
-
-          if (data.email) {
-            this.setState({ userEmail: data.email });
-          }
-
-          if (data.firstName && data.lastName) {
             this.setState({
-              userName: `${data.firstName} ${data.lastName}`
+              projects: data.projects,
+              isUserSearch: false
             });
-          }
-        });
+
+            if (data.email) {
+              this.setState({ userEmail: data.email });
+            }
+
+            if (data.firstName && data.lastName) {
+              this.setState({
+                userName: `${data.firstName} ${data.lastName}`
+              });
+            }
+          });
       })
       .catch(() => {
         this.clearForm();
@@ -119,7 +127,9 @@ export default class MainPage extends Component {
     const { value, projects } = this.state;
 
     return axios
-      .delete(`/api/projects/${projectId}/users/${value}`)
+      .delete(`/api/projects/${projectId}/users/${value}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .then(() => {
         const updatedProjects = [];
         projects.forEach(proj => {
@@ -136,7 +146,9 @@ export default class MainPage extends Component {
     const { selectedDropdownItem, value, projects } = this.state;
 
     return axios
-      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`)
+      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .then(() => {
         const updatedProjects = projects.slice(0);
         updatedProjects.push(selectedDropdownItem);
