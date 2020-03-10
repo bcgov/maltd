@@ -221,6 +221,7 @@ exports[`Storyshots List Element current project 1`] = `
     >
       MALTD
     </strong>
+    
   </div>
   <div />
 </div>
@@ -253,6 +254,7 @@ exports[`Storyshots List Element user 1`] = `
     >
       user@gov.bc.ca
     </p>
+    
   </div>
   <div />
 </div>
@@ -352,6 +354,7 @@ exports[`Storyshots UserAccess default 1`] = `
           >
             user@gov.bc.ca
           </p>
+          
         </div>
         <div />
       </div>
@@ -385,6 +388,12 @@ exports[`Storyshots UserAccess default 1`] = `
               >
                 Project1
               </strong>
+              <p
+                className="project-list-item"
+                id="email-info"
+              >
+                Dyn
+              </p>
             </div>
             <div>
               <div
@@ -422,6 +431,12 @@ exports[`Storyshots UserAccess default 1`] = `
               >
                 Project2
               </strong>
+              <p
+                className="project-list-item"
+                id="email-info"
+              >
+                Dyn, Dyn
+              </p>
             </div>
             <div>
               <div
@@ -596,6 +611,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
           >
             user@gov.bc.ca
           </p>
+          
         </div>
         <div />
       </div>
