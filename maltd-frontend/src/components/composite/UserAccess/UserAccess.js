@@ -19,8 +19,6 @@ export default function UserAccess({
   };
   const projectExists =
     projects && projects.length > 0 ? "projects" : "noProjects";
-
-  const resources = [];
   let key = null;
 
   return (
@@ -39,8 +37,10 @@ export default function UserAccess({
             </Row>
             {projectExists === "projects" &&
               projects.map(value => {
-                resources.push(value.resources);
+                const resources = [];
                 const memberOfResources = [];
+
+                resources.push(value.resources);
 
                 resources.forEach(resource => {
                   resource.map(res => {
