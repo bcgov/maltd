@@ -39,13 +39,10 @@ export default function UserAccess({
               projects.map(value => {
                 const memberOfResources = [];
 
-                value.resources.forEach(resource => {
-                  resource.map(res => {
-                    if (res.status === "member")
-                      memberOfResources.push(res.type);
+                value.resources.map(res => {
+                  if (res.status === "member") memberOfResources.push(res.type);
 
-                    return true;
-                  });
+                  return true;
                 });
 
                 const listElement = {
