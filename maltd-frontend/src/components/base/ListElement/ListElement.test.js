@@ -63,7 +63,7 @@ describe("List Element", () => {
   });
 
   test("Component generates the member of resources string appropriately", () => {
-    const component = renderer.create(
+    const wrapper = shallow(
       <ListElement
         listElement={{
           title: "title",
@@ -73,7 +73,9 @@ describe("List Element", () => {
       />
     );
 
-    const tree = component.toJSON();
-    expect(tree).toMatchSnapshot();
+    const rows = wrapper.find("#member-resources");
+
+    expect(rows.length).toEqual(1);
+    expect(rows.text()).toEqual("Dyn, Share");
   });
 });

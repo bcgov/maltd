@@ -31,7 +31,7 @@ export default function ListElement({
               </p>
             )}
             {memberOfResources && (
-              <p className="project-list-item" id="email-info">
+              <p className="project-list-item" id="member-resources">
                 {memberOfResources}
               </p>
             )}

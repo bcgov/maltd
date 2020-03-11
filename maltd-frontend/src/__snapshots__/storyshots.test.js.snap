@@ -271,7 +271,7 @@ exports[`Storyshots List Element with resources 1`] = `
     </strong>
     <p
       className="project-list-item"
-      id="email-info"
+      id="member-resources"
     >
       Dyn, Share
     </p>
@@ -410,7 +410,7 @@ exports[`Storyshots UserAccess default 1`] = `
               </strong>
               <p
                 className="project-list-item"
-                id="email-info"
+                id="member-resources"
               >
                 Dyn
               </p>
@@ -453,7 +453,7 @@ exports[`Storyshots UserAccess default 1`] = `
               </strong>
               <p
                 className="project-list-item"
-                id="email-info"
+                id="member-resources"
               >
                 Dyn
               </p>
