@@ -61,4 +61,19 @@ describe("List Element", () => {
 
     expect(wrapper.contains(<XIcon id="12" onClick={onClick} />)).toBe(false);
   });
+
+  test("Component generates the member of resources string appropriately", () => {
+    const component = renderer.create(
+      <ListElement
+        listElement={{
+          title: "title",
+          description: "description",
+          resources: ["Dyn, Share"]
+        }}
+      />
+    );
+
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });

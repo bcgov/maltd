@@ -7,7 +7,7 @@ const listElement = {
 };
 
 storiesOf("List Element", module)
-  .add("current project", () => <ListElement listElement={listElement} />)
+  .add("no resources", () => <ListElement listElement={listElement} />)
   .add("user", () => (
     <ListElement
       listElement={{
@@ -16,6 +16,9 @@ storiesOf("List Element", module)
         description: "user@gov.bc.ca"
       }}
     />
+  ))
+  .add("with resources", () => (
+    <ListElement listElement={{ ...listElement, resources: ["Dyn, Share"] }} />
   ))
   .add("empty", () => (
     <ListElement listElement={{ ...listElement, title: undefined }} />
