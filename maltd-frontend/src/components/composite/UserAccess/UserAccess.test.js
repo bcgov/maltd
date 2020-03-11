@@ -58,7 +58,7 @@ describe("User Access", () => {
     ).toEqual(1);
   });
 
-  test("Component renders with existing projects when there are projects for a user", () => {
+  test("Component renders with existing projects when there are projects for a user where they are a member of the resource", () => {
     const component = shallow(
       <UserAccess
         userAccess={{
@@ -72,6 +72,44 @@ describe("User Access", () => {
               name: "Project2",
               id: "1234",
               resources: [{ type: "Dyn", status: "member" }]
+            }
+          ],
+          userName,
+          userEmail
+        }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
+        }}
+      />
+    );
+
+    const rows = component.find("#user-access-row");
+    expect(rows.length).toEqual(1);
+    expect(
+      rows
+        .first()
+        .find("Col")
+        .find("#projects").length
+    ).toEqual(1);
+  });
+
+  test("Component renders with existing projects when there are projects for a user where they are not a member of the resource", () => {
+    const component = shallow(
+      <UserAccess
+        userAccess={{
+          projects: [
+            {
+              name: "Project1",
+              id: "123",
+              resources: [{ type: "Dyn", status: "non-member" }]
+            },
+            {
+              name: "Project2",
+              id: "1234",
+              resources: [{ type: "Dyn", status: "non-member" }]
             }
           ],
           userName,
