@@ -19,7 +19,8 @@
     "react-scripts": "3.4.0",
     "react-test-renderer": "^16.12.0",
     "reactstrap": "^8.4.1",
-    "keycloak-js": "^9.0.0"
+    "keycloak-js": "^9.0.0",
+    "regenerator-runtime": "^0.13.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -101,8 +102,7 @@
     "husky": "^4.2.0",
     "jest-sonar-reporter": "^2.0.0",
     "prettier": "1.19.1",
-    "pretty-quick": "^2.0.1",
-    "regenerator-runtime": "^0.13.3"
+    "pretty-quick": "^2.0.1"
   },
   "husky": {
     "hooks": {
