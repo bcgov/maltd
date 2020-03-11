@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Services;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Features.Projects
 {
@@ -24,16 +26,37 @@ namespace BcGov.Malt.Web.Features.Projects
         {
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
+            private readonly IProjectService _projectService;
+            private readonly ILogger<Handler> _logger;
 
-            public Handler(IUserSearchService userSearchService, IUserManagementService userManagementService)
+            public Handler(IUserSearchService userSearchService, IUserManagementService userManagementService, IProjectService projectService, ILogger<Handler> logger)
             {
-                _userSearchService = userSearchService;
-                _userManagementService = userManagementService;
+                _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
+                _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+                _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
-            public Task<bool> Handle(Request request, CancellationToken cancellationToken)
+            public async Task<bool> Handle(Request request, CancellationToken cancellationToken)
             {
-                return Task.FromResult(false);
+                var projects = await _projectService.GetProjectsAsync();
+
+                var project = projects.SingleOrDefault(_ => _.Id == request.ProjectId);
+
+                if (project == null)
+                {
+                    _logger.LogInformation("Project {ProjectId} not found", request.ProjectId);
+                    return false;
+                }
+
+                var user = await _userSearchService.SearchAsync(request.Username);
+                if (user == null)
+                {
+                    _logger.LogInformation("User {Username} not found", request.Username);
+                    return false;
+                }
+
+                return await _userManagementService.AddUserToProjectAsync(user, project);
             }
         }
     }

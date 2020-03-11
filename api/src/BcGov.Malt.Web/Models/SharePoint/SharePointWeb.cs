@@ -2,10 +2,10 @@
 
 namespace BcGov.Malt.Web.Models.SharePoint
 {
-    public class SiteGroup
+    public class SharePointWeb
     {
-        [JsonPropertyName("Id")]
-        public int Id { get; set; }
+        [JsonPropertyName("ServerRelativeUrl")]
+        public string ServerRelativeUrl { get; set; }
 
         [JsonPropertyName("Title")]
         public string Title { get; set; }

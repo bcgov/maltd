@@ -10,27 +10,52 @@ namespace BcGov.Malt.Web.Services
 {
     public class UserManagementService : IUserManagementService
     {
-        private readonly ProjectConfigurationCollection _projects;
         private readonly ILogger<UserManagementService> _logger;
-        private readonly IODataClientFactory _oDataClientFactory;
 
-        public UserManagementService(ProjectConfigurationCollection projects, ILogger<UserManagementService> logger, IODataClientFactory oDataClientFactory)
+        private readonly IODataClientFactory _oDataClientFactory;
+        private readonly ProjectConfigurationCollection _projects;
+
+        private readonly ILogger<SharePointResourceUserManagementService> _sharePointResourceUserManagementServiceLogger;
+        private readonly IUserSearchService _userSearchService;
+
+
+        public UserManagementService(
+            ProjectConfigurationCollection projects, 
+            ILogger<UserManagementService> logger, 
+            IODataClientFactory oDataClientFactory, 
+            IUserSearchService userSearchService, 
+            ILogger<SharePointResourceUserManagementService> sharePointResourceUserManagementServiceLogger)
         {
             _projects = projects ?? throw new ArgumentNullException(nameof(projects));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _oDataClientFactory = oDataClientFactory ?? throw new ArgumentNullException(nameof(oDataClientFactory));
+            _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
+            _sharePointResourceUserManagementServiceLogger = sharePointResourceUserManagementServiceLogger ?? throw new ArgumentNullException(nameof(sharePointResourceUserManagementServiceLogger));
         }
 
-        public Task<bool> AddUserToProjectAsync(User user, Project project)
+        public async Task<bool> AddUserToProjectAsync(User user, Project project)
         {
-            _logger.LogError("Add user to project is not implemented, returning false");
+            var requests = CreateAddUserRequests(user);
 
-            return Task.FromResult(false);
+            // wait for all tasks to complete
+            Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
+
+            try
+            {
+                await aggregateTask;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(exception, "Error on aggregate request");
+            }
+
+            // TODO: do we need to return true/false based on result?
+            return true;
         }
 
         public async Task<List<Project>> GetProjectsForUserAsync(User user)
         {
-            var requests = CreateRequests(user);
+            var requests = CreateUserHasAccessRequests(user);
 
             // wait for all tasks to complete
             Task<bool[]> aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
@@ -86,7 +111,27 @@ namespace BcGov.Malt.Web.Services
             return projects;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> CreateRequests(User user)
+        public async Task<bool> RemoveUserFromProjectAsync(User user, Project project)
+        {
+            var requests = CreateRemoveUserRequests(user);
+
+            // wait for all tasks to complete
+            Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
+
+            try
+            {
+                await aggregateTask;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(exception, "Error on aggregate request");
+            }
+
+            // TODO: do we need to return true/false based on result?
+            return true;
+        }
+
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> CreateUserHasAccessRequests(User user)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task<bool>)>();
 
@@ -100,9 +145,25 @@ namespace BcGov.Malt.Web.Services
                         var task = resourceUserManagementService.UserHasAccessAsync(user.UserName);
                         requests.Add((projectConfiguration, resource, task));
                     }
-                    else
+                }
+            }
+
+            return requests;
+        }
+
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateAddUserRequests(User user)
+        {
+            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
+
+            foreach (var projectConfiguration in _projects)
+            {
+                foreach (ProjectResource resource in projectConfiguration.Resources)
+                {
+                    var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
+                    if (resourceUserManagementService != null)
                     {
-                        // invalid resource type
+                        var task = resourceUserManagementService.AddUserAsync(user.UserName);
+                        requests.Add((projectConfiguration, resource, task));
                     }
                 }
             }
@@ -110,10 +171,25 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        public Task<bool> RemoveUserFromProjectAsync(User user, Project project)
+
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user)
         {
-            _logger.LogError("Remover user from project is not implemented, returning false");
-            return Task.FromResult(false);
+            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
+
+            foreach (var projectConfiguration in _projects)
+            {
+                foreach (ProjectResource resource in projectConfiguration.Resources)
+                {
+                    var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
+                    if (resourceUserManagementService != null)
+                    {
+                        var task = resourceUserManagementService.RemoveUserAsync(user.UserName);
+                        requests.Add((projectConfiguration, resource, task));
+                    }
+                }
+            }
+
+            return requests;
         }
 
         private IResourceUserManagementService GetResourceUserManagementService(ProjectConfiguration project, ProjectResource resource)
@@ -123,7 +199,7 @@ namespace BcGov.Malt.Web.Services
                 case ProjectType.Dynamics: 
                     return new DynamicsResourceUserManagementService(_oDataClientFactory, project, resource);
                 case ProjectType.SharePoint: 
-                    return new SharepointResourceUserManagementService(project, resource);
+                    return new SharePointResourceUserManagementService(project, resource, _userSearchService, _sharePointResourceUserManagementServiceLogger);
                 default:
                     _logger.LogWarning("Unknown resource type {Type}, project resource will be skipped", resource.Type);
                     return null;
