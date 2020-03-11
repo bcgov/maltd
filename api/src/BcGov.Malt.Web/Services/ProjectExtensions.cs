@@ -16,7 +16,7 @@ namespace BcGov.Malt.Web.Services
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
-        public static void AddProjectAccess(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureProjectResources(this IServiceCollection services, IConfiguration configuration)
         {
             // read the configuration and register the types for each 
             List<ProjectConfiguration> projects = configuration.GetProjectConfigurations()
