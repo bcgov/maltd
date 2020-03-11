@@ -1,0 +1,56 @@
+[
+  {
+    "/ comment": "Valid user name",
+
+    "q": "use Valid user name",
+    "isValid": "true"
+  },
+  {
+    "/ comment": "Incorrect user name",
+
+    "q": "kanuru",
+    "isValid": "incorrect"
+  },
+  {
+    "/ comment": "Invalid user name",
+
+    "q": "435karm6345",
+    "isValid": "invalid"
+  },
+  {
+    "/ comment": "Incorrect data type",
+
+    "q": "5382989",
+    "isValid": "incorrectData"
+  },
+  {
+    "/ comment": "Garbage strings",
+
+    "q": "&*(()#@",
+    "isValid": "noData"
+  },
+  {
+    "/ comment": "Valid email of the idir",
+
+    "q": "user@gov.bc.ca",
+    "isValid": "email"
+  },
+  {
+    "/ comment": "Valid name of the idir",
+
+    "q": "userName",
+    "isValid": "name"
+  },
+  {
+    "/ comment": "Empty query",
+
+    "q": " ",
+    "isValid": "empty"
+  },
+  {
+    "/ comment": "Incorrect param property",
+
+    "c": "validUserName",
+    "isValid": "incorrectParam"
+  }
+]
