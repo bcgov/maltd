@@ -2,7 +2,7 @@
 
 ## Postman
 
-We maintain a [postman collection](postman-tests/MALT-Api-Search-And-Add-Users.postman_collection.json), [postman environment](malt-local-env.postman_environment.json) and an external datafile with valid/invalid data to pass on the requests.
+We maintain a [postman collection](postman-tests/MALT-Api-Search-And-Add-Users.postman_collection.json), [postman environment](malt-local-env.postman_environment.json) and an external datafile with valid/invalid data to pass on to the backend requests.
 
 To run the collection in Postman app
 
