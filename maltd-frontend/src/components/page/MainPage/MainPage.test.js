@@ -295,5 +295,17 @@ describe("Main page", () => {
 
       expect(onButtonClickSpy).toHaveBeenCalledTimes(1);
     });
+
+    test("Function is called on key enter", () => {
+      const event = { key: "Enter" };
+      const onKeyEnterSpy = jest.spyOn(MainPage.prototype, "onKeyEnter");
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onKeyEnter(event);
+
+      expect(onKeyEnterSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });
