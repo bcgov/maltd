@@ -110,7 +110,7 @@ namespace BcGov.Malt.Web.Services
                 FirstName = entry.GetAttribute("givenName")?.StringValue ?? string.Empty,
                 LastName = entry.GetAttribute("sn")?.StringValue ?? string.Empty,
                 Email = entry.GetAttribute("mail")?.StringValue ?? string.Empty,
-                UserPrincipleName = entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty
+                UserPrincipalName = entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty
             };
 
             return user;

@@ -81,7 +81,7 @@ namespace BcGov.Malt.Web.Services
 
             var user = await _userSearchService.SearchAsync(username);
 
-            if (string.IsNullOrEmpty(user?.UserPrincipleName))
+            if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot add users access", username);
                 return;
@@ -117,7 +117,7 @@ namespace BcGov.Malt.Web.Services
                 ProjectResource.Type);
 
 
-            string logonName = Constants.LoginNamePrefix + user.UserPrincipleName;
+            string logonName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
             await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName });
         }
@@ -133,14 +133,14 @@ namespace BcGov.Malt.Web.Services
 
             var user = await _userSearchService.SearchAsync(username);
 
-            if (string.IsNullOrEmpty(user?.UserPrincipleName))
+            if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot remove users access", username);
                 return;
             }
             
             // format the SharePoint login name format
-            string loginName = Constants.LoginNamePrefix + user.UserPrincipleName;
+            string loginName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
             ISharePointClient restClient = await GetSharePointRestClientForUpdate();
 
@@ -171,14 +171,14 @@ namespace BcGov.Malt.Web.Services
 
             var user = await _userSearchService.SearchAsync(username);
 
-            if (string.IsNullOrEmpty(user?.UserPrincipleName))
+            if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot check users access", username);
                 return false;
             }
 
             // format the SharePoint login name format
-            string loginName = Constants.LoginNamePrefix + user.UserPrincipleName;
+            string loginName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
             ISharePointClient restClient = await GetSharePointRestClient();
 

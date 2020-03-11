@@ -33,7 +33,7 @@ namespace BcGov.Malt.Web.Models
         public string Email { get; set; }
 
         [JsonIgnore]
-        public string UserPrincipleName { get; set; }
+        public string UserPrincipalName { get; set; }
 
     }
 }
