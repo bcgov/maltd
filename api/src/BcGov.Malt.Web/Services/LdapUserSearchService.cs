@@ -18,11 +18,7 @@ namespace BcGov.Malt.Web.Services
             "sAMAccountName",     // username
             "sn",                 // lastname
             "givenName",          // firstname
-            "mail"                // email address
-        };
-
-        private static readonly string[] LdapUpnAttributes = new[]
-{
+            "mail",                // email address
             "userPrincipalName",  // UPN
         };
 
@@ -39,13 +35,8 @@ namespace BcGov.Malt.Web.Services
         {
             return SearchForAsync(samAccountName, LdapSearchAttributes, MapSearchResult);
         }
-        
-        public Task<string> GetUserPrincipalNameAsync(string samAccountName)
-        {
-            return SearchForAsync(samAccountName, LdapUpnAttributes, MapToUpn);
-        }
 
-        private async Task<T> SearchForAsync<T>(string query, string[] attributes, Func<LdapEntry, T> mappingFunc) where T : class
+        private Task<T> SearchForAsync<T>(string query, string[] attributes, Func<LdapEntry, T> mappingFunc) where T : class
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -74,10 +65,10 @@ namespace BcGov.Malt.Web.Services
             if (searchResults.HasMore())
             {
                 LdapEntry entry = searchResults.Next();
-                return mappingFunc(entry);
+                return Task.FromResult(mappingFunc(entry));
             }
 
-            return null; // not found
+            return Task.FromResult((T)null); // not found
 
         }
 
@@ -119,14 +110,10 @@ namespace BcGov.Malt.Web.Services
                 FirstName = entry.GetAttribute("givenName")?.StringValue ?? string.Empty,
                 LastName = entry.GetAttribute("sn")?.StringValue ?? string.Empty,
                 Email = entry.GetAttribute("mail")?.StringValue ?? string.Empty,
+                UserPrincipalName = entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty
             };
 
             return user;
-        }
-
-        private string MapToUpn(LdapEntry entry)
-        {
-            return entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty;
         }
     }
 
