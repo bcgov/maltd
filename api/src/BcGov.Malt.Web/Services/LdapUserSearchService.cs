@@ -18,11 +18,7 @@ namespace BcGov.Malt.Web.Services
             "sAMAccountName",     // username
             "sn",                 // lastname
             "givenName",          // firstname
-            "mail"                // email address
-        };
-
-        private static readonly string[] LdapUpnAttributes = new[]
-{
+            "mail",                // email address
             "userPrincipalName",  // UPN
         };
 
@@ -38,11 +34,6 @@ namespace BcGov.Malt.Web.Services
         public Task<User> SearchAsync(string samAccountName)
         {
             return SearchForAsync(samAccountName, LdapSearchAttributes, MapSearchResult);
-        }
-        
-        public Task<string> GetUserPrincipalNameAsync(string samAccountName)
-        {
-            return SearchForAsync(samAccountName, LdapUpnAttributes, MapToUpn);
         }
 
         private Task<T> SearchForAsync<T>(string query, string[] attributes, Func<LdapEntry, T> mappingFunc) where T : class
@@ -119,14 +110,10 @@ namespace BcGov.Malt.Web.Services
                 FirstName = entry.GetAttribute("givenName")?.StringValue ?? string.Empty,
                 LastName = entry.GetAttribute("sn")?.StringValue ?? string.Empty,
                 Email = entry.GetAttribute("mail")?.StringValue ?? string.Empty,
+                UserPrincipleName = entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty
             };
 
             return user;
-        }
-
-        private string MapToUpn(LdapEntry entry)
-        {
-            return entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty;
         }
     }
 

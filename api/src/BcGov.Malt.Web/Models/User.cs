@@ -32,5 +32,8 @@ namespace BcGov.Malt.Web.Models
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
+        [JsonIgnore]
+        public string UserPrincipleName { get; set; }
+
     }
 }

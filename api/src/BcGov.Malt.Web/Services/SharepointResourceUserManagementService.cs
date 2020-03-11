@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,7 +14,6 @@ using Refit;
 
 namespace BcGov.Malt.Web.Services
 {
-
     public interface ISharePointClient
     {
         [Get("/_api/Web?$select=Title,ServerRelativeUrl")]
@@ -52,15 +50,16 @@ namespace BcGov.Malt.Web.Services
 
     public class SharePointResourceUserManagementService : ResourceUserManagementService
     {
-        private static readonly StringComparer _loginNameComparer = StringComparer.OrdinalIgnoreCase;
+        private static readonly StringComparer LoginNameComparer = StringComparer.OrdinalIgnoreCase;
 
         private readonly ILogger<SharePointResourceUserManagementService> _logger;
-        private readonly IUserSearchService _userSearchService;
 
         private readonly RefitSettings _refitSettings = new RefitSettings
         {
-            ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions()),
+            ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions())
         };
+
+        private readonly IUserSearchService _userSearchService;
 
         public SharePointResourceUserManagementService(
             ProjectConfiguration project,
@@ -80,8 +79,9 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
-            string upn = await _userSearchService.GetUserPrincipalNameAsync(username);
-            if (string.IsNullOrEmpty(upn))
+            var user = await _userSearchService.SearchAsync(username);
+
+            if (string.IsNullOrEmpty(user?.UserPrincipleName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot add users access", username);
                 return;
@@ -91,7 +91,7 @@ namespace BcGov.Malt.Web.Services
 
             GetSharePointWebVerboseResponse web = await restClient.GetWebAsync();
 
-            if (string.IsNullOrEmpty(web.Data?.Title))
+            if (string.IsNullOrEmpty(web?.Data?.Title))
             {
                 _logger.LogWarning("Cannot get site group name for {Project} on resource {ResourceType}", Project.Name, ProjectResource.Type);
                 return;
@@ -104,20 +104,20 @@ namespace BcGov.Malt.Web.Services
 
             if (siteGroups.Data.Results.Count == 0)
             {
-                _logger.LogInformation("Cannot find site group {SiteGroup}", new SiteGroup { Title = siteGroupTitle });
+                _logger.LogInformation("Cannot find site group {@SiteGroup}", new SiteGroup { Title = siteGroupTitle });
                 return;
             }
 
             var siteGroup = siteGroups.Data.Results[0];
 
-            _logger.LogInformation("Adding {Username} to site collection {SiteGroup} for {Project} on resource {ResourceType}",
+            _logger.LogInformation("Adding {Username} to site collection {@SiteGroup} for {Project} on resource {ResourceType}",
                 username,
                 siteGroup,
                 Project.Name,
                 ProjectResource.Type);
 
 
-            string logonName = Constants.LogonNamePrefix + upn;
+            string logonName = Constants.LoginNamePrefix + user.UserPrincipleName;
 
             await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName });
         }
@@ -131,16 +131,16 @@ namespace BcGov.Malt.Web.Services
 
             _logger.LogDebug("Removing access for {Username}", username);
 
-            var upn = await _userSearchService.GetUserPrincipalNameAsync(username);
+            var user = await _userSearchService.SearchAsync(username);
 
-            if (string.IsNullOrEmpty(upn))
+            if (string.IsNullOrEmpty(user?.UserPrincipleName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot remove users access", username);
                 return;
             }
-
+            
             // format the SharePoint login name format
-            string loginName = Constants.LogonNamePrefix + upn;
+            string loginName = Constants.LoginNamePrefix + user.UserPrincipleName;
 
             ISharePointClient restClient = await GetSharePointRestClientForUpdate();
 
@@ -151,13 +151,13 @@ namespace BcGov.Malt.Web.Services
             {
                 var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id);
 
-                var users = getUsersResponse.Data.Results.Where(_ => _loginNameComparer.Equals(_.LoginName, loginName));
+                var users = getUsersResponse.Data.Results.Where(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
-                foreach (var user in users)
+                foreach (var sharePointUser in users)
                 {
-                    _logger.LogInformation("Removing {User} from site group {SiteGroup}", user, siteGroup);
+                    _logger.LogInformation("Removing {@User} from site group {@SiteGroup}", sharePointUser, siteGroup);
 
-                    await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, user.Id);
+                    await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id);
                 }
             }
         }
@@ -169,16 +169,16 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
-            var upn = await _userSearchService.GetUserPrincipalNameAsync(username);
+            var user = await _userSearchService.SearchAsync(username);
 
-            if (string.IsNullOrEmpty(upn))
+            if (string.IsNullOrEmpty(user?.UserPrincipleName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot check users access", username);
                 return false;
             }
 
             // format the SharePoint login name format
-            string loginName = Constants.LogonNamePrefix + upn;
+            string loginName = Constants.LoginNamePrefix + user.UserPrincipleName;
 
             ISharePointClient restClient = await GetSharePointRestClient();
 
@@ -188,12 +188,11 @@ namespace BcGov.Malt.Web.Services
             foreach (var siteGroup in siteGroups)
             {
                 var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id);
-                var users = getUsersResponse.Data.Results.Where(_ => _loginNameComparer.Equals(_.LoginName, loginName));
+                var groupMember = getUsersResponse.Data.Results.Any(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
-                foreach (var user in users)
+                if (groupMember)
                 {
                     _logger.LogInformation("{@User} has access because they are in site group {@SiteGroup}", user, siteGroup);
-
                     return true;
                 }
             }
@@ -265,7 +264,7 @@ namespace BcGov.Malt.Web.Services
 
     public sealed class SystemTextJsonContentSerializer : IContentSerializer
     {
-        private static readonly MediaTypeHeaderValue _contentType = new MediaTypeHeaderValue("application/json")
+        private static readonly MediaTypeHeaderValue ContentType = new MediaTypeHeaderValue("application/json")
         {
             CharSet = Encoding.UTF8.WebName
         };
@@ -294,7 +293,7 @@ namespace BcGov.Malt.Web.Services
                 string json = JsonSerializer.Serialize(item, SerializerOptions);
                 content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                content.Headers.ContentType = _contentType;
+                content.Headers.ContentType = ContentType;
 
                 return content;
             }
