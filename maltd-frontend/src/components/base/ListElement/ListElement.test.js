@@ -61,4 +61,21 @@ describe("List Element", () => {
 
     expect(wrapper.contains(<XIcon id="12" onClick={onClick} />)).toBe(false);
   });
+
+  test("Component generates the member of resources string appropriately", () => {
+    const wrapper = shallow(
+      <ListElement
+        listElement={{
+          title: "title",
+          description: "description",
+          resources: ["Dyn, Share"]
+        }}
+      />
+    );
+
+    const rows = wrapper.find("#member-resources");
+
+    expect(rows.length).toEqual(1);
+    expect(rows.text()).toEqual("Dyn, Share");
+  });
 });

@@ -204,7 +204,15 @@ exports[`Storyshots InputField valid 1`] = `
 />
 `;
 
-exports[`Storyshots List Element current project 1`] = `
+exports[`Storyshots List Element empty 1`] = `
+<div>
+  <p>
+    No projects
+  </p>
+</div>
+`;
+
+exports[`Storyshots List Element no resources 1`] = `
 <div
   className="project-div"
 >
@@ -220,14 +228,6 @@ exports[`Storyshots List Element current project 1`] = `
     
   </div>
   <div />
-</div>
-`;
-
-exports[`Storyshots List Element empty 1`] = `
-<div>
-  <p>
-    No projects
-  </p>
 </div>
 `;
 
@@ -251,6 +251,30 @@ exports[`Storyshots List Element user 1`] = `
       user@gov.bc.ca
     </p>
     
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots List Element with resources 1`] = `
+<div
+  className="project-div"
+>
+  <div
+    className="project-list-item"
+    id="project-info"
+  >
+    <strong
+      className="large-size"
+    >
+      MALTD
+    </strong>
+    <p
+      className="project-list-item"
+      id="member-resources"
+    >
+      Dyn, Share
+    </p>
   </div>
   <div />
 </div>
@@ -386,7 +410,7 @@ exports[`Storyshots UserAccess default 1`] = `
               </strong>
               <p
                 className="project-list-item"
-                id="email-info"
+                id="member-resources"
               >
                 Dyn
               </p>
@@ -429,7 +453,7 @@ exports[`Storyshots UserAccess default 1`] = `
               </strong>
               <p
                 className="project-list-item"
-                id="email-info"
+                id="member-resources"
               >
                 Dyn
               </p>
