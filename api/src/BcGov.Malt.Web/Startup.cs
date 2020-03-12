@@ -93,7 +93,7 @@ namespace BcGov.Malt.Web
                 };
             });
 
-            // add all the handlers in this project
+            // add all the handlers in this assembly
             services.AddMediatR(GetType().Assembly);
 
             AddSwaggerGen(services);
@@ -102,17 +102,16 @@ namespace BcGov.Malt.Web
 
             // this will configure the service correctly, comment out for now until
             // the services are working
-            services.AddProjectAccess(Configuration);
+            services.ConfigureProjectResources(Configuration);
 
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<IUserSearchService, LdapUserSearchService>();
-
-            // singleton for now since these are in memory (testing) implementations
-            //services.AddSingleton<IUserSearchService, InMemoryUserSearchService>();
-            //services.AddTransient<IUserManagementService, InMemoryUserManagementService>();
-
             services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
+
+            // Add HttpClient and IHttpClientFactory in case the project resources do not register it
+            // The DefaultODataClientFactory has dependency on IHttpClientFactory.
+            services.AddHttpClient();
 
             services.AddTransient<ITokenCache, TokenCache>();
         }
