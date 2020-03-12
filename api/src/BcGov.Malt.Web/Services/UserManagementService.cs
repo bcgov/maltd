@@ -17,25 +17,28 @@ namespace BcGov.Malt.Web.Services
 
         private readonly ILogger<SharePointResourceUserManagementService> _sharePointResourceUserManagementServiceLogger;
         private readonly IUserSearchService _userSearchService;
+        private readonly ILogger<DynamicsResourceUserManagementService> _dynamicsResourceUserManagementService;
 
 
         public UserManagementService(
             ProjectConfigurationCollection projects, 
             ILogger<UserManagementService> logger, 
             IODataClientFactory oDataClientFactory, 
-            IUserSearchService userSearchService, 
+            IUserSearchService userSearchService,
+            ILogger<DynamicsResourceUserManagementService> dynamicsResourceUserManagementService,
             ILogger<SharePointResourceUserManagementService> sharePointResourceUserManagementServiceLogger)
         {
             _projects = projects ?? throw new ArgumentNullException(nameof(projects));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _oDataClientFactory = oDataClientFactory ?? throw new ArgumentNullException(nameof(oDataClientFactory));
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
+            _dynamicsResourceUserManagementService = dynamicsResourceUserManagementService ?? throw new ArgumentNullException(nameof(dynamicsResourceUserManagementService));
             _sharePointResourceUserManagementServiceLogger = sharePointResourceUserManagementServiceLogger ?? throw new ArgumentNullException(nameof(sharePointResourceUserManagementServiceLogger));
         }
 
         public async Task<bool> AddUserToProjectAsync(User user, Project project)
         {
-            var requests = CreateAddUserRequests(user);
+            var requests = CreateAddUserRequests(user, project);
 
             // wait for all tasks to complete
             Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
@@ -113,7 +116,7 @@ namespace BcGov.Malt.Web.Services
 
         public async Task<bool> RemoveUserFromProjectAsync(User user, Project project)
         {
-            var requests = CreateRemoveUserRequests(user);
+            var requests = CreateRemoveUserRequests(user, project);
 
             // wait for all tasks to complete
             Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
@@ -151,11 +154,11 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateAddUserRequests(User user)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateAddUserRequests(User user, Project project)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
 
-            foreach (var projectConfiguration in _projects)
+            foreach (var projectConfiguration in _projects.Where(_ => _.Id == project.Id))
             {
                 foreach (ProjectResource resource in projectConfiguration.Resources)
                 {
@@ -172,11 +175,11 @@ namespace BcGov.Malt.Web.Services
         }
 
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user, Project project)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
 
-            foreach (var projectConfiguration in _projects)
+            foreach (var projectConfiguration in _projects.Where(_ => _.Id == project.Id))
             {
                 foreach (ProjectResource resource in projectConfiguration.Resources)
                 {
@@ -197,7 +200,7 @@ namespace BcGov.Malt.Web.Services
             switch (resource.Type)
             {
                 case ProjectType.Dynamics: 
-                    return new DynamicsResourceUserManagementService(_oDataClientFactory, project, resource);
+                    return new DynamicsResourceUserManagementService(project, resource, _oDataClientFactory, _userSearchService, _dynamicsResourceUserManagementService);
                 case ProjectType.SharePoint: 
                     return new SharePointResourceUserManagementService(project, resource, _userSearchService, _sharePointResourceUserManagementServiceLogger);
                 default:

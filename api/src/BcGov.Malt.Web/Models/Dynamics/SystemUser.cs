@@ -29,6 +29,9 @@ namespace BcGov.Malt.Web.Models.Dynamics
 
         [JsonPropertyName("businessunitid")]
         public BusinessUnit BusinessUnit { get; set; }
+        
+        [JsonPropertyName("internalemailaddress")]
+        public string InternalEMailAddress { get; set; }
 
         [JsonIgnore]
         private string DebuggerDisplay
