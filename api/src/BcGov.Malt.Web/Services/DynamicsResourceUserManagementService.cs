@@ -19,7 +19,7 @@ namespace BcGov.Malt.Web.Services
             ProjectResource projectResource,
             IODataClientFactory factory,
             IUserSearchService userSearchService,
-            ILogger<DynamicsResourceUserManagementService> logger) 
+            ILogger<DynamicsResourceUserManagementService> logger)
             : base(project, projectResource)
         {
             _factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
@@ -29,6 +29,11 @@ namespace BcGov.Malt.Web.Services
 
         public override async Task AddUserAsync(string username)
         {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            }
+
             IODataClient client = GetODataClient();
             string logon = IDIR.Logon(username);
 
@@ -60,7 +65,7 @@ namespace BcGov.Malt.Web.Services
             else if (entry.IsDisabled != null && entry.IsDisabled.Value)
             {
                 _logger.LogInformation("{@SystemUser} exists but is disabled, enabling user", entry);
-                entry = await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false);
+                await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false);
             }
             else
             {
@@ -70,6 +75,11 @@ namespace BcGov.Malt.Web.Services
 
         public override async Task RemoveUserAsync(string username)
         {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            }
+
             IODataClient client = GetODataClient();
             string logon = IDIR.Logon(username);
 
@@ -80,11 +90,16 @@ namespace BcGov.Malt.Web.Services
                 return; // user does not exist, or is already disabled
             }
 
-            entry = await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true);
+            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true);
         }
 
         public override async Task<bool> UserHasAccessAsync(string username)
         {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            }
+
             IODataClient client = GetODataClient();
 
             string logon = IDIR.Logon(username);
@@ -94,12 +109,17 @@ namespace BcGov.Malt.Web.Services
             return entry?.IsDisabled != null && !entry.IsDisabled.Value;
         }
 
-        private Task<SystemUser> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, bool isDisabled)
+        private Task<IDictionary<string, object>> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, bool isDisabled)
         {
+            // using the untyped version because the typed version was giving an error:
+            //
+            // Microsoft.OData.ODataException: The property 'isdisabled' does not exist on type 'Microsoft.Dynamics.CRM.systemuser'.
+            // Make sure to only use property names that are defined by the type or mark the type as open type.
+            //
             return client
-                .For<SystemUser>()
+                .For("systemuser")
                 .Key(systemUserId)
-                .Set(new { IsDisabled = isDisabled })
+                .Set(new { isdisabled = isDisabled })
                 .UpdateEntryAsync();
         }
 
@@ -138,13 +158,12 @@ namespace BcGov.Malt.Web.Services
 
             if (businessUnit == null)
             {
-                _logger.LogWarning("No root business unit found");
+                _logger.LogWarning("No root business unit found where ParentBusinessUnit is null");
             }
 
             return businessUnit;
         }
 
         private IODataClient GetODataClient() => _factory.Create(Project.Id + "-dynamics");
- 
     }
 }
