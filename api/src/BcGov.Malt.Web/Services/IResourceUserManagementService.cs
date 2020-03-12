@@ -10,17 +10,17 @@ namespace BcGov.Malt.Web.Services
         /// <summary>
         /// Adds the specified user.
         /// </summary>
-        Task AddUserAsync(string user);
+        Task AddUserAsync(string username);
 
         /// <summary>
         /// Removes the specified user.
         /// </summary>
-        Task RemoveUserAsync(string user);
+        Task RemoveUserAsync(string username);
 
         /// <summary>
         /// Determines whether the specified user has access.
         /// </summary>
-        /// <param name="user">The user.</param>
-        Task<bool> UserHasAccessAsync(string user);
+        /// <param name="username">The user.</param>
+        Task<bool> UserHasAccessAsync(string username);
     }
 }
