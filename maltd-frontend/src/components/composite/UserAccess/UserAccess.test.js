@@ -148,7 +148,7 @@ describe("User Access", () => {
         dropdown={{
           items: [{ id: "123", name: "name", type: "type" }]
         }}
-        duplicateErrorMessage={"error message"}
+        duplicateErrorMessage="error message"
       />
     );
 
