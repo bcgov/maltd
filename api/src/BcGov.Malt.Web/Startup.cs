@@ -1,22 +1,19 @@
+using System;
+using System.IO;
+using System.Reflection;
 using BcGov.Malt.Web.Services;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BcGov.Malt.Web.Models.Configuration;
-using System.Threading;
-using System.Net.Http.Headers;
-using MediatR;
 
 namespace BcGov.Malt.Web
 {
@@ -26,13 +23,17 @@ namespace BcGov.Malt.Web
     public class Startup
     {
         private static readonly Serilog.ILogger _log = Serilog.Log.ForContext<Startup>();
+        private readonly IWebHostEnvironment _environment;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
             Configuration = configuration;
+
+            _environment = env;
         }
 
         /// <summary>
@@ -46,6 +47,7 @@ namespace BcGov.Malt.Web
         /// <param name="services">The service description collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            // all endpoint must be authenticated
             services.AddControllers();
 
             // send header Access-Control-Allow-Origin: *
@@ -59,38 +61,17 @@ namespace BcGov.Malt.Web
                 });
             });
 
-            services.AddMvcCore()
-                .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; })
-                .AddApiExplorer();
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
+            }).AddJwtBearer(ConfigureJwtBearerAuthentication);
+
+            services.AddAuthorization(options =>
             {
-                /* TODO Add keycloak authentication params once its ready .The following may change in future
-                 * For now , Jwt:Authority = the url to your local keycloak relam , eg: Master or ISB
-                 *               Audience = the name of the client you create in keycloak relam ,e.g: maltd or demo-app 
-                 *   "Jwt":{
-                             "Authority": "http://localhost:8080/auth/realms/<Relam_Name>",
-                             "Audience": "maltd"
-                } */
-                o.Authority = Configuration["Jwt:Authority"];
-                o.Audience = Configuration["Jwt:Audience"];
-                o.Events = new JwtBearerEvents()
-                {
-                    OnAuthenticationFailed = c =>
-                    {
-                        c.NoResult();
-
-                        c.Response.StatusCode = 401;
-                        c.Response.ContentType = "text/plain";
-
-                        return c.Response.WriteAsync(c.Exception.ToString());
-                                              
-                    }
-                };
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
             });
 
             // add all the handlers in this assembly
@@ -114,7 +95,52 @@ namespace BcGov.Malt.Web
             services.AddHttpClient();
 
             services.AddTransient<ITokenCache, TokenCache>();
+
+            void ConfigureJwtBearerAuthentication(JwtBearerOptions o)
+            {
+                /* TODO Add keycloak authentication params once its ready .The following may change in future
+                 * For now , Jwt:Authority = the url to your local keycloak relam , eg: Master or ISB
+                 *               Audience = the name of the client you create in keycloak relam ,e.g: maltd or demo-app 
+                 *   "Jwt":{
+                             "Authority": "http://localhost:8080/auth/realms/<realm-name>",
+                             "Audience": "maltd"
+                            }
+                 */
+                string audience = Configuration["Jwt:Audience"];
+                string authority = Configuration["Jwt:Authority"];
+
+                if (!authority.EndsWith("/", StringComparison.InvariantCulture))
+                {
+                    authority += "/";
+                }
+
+                // KeyCloak metadata address https://www.keycloak.org/docs/4.8/authorization_services/#_service_authorization_api
+                string metadataAddress = authority + ".well-known/uma2-configuration";
+
+                o.Authority = authority;
+                o.Audience = audience;
+                o.MetadataAddress = metadataAddress;
+
+                o.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = c =>
+                    {
+                        c.NoResult();
+
+                        c.Response.StatusCode = 401;
+                        c.Response.ContentType = "text/plain";
+
+                        if (_environment.IsDevelopment())
+                        {
+                            return c.Response.WriteAsync(c.Exception.ToString());
+                        }
+
+                        return c.Response.WriteAsync("An error occured processing your authentication.");
+                    }
+                };
+            }
         }
+
 
         private void AddSwaggerGen(IServiceCollection services)
         {
@@ -167,11 +193,12 @@ namespace BcGov.Malt.Web
             // Apply CORS policies to all endpoints
             app.UseCors();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization();
             });
 
             app.UseSwagger();
@@ -182,10 +209,9 @@ namespace BcGov.Malt.Web
             });
 
         }
-               
+
         internal class ConsumesAndProductOnlyJSonContentTypeFilter : IOperationFilter
         {
-
             public void Apply(OpenApiOperation operation, OperationFilterContext context)
             {
                 // feels like there should be a better way than doing this on each operation
