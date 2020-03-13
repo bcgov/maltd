@@ -101,6 +101,7 @@ UserAccess.propTypes = {
   onPlusClick: PropTypes.func.isRequired,
   onDropdownClick: PropTypes.func.isRequired,
   dropdown: PropTypes.shape({
-    items: PropTypes.array.isRequired
+    items: PropTypes.array.isRequired,
+    selectedDropdownItem: PropTypes.object
   }).isRequired
 };
