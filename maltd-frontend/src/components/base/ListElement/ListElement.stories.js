@@ -18,7 +18,12 @@ storiesOf("List Element", module)
     />
   ))
   .add("with resources", () => (
-    <ListElement listElement={{ ...listElement, resources: ["Dyn, Share"] }} />
+    <ListElement
+      listElement={{
+        ...listElement,
+        resources: [{ type: "Dyn" }, { type: "Share" }]
+      }}
+    />
   ))
   .add("empty", () => (
     <ListElement listElement={{ ...listElement, title: undefined }} />
