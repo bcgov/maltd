@@ -4,6 +4,7 @@ using System.Reflection;
 using BcGov.Malt.Web.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,14 +23,17 @@ namespace BcGov.Malt.Web
     public class Startup
     {
         private static readonly Serilog.ILogger _log = Serilog.Log.ForContext<Startup>();
+        private readonly IWebHostEnvironment _environment;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
             Configuration = configuration;
+
+            _environment = env;
         }
 
         /// <summary>
@@ -44,7 +48,7 @@ namespace BcGov.Malt.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // all endpoint must be authenticated
-            services.AddControllers(options => { options.Filters.Add(new AuthorizeFilter()); });
+            services.AddControllers();
 
             // send header Access-Control-Allow-Origin: *
             services.AddCors(options =>
@@ -57,15 +61,18 @@ namespace BcGov.Malt.Web
                 });
             });
 
-            services.AddMvcCore()
-                .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; })
-                .AddApiExplorer();
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(ConfigureJwtBearerAuthentication);
+
+            services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
 
             // add all the handlers in this assembly
             services.AddMediatR(GetType().Assembly);
@@ -102,12 +109,12 @@ namespace BcGov.Malt.Web
                 string audience = Configuration["Jwt:Audience"];
                 string authority = Configuration["Jwt:Authority"];
 
-                if (!authority.EndsWith("/"))
+                if (!authority.EndsWith("/", StringComparison.InvariantCulture))
                 {
                     authority += "/";
                 }
 
-                // keycloak metadata address https://www.keycloak.org/docs/4.8/authorization_services/#_service_authorization_api
+                // KeyCloak metadata address https://www.keycloak.org/docs/4.8/authorization_services/#_service_authorization_api
                 string metadataAddress = authority + ".well-known/uma2-configuration";
 
                 o.Authority = authority;
@@ -118,13 +125,17 @@ namespace BcGov.Malt.Web
                 {
                     OnAuthenticationFailed = c =>
                     {
-                        //c.NoResult();
+                        c.NoResult();
 
                         c.Response.StatusCode = 401;
                         c.Response.ContentType = "text/plain";
 
-                        return c.Response.WriteAsync(c.Exception.ToString());
+                        if (_environment.IsDevelopment())
+                        {
+                            return c.Response.WriteAsync(c.Exception.ToString());
+                        }
 
+                        return c.Response.WriteAsync("An error occured processing your authentication.");
                     }
                 };
             }
@@ -182,11 +193,12 @@ namespace BcGov.Malt.Web
             // Apply CORS policies to all endpoints
             app.UseCors();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization();
             });
 
             app.UseSwagger();
