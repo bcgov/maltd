@@ -412,7 +412,7 @@ exports[`Storyshots UserAccess default 1`] = `
                 className="project-list-item"
                 id="member-resources"
               >
-                Dyn
+                [object Object]
               </p>
             </div>
             <div>
@@ -455,7 +455,7 @@ exports[`Storyshots UserAccess default 1`] = `
                 className="project-list-item"
                 id="member-resources"
               >
-                Dyn
+                [object Object]
               </p>
             </div>
             <div>
@@ -563,25 +563,6 @@ exports[`Storyshots UserAccess default 1`] = `
               System 2
             </button>
           </div>
-        </div>
-        <div
-          className="icon"
-          data-cy="plus-icon"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          tabIndex="0"
-        >
-          <img
-            alt="plus icon"
-            height="25px"
-            src={
-              Object {
-                "process": [Function],
-              }
-            }
-            width="25px"
-          />
         </div>
       </div>
     </div>
@@ -734,27 +715,6 @@ exports[`Storyshots UserAccess no projects 1`] = `
             >
               System 2
             </button>
-          </div>
-        </div>
-        <div>
-          <div
-            className="icon"
-            data-cy="plus-icon"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
-            tabIndex="0"
-          >
-            <img
-              alt="plus icon"
-              height="25px"
-              src={
-                Object {
-                  "process": [Function],
-                }
-              }
-              width="25px"
-            />
           </div>
         </div>
       </div>

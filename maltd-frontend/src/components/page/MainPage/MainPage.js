@@ -36,6 +36,7 @@ export default class MainPage extends Component {
     return axios
       .get(`/api/projects`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
+        console.log("items res.data", res.data);
         this.setState({
           items: res.data,
           isLoading: true,
@@ -55,9 +56,27 @@ export default class MainPage extends Component {
           })
           .then(result => {
             const { data } = result;
+            const resources = [];
+            const finalProjects = [];
+
+            console.log("projects data coming back for user", data.projects);
+
+            data.projects.forEach(proj => {
+              let shouldAddProject = false;
+
+              proj.resources.forEach(resource => {
+                if (resource.status === "member") {
+                  resources.push(resource.type);
+                  shouldAddProject = true;
+                }
+              });
+
+              if (shouldAddProject)
+                finalProjects.push({ name: proj.name, resources, id: proj.id });
+            });
 
             this.setState({
-              projects: data.projects,
+              projects: finalProjects,
               isUserSearch: false
             });
 
@@ -144,12 +163,14 @@ export default class MainPage extends Component {
 
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
+    console.log(selectedDropdownItem, projects);
 
     return axios
       .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(() => {
+      .then(res => {
+        console.log("res or what? ", res);
         const updatedProjects = projects.slice(0);
         updatedProjects.push(selectedDropdownItem);
         this.setState({ projects: updatedProjects });
@@ -186,7 +207,8 @@ export default class MainPage extends Component {
       userName,
       color,
       userExists,
-      items
+      items,
+      selectedDropdownItem
     } = this.state;
 
     const { onLogoutClick } = this.props;
@@ -226,7 +248,8 @@ export default class MainPage extends Component {
     };
 
     const dropdown = {
-      items
+      items,
+      selectedDropdownItem
     };
 
     return (
