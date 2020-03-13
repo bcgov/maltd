@@ -273,7 +273,7 @@ exports[`Storyshots List Element with resources 1`] = `
       className="project-list-item"
       id="member-resources"
     >
-      Dyn, Share
+      undefined
     </p>
   </div>
   <div />
@@ -378,6 +378,7 @@ exports[`Storyshots UserAccess default 1`] = `
         </div>
         <div />
       </div>
+      
     </div>
     <div
       className="top-projects col"
@@ -412,7 +413,7 @@ exports[`Storyshots UserAccess default 1`] = `
                 className="project-list-item"
                 id="member-resources"
               >
-                [object Object]
+                Dyn
               </p>
             </div>
             <div>
@@ -455,7 +456,7 @@ exports[`Storyshots UserAccess default 1`] = `
                 className="project-list-item"
                 id="member-resources"
               >
-                [object Object]
+                Dyn
               </p>
             </div>
             <div>
@@ -612,6 +613,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
         </div>
         <div />
       </div>
+      
     </div>
     <div
       className="top-projects col"
@@ -900,16 +902,12 @@ exports[`Storyshots UserSearch user does not exist 1`] = `
         <div
           className="float-left"
         >
-          <p
-            className=""
+          <small
+            className="error-message"
+            data-cy="error-text"
           >
-            <small
-              className="error-message"
-              data-cy="error-text"
-            >
-              This user does not exist, please try again with a different IDIR username.
-            </small>
-          </p>
+            This user does not exist, please try again with a different IDIR username.
+          </small>
         </div>
         <div
           className="d-flex justify-content-end"

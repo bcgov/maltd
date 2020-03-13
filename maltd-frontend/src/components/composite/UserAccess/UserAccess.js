@@ -108,5 +108,9 @@ UserAccess.propTypes = {
     items: PropTypes.array.isRequired,
     selectedDropdownItem: PropTypes.object
   }).isRequired,
-  duplicateErrorMessage: PropTypes.string.isRequired
+  duplicateErrorMessage: PropTypes.string
+};
+
+UserAccess.defaultProps = {
+  duplicateErrorMessage: ""
 };

@@ -135,7 +135,13 @@ describe("Main page", () => {
       const data1 = [{ id: "1222", name: "Item name" }];
 
       const data2 = {
-        projects: [{ id: 123, name: "project" }],
+        projects: [
+          {
+            id: 123,
+            name: "project",
+            resources: [{ type: "Dyn", status: "member" }]
+          }
+        ],
         id: "1111",
         username: "LMA",
         firstName: "Let",
@@ -180,7 +186,13 @@ describe("Main page", () => {
       const data1 = [{ id: "1222", name: "Item name" }];
 
       const data2 = {
-        projects: [{ id: 123, name: "project" }],
+        projects: [
+          {
+            id: 123,
+            name: "project",
+            resources: [{ type: "Dyn", status: "member" }]
+          }
+        ],
         id: "1111",
         username: "LMA"
       };
@@ -268,8 +280,37 @@ describe("Main page", () => {
         return wrapper.state().projects;
       });
 
-      expect(wrapper.state().projects).toEqual([{ id: 123 }]);
+      expect(wrapper.state().projects).toEqual([
+        {
+          id: 123,
+          resources: [
+            { status: "member", type: "Dynamics" },
+            { status: "member", type: "Sharepoint" }
+          ]
+        }
+      ]);
       done();
+    });
+
+    test("Function should catch duplicate case and set error message when adding duplicate project", () => {
+      jest.useFakeTimers();
+
+      wrapper.setState({
+        isUserSearch: false,
+        selectedDropdownItem: { id: 123 },
+        projects: [
+          { id: 123, resources: [{ status: "member", type: "Dynamics" }] }
+        ],
+        value: "val"
+      });
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick();
+
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 5000);
     });
   });
 

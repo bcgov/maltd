@@ -42,6 +42,7 @@ exports[`User Access Component renders as expected 1`] = `
         </div>
         <div />
       </div>
+      
     </div>
     <div
       className="top-projects col"

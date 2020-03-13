@@ -68,7 +68,7 @@ describe("List Element", () => {
         listElement={{
           title: "title",
           description: "description",
-          resources: ["Dyn, Share"]
+          resources: [{ type: "Dyn" }, { type: "Share" }]
         }}
       />
     );
