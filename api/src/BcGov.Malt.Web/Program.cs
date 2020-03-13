@@ -66,9 +66,19 @@ namespace BcGov.Malt.Web
 
         private static void ConfigureLogging()
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json");
+
+            // Added before AddUserSecrets to let user secrets override environment variables.
+            configurationBuilder.AddEnvironmentVariables();
+
+#if DEBUG
+            // use appsettings.Development.json and user secrets on debug builds
+            configurationBuilder.AddJsonFile("appsettings.Development.json", optional: true);
+            configurationBuilder.AddUserSecrets(typeof(Program).Assembly, optional: true);
+#endif
+
+            var configuration = configurationBuilder.Build();
 
             var logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
