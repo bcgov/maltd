@@ -378,7 +378,6 @@ exports[`Storyshots UserAccess default 1`] = `
         </div>
         <div />
       </div>
-      
     </div>
     <div
       className="top-projects col"
@@ -567,6 +566,11 @@ exports[`Storyshots UserAccess default 1`] = `
         </div>
       </div>
     </div>
+    <div
+      className="col"
+    >
+      
+    </div>
   </div>
 </div>
 `;
@@ -613,7 +617,6 @@ exports[`Storyshots UserAccess no projects 1`] = `
         </div>
         <div />
       </div>
-      
     </div>
     <div
       className="top-projects col"
@@ -720,6 +723,11 @@ exports[`Storyshots UserAccess no projects 1`] = `
           </div>
         </div>
       </div>
+    </div>
+    <div
+      className="col"
+    >
+      
     </div>
   </div>
 </div>

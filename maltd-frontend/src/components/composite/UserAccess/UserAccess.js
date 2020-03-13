@@ -30,9 +30,6 @@ export default function UserAccess({
             <Col className="big-font">USER</Col>
           </Row>
           <ListElement listElement={userListElement} />
-          {duplicateErrorMessage && (
-            <small className="error-message">{duplicateErrorMessage}</small>
-          )}
         </Col>
         <Col className="top-projects" id={projectExists}>
           <div className="cols">
@@ -88,6 +85,11 @@ export default function UserAccess({
                 )}
               </div>
             </React.Fragment>
+          )}
+        </Col>
+        <Col>
+          {duplicateErrorMessage && (
+            <small className="error-message">{duplicateErrorMessage}</small>
           )}
         </Col>
       </Row>
