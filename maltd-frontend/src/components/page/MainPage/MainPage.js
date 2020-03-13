@@ -37,7 +37,6 @@ export default class MainPage extends Component {
     return axios
       .get(`/api/projects`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
-        console.log("items res.data", res.data);
         this.setState({
           items: res.data,
           isLoading: true,
@@ -59,28 +58,20 @@ export default class MainPage extends Component {
             const { data } = result;
             const finalProjects = [];
 
-            console.log("projects data coming back for user", data.projects);
-
             data.projects.forEach(proj => {
               let shouldAddProject = false;
               const resources = [];
 
               proj.resources.forEach(resource => {
-                console.log("what is the resource", resource);
                 if (resource.status === "member") {
                   resources.push(resource);
                   shouldAddProject = true;
                 }
               });
 
-              console.log("proj", proj);
-              console.log("resources", resources);
-
               if (shouldAddProject)
                 finalProjects.push({ name: proj.name, resources, id: proj.id });
             });
-
-            console.log("final projects: ", finalProjects);
 
             this.setState({
               projects: finalProjects,
@@ -171,7 +162,6 @@ export default class MainPage extends Component {
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
     let isDuplicate = false;
-    console.log("selecteddropdownitem is", selectedDropdownItem, projects);
 
     projects.forEach(proj => {
       if (proj.id === selectedDropdownItem.id) {
@@ -184,18 +174,19 @@ export default class MainPage extends Component {
         duplicateErrorMessage:
           "This project has already been added. Please try again with a different project."
       });
+
       setTimeout(() => {
         this.setState({ duplicateErrorMessage: null });
       }, 5000);
-      return;
+
+      return false;
     }
 
     return axios
       .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(res => {
-        console.log("res or what? ", res);
+      .then(() => {
         const updatedProjects = projects.slice(0);
 
         updatedProjects.push({

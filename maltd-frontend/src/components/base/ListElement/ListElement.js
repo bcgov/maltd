@@ -7,7 +7,6 @@ export default function ListElement({
   listElement: { title, description, resources, id },
   onXClick
 }) {
-  console.log("resources in listelement.js", resources);
   let memberOfResources = "";
 
   if (resources && resources.length > 0) {
