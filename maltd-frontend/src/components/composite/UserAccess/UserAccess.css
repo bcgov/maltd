@@ -23,3 +23,8 @@ th {
   flex-direction: column;
   width: 100%;
 }
+
+.error-message {
+  color: #dc3545;
+  padding-top: 20px;
+}

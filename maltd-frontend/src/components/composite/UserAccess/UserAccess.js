@@ -11,7 +11,8 @@ export default function UserAccess({
   onXClick,
   onPlusClick,
   onDropdownClick,
-  dropdown
+  dropdown,
+  duplicateErrorMessage
 }) {
   const userListElement = {
     title: userName,
@@ -29,6 +30,9 @@ export default function UserAccess({
             <Col className="big-font">USER</Col>
           </Row>
           <ListElement listElement={userListElement} />
+          {duplicateErrorMessage && (
+            <small className="error-message">{duplicateErrorMessage}</small>
+          )}
         </Col>
         <Col className="top-projects" id={projectExists}>
           <div className="cols">
@@ -103,5 +107,6 @@ UserAccess.propTypes = {
   dropdown: PropTypes.shape({
     items: PropTypes.array.isRequired,
     selectedDropdownItem: PropTypes.object
-  }).isRequired
+  }).isRequired,
+  duplicateErrorMessage: PropTypes.string.isRequired
 };
