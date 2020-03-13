@@ -11,7 +11,8 @@ export default function UserAccess({
   onXClick,
   onPlusClick,
   onDropdownClick,
-  dropdown
+  dropdown,
+  duplicateErrorMessage
 }) {
   const userListElement = {
     title: userName,
@@ -37,17 +38,9 @@ export default function UserAccess({
             </Row>
             {projectExists === "projects" &&
               projects.map(value => {
-                const memberOfResources = [];
-
-                value.resources.map(res => {
-                  if (res.status === "member") memberOfResources.push(res.type);
-
-                  return true;
-                });
-
                 const listElement = {
                   title: value.name,
-                  resources: memberOfResources,
+                  resources: value.resources,
                   id: value.id
                 };
 
@@ -58,6 +51,7 @@ export default function UserAccess({
                     <ListElement
                       listElement={listElement}
                       onXClick={onXClick}
+                      id={key}
                     />
                   </div>
                 );
@@ -74,7 +68,9 @@ export default function UserAccess({
           {projects && projects.length > 0 && (
             <div className="drop-plus" key={key}>
               <Dropdown dropdown={dropdown} onDropdownClick={onDropdownClick} />
-              <PlusIcon onClick={onPlusClick} />
+              {dropdown.selectedDropdownItem && (
+                <PlusIcon onClick={onPlusClick} />
+              )}
             </div>
           )}
           {(!projects || projects.length === 0) && (
@@ -84,11 +80,16 @@ export default function UserAccess({
                   dropdown={dropdown}
                   onDropdownClick={onDropdownClick}
                 />
-                <div>
+                {dropdown.selectedDropdownItem && (
                   <PlusIcon onClick={onPlusClick} />
-                </div>
+                )}
               </div>
             </React.Fragment>
+          )}
+        </Col>
+        <Col>
+          {duplicateErrorMessage && (
+            <small className="error-message">{duplicateErrorMessage}</small>
           )}
         </Col>
       </Row>
@@ -106,6 +107,12 @@ UserAccess.propTypes = {
   onPlusClick: PropTypes.func.isRequired,
   onDropdownClick: PropTypes.func.isRequired,
   dropdown: PropTypes.shape({
-    items: PropTypes.array.isRequired
-  }).isRequired
+    items: PropTypes.array.isRequired,
+    selectedDropdownItem: PropTypes.object
+  }).isRequired,
+  duplicateErrorMessage: PropTypes.string
+};
+
+UserAccess.defaultProps = {
+  duplicateErrorMessage: ""
 };

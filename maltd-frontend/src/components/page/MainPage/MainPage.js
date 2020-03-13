@@ -26,7 +26,8 @@ export default class MainPage extends Component {
       color: "primary",
       userExists: null,
       items: [],
-      selectedDropdownItem: null
+      selectedDropdownItem: null,
+      duplicateErrorMessage: null
     };
   }
 
@@ -55,9 +56,25 @@ export default class MainPage extends Component {
           })
           .then(result => {
             const { data } = result;
+            const finalProjects = [];
+
+            data.projects.forEach(proj => {
+              let shouldAddProject = false;
+              const resources = [];
+
+              proj.resources.forEach(resource => {
+                if (resource.status === "member") {
+                  resources.push(resource);
+                  shouldAddProject = true;
+                }
+              });
+
+              if (shouldAddProject)
+                finalProjects.push({ name: proj.name, resources, id: proj.id });
+            });
 
             this.setState({
-              projects: data.projects,
+              projects: finalProjects,
               isUserSearch: false
             });
 
@@ -144,6 +161,26 @@ export default class MainPage extends Component {
 
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
+    let isDuplicate = false;
+
+    projects.forEach(proj => {
+      if (proj.id === selectedDropdownItem.id) {
+        isDuplicate = true;
+      }
+    });
+
+    if (isDuplicate) {
+      this.setState({
+        duplicateErrorMessage:
+          "This project has already been added. Please try again with a different project."
+      });
+
+      setTimeout(() => {
+        this.setState({ duplicateErrorMessage: null });
+      }, 5000);
+
+      return false;
+    }
 
     return axios
       .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
@@ -151,8 +188,19 @@ export default class MainPage extends Component {
       })
       .then(() => {
         const updatedProjects = projects.slice(0);
-        updatedProjects.push(selectedDropdownItem);
-        this.setState({ projects: updatedProjects });
+
+        updatedProjects.push({
+          ...selectedDropdownItem,
+          resources: [
+            { type: "Dynamics", status: "member" },
+            { type: "Sharepoint", status: "member" }
+          ]
+        });
+        this.setState({
+          projects: updatedProjects,
+          selectedDropdownItem: null,
+          duplicateErrorMessage: null
+        });
       })
       .catch(() => {});
   }
@@ -186,7 +234,9 @@ export default class MainPage extends Component {
       userName,
       color,
       userExists,
-      items
+      items,
+      selectedDropdownItem,
+      duplicateErrorMessage
     } = this.state;
 
     const { onLogoutClick } = this.props;
@@ -226,7 +276,8 @@ export default class MainPage extends Component {
     };
 
     const dropdown = {
-      items
+      items,
+      selectedDropdownItem
     };
 
     return (
@@ -261,6 +312,7 @@ export default class MainPage extends Component {
                 onPlusClick={() => this.addUserToProject()}
                 onDropdownClick={item => this.updateSelectedDropdownItem(item)}
                 dropdown={dropdown}
+                duplicateErrorMessage={duplicateErrorMessage}
               />
             )}
           </div>

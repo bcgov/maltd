@@ -133,4 +133,27 @@ describe("User Access", () => {
         .find("#projects").length
     ).toEqual(1);
   });
+
+  test("Component renders with an error message when a duplicate project is attempted to be added", () => {
+    const component = shallow(
+      <UserAccess
+        userAccess={{
+          projects: [],
+          userName,
+          userEmail
+        }}
+        onXClick={() => jest.fn()}
+        onPlusClick={() => jest.fn()}
+        onDropdownClick={() => jest.fn()}
+        dropdown={{
+          items: [{ id: "123", name: "name", type: "type" }]
+        }}
+        duplicateErrorMessage="error message"
+      />
+    );
+
+    const rows = component.find(".error-message");
+    expect(rows.length).toEqual(1);
+    expect(rows.text()).toEqual("error message");
+  });
 });

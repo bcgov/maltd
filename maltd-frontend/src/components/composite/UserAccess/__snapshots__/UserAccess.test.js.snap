@@ -138,28 +138,12 @@ exports[`User Access Component renders as expected 1`] = `
             </button>
           </div>
         </div>
-        <div>
-          <div
-            className="icon"
-            data-cy="plus-icon"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
-            tabIndex="0"
-          >
-            <img
-              alt="plus icon"
-              height="25px"
-              src={
-                Object {
-                  "process": [Function],
-                }
-              }
-              width="25px"
-            />
-          </div>
-        </div>
       </div>
+    </div>
+    <div
+      className="col"
+    >
+      
     </div>
   </div>
 </div>

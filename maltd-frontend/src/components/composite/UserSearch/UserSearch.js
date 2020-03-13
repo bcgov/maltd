@@ -60,12 +60,10 @@ export default function UserSearch({
             <p />
             <div className="error-btn-div">
               <div className="float-left">
-                <p className="">
-                  <small className="error-message" data-cy="error-text">
-                    This user does not exist, please try again with a different
-                    IDIR username.
-                  </small>
-                </p>
+                <small className="error-message" data-cy="error-text">
+                  This user does not exist, please try again with a different
+                  IDIR username.
+                </small>
               </div>
               <div className="d-flex justify-content-end">
                 <GeneralButton generalButton={generalButton} />

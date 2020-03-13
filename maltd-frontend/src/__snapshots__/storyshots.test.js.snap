@@ -564,26 +564,12 @@ exports[`Storyshots UserAccess default 1`] = `
             </button>
           </div>
         </div>
-        <div
-          className="icon"
-          data-cy="plus-icon"
-          onClick={[Function]}
-          onKeyDown={[Function]}
-          role="button"
-          tabIndex="0"
-        >
-          <img
-            alt="plus icon"
-            height="25px"
-            src={
-              Object {
-                "process": [Function],
-              }
-            }
-            width="25px"
-          />
-        </div>
       </div>
+    </div>
+    <div
+      className="col"
+    >
+      
     </div>
   </div>
 </div>
@@ -736,28 +722,12 @@ exports[`Storyshots UserAccess no projects 1`] = `
             </button>
           </div>
         </div>
-        <div>
-          <div
-            className="icon"
-            data-cy="plus-icon"
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            role="button"
-            tabIndex="0"
-          >
-            <img
-              alt="plus icon"
-              height="25px"
-              src={
-                Object {
-                  "process": [Function],
-                }
-              }
-              width="25px"
-            />
-          </div>
-        </div>
       </div>
+    </div>
+    <div
+      className="col"
+    >
+      
     </div>
   </div>
 </div>
@@ -940,16 +910,12 @@ exports[`Storyshots UserSearch user does not exist 1`] = `
         <div
           className="float-left"
         >
-          <p
-            className=""
+          <small
+            className="error-message"
+            data-cy="error-text"
           >
-            <small
-              className="error-message"
-              data-cy="error-text"
-            >
-              This user does not exist, please try again with a different IDIR username.
-            </small>
-          </p>
+            This user does not exist, please try again with a different IDIR username.
+          </small>
         </div>
         <div
           className="d-flex justify-content-end"
