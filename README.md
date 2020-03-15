@@ -1,9 +1,19 @@
 # MALTD
+
 Management of Accounts and Licensing Tool for Dynamics/Sharepoint
+
+## Application (Phase 1)
+
+The Account Management and Licensing tool can be used to help manage the access of various projects and resources for different users. An administrator can log into the application using their IDIR account as shown in Figure 1.0 and 2.0 below and then search for users while also being able to add and remove them from projects (shown in Figures 3.0 and 4.0).
+
+### Figure 1.0 - Login landing page for application
+
+![idir1](./img/idir1.png)
 
 ## Frontend Folder Structure
 
 The folder structure for the frontend react application will be as follows:
+
 ```
 my-app
 ├── build
@@ -18,10 +28,11 @@ my-app
 ```
 
 - `build` is the location of the final, production-ready build.
--  `public` is where the static files will reside.
+- `public` is where the static files will reside.
 - `src` is where the dynamic files will reside.
 
 `src` will look something like this:
+
 ```
 src
 ├── components
