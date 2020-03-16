@@ -124,7 +124,7 @@ describe("Main page", () => {
         });
     });
 
-    test("Function should make network request and should update state on success when all fields exist in response", async done => {
+    test("Function should make network request and should update state on success when all fields exist in response with member", async done => {
       wrapper.setState({
         isLoading: false,
         value: "val",
@@ -168,6 +168,57 @@ describe("Main page", () => {
       expect(wrapper.state().isUserSearch).toEqual(false);
       expect(wrapper.state().items).toEqual(data1);
       expect(wrapper.state().projects).toEqual(data2.projects);
+      expect(wrapper.state().userEmail).toEqual(data2.email);
+      expect(wrapper.state().userName).toEqual(
+        `${data2.firstName} ${data2.lastName}`
+      );
+      done();
+    });
+
+    test("Function should make network request and should update state on success when all fields exist in response with non-member", async done => {
+      wrapper.setState({
+        isLoading: false,
+        value: "val",
+        isUserSearch: true,
+        items: []
+      });
+
+      const data1 = [{ id: "1222", name: "Item name" }];
+
+      const data2 = {
+        projects: [
+          {
+            id: 123,
+            name: "project",
+            resources: [{ type: "Dyn", status: "non-member" }]
+          }
+        ],
+        id: "1111",
+        username: "LMA",
+        firstName: "Let",
+        lastName: "Me",
+        email: "letme@example.ca"
+      };
+
+      mock.onGet(`/api/projects`).reply(200, data1);
+
+      mock.onGet(`/api/users?q=${wrapper.state().value}`).reply(200, data1);
+
+      mock.onGet(`/api/users/${wrapper.state().value}`).reply(200, data2);
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onClick();
+
+      await waitUntil(() => {
+        return wrapper.state().isLoading;
+      });
+
+      expect(wrapper.state().isLoading).toEqual(true);
+      expect(wrapper.state().isUserSearch).toEqual(false);
+      expect(wrapper.state().items).toEqual(data1);
+      expect(wrapper.state().projects).toEqual([]);
       expect(wrapper.state().userEmail).toEqual(data2.email);
       expect(wrapper.state().userName).toEqual(
         `${data2.firstName} ${data2.lastName}`
@@ -255,13 +306,16 @@ describe("Main page", () => {
       expect(addUserToProject).toHaveBeenCalled();
     });
 
-    test("Function should make network request and should update state on success", async done => {
+    test("Function should make network request and should update state on success when adding a non-duplicate project", async done => {
       expect(wrapper.state().projects).toEqual([]);
 
       wrapper.setState({
         isUserSearch: false,
         selectedDropdownItem: { id: 123 },
-        value: "val"
+        value: "val",
+        projects: [
+          { id: 1, resources: [{ status: "member", type: "Dynamics" }] }
+        ]
       });
       mock
         .onPut(
@@ -281,6 +335,7 @@ describe("Main page", () => {
       });
 
       expect(wrapper.state().projects).toEqual([
+        { id: 1, resources: [{ status: "member", type: "Dynamics" }] },
         {
           id: 123,
           resources: [
@@ -311,6 +366,15 @@ describe("Main page", () => {
 
       expect(setTimeout).toHaveBeenCalledTimes(1);
       expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 5000);
+      expect(wrapper.state().duplicateErrorMessage).toEqual(
+        "This project has already been added. Please try again with a different project."
+      );
+
+      setTimeout(() => {
+        expect(wrapper.state().duplicateErrorMessage).toEqual(null);
+      }, 5000);
+
+      jest.runAllTimers();
     });
   });
 
