@@ -52,7 +52,8 @@ namespace BcGov.Malt.Web.Controllers
         [HttpPut]
         [Route("{project}/users/{username}")]
         [SwaggerOperation(OperationId = "AddUserToProject")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProjectAccess), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> AddUserToProjectAsync(string project, string username)
         {
             if (string.IsNullOrEmpty(project))
@@ -69,9 +70,21 @@ namespace BcGov.Malt.Web.Controllers
 
             _logger.LogDebug("Adding {username} to {project}", username, project);
 
-            bool added = await _mediator.Send(new AddUserToProject.Request(project, username));
+            try
+            {
+                var access = await _mediator.Send(new AddUserToProject.Request(project, username));
 
-            return Ok();
+                return Ok(access);
+            }
+            catch (ProjectNotFoundException)
+            {
+                return NotFound(new { project });
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound(new { username });
+            }
+
         }
 
         /// <summary>Removes a user from a project.</summary>
@@ -81,7 +94,8 @@ namespace BcGov.Malt.Web.Controllers
         [HttpDelete]
         [Route("{project}/users/{username}")]
         [SwaggerOperation(OperationId = "RemoveUserFromProject")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProjectAccess), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> RemoveUserFromProjectAsync(string project, string username)
         {
             if (string.IsNullOrEmpty(project))
@@ -98,9 +112,20 @@ namespace BcGov.Malt.Web.Controllers
 
             _logger.LogDebug("Removing {username} from {project}", username, project);
 
-            bool removed = await _mediator.Send(new RemoveUserFromProject.Request(project, username));
+            try
+            {
+                var access = await _mediator.Send(new RemoveUserFromProject.Request(project, username));
 
-            return Ok();
+                return Ok(access);
+            }
+            catch (ProjectNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }

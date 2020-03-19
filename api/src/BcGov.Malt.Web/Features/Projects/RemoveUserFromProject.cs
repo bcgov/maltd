@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,7 +12,7 @@ namespace BcGov.Malt.Web.Features.Projects
 {
     public static class RemoveUserFromProject
     {
-        public class Request : IRequest<bool>
+        public class Request : IRequest<ProjectAccess>
         {
             public Request(string projectId, string username)
             {
@@ -22,7 +24,7 @@ namespace BcGov.Malt.Web.Features.Projects
             public string Username { get; }
         }
 
-        public class Handler : IRequestHandler<Request, bool>
+        public class Handler : IRequestHandler<Request, ProjectAccess>
         {
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
@@ -37,7 +39,7 @@ namespace BcGov.Malt.Web.Features.Projects
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
-            public async Task<bool> Handle(Request request, CancellationToken cancellationToken)
+            public async Task<ProjectAccess> Handle(Request request, CancellationToken cancellationToken)
             {
                 var projects = await _projectService.GetProjectsAsync();
 
@@ -46,17 +48,33 @@ namespace BcGov.Malt.Web.Features.Projects
                 if (project == null)
                 {
                     _logger.LogInformation("Project {ProjectId} not found", request.ProjectId);
-                    return false;
+                    throw new ProjectNotFoundException();
                 }
 
                 var user = await _userSearchService.SearchAsync(request.Username);
                 if (user == null)
                 {
                     _logger.LogInformation("User {Username} not found", request.Username);
-                    return false;
+                    throw new UserNotFoundException();
                 }
 
-                return await _userManagementService.RemoveUserFromProjectAsync(user, project);
+                await _userManagementService.RemoveUserFromProjectAsync(user, project);
+
+                // temporary result, will get the status from the User Management Service
+                var access = project.Resources
+                    .Select(_ => new ProjectResourceStatus { Type = _.Type, Status = ProjectResourceStatuses.NotMember })
+                    .ToList();
+
+                return new ProjectAccess
+                {
+                    Id = project.Id,
+                    Name = project.Name,
+                    Users = new List<UserAccess>
+                    {
+                        new UserAccess {Username = user.UserName, Access = access }
+                    }
+                };
+
             }
         }
     }
