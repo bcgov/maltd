@@ -54,6 +54,7 @@ namespace BcGov.Malt.Web.Controllers
         [SwaggerOperation(OperationId = "AddUserToProject")]
         [ProducesResponseType(typeof(ProjectAccess), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> AddUserToProjectAsync(string project, string username)
         {
             if (string.IsNullOrEmpty(project))
@@ -68,7 +69,7 @@ namespace BcGov.Malt.Web.Controllers
                 return BadRequest();
             }
 
-            _logger.LogDebug("Adding {username} to {project}", username, project);
+            _logger.LogDebug("Adding {Username} to {Project}", username, project);
 
             try
             {
@@ -78,11 +79,13 @@ namespace BcGov.Malt.Web.Controllers
             }
             catch (ProjectNotFoundException)
             {
-                return NotFound(new { project });
+                // TODO: return an instance of ProblemDetails
+                return NotFound();
             }
             catch (UserNotFoundException)
             {
-                return NotFound(new { username });
+                // TODO: return an instance of ProblemDetails
+                return NotFound();
             }
 
         }
@@ -96,6 +99,7 @@ namespace BcGov.Malt.Web.Controllers
         [SwaggerOperation(OperationId = "RemoveUserFromProject")]
         [ProducesResponseType(typeof(ProjectAccess), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> RemoveUserFromProjectAsync(string project, string username)
         {
             if (string.IsNullOrEmpty(project))
@@ -110,7 +114,7 @@ namespace BcGov.Malt.Web.Controllers
                 return BadRequest();
             }
 
-            _logger.LogDebug("Removing {username} from {project}", username, project);
+            _logger.LogDebug("Removing {Username} from {Project}", username, project);
 
             try
             {
@@ -120,10 +124,12 @@ namespace BcGov.Malt.Web.Controllers
             }
             catch (ProjectNotFoundException)
             {
+                // TODO: return an instance of ProblemDetails
                 return NotFound();
             }
             catch (UserNotFoundException)
             {
+                // TODO: return an instance of ProblemDetails
                 return NotFound();
             }
         }

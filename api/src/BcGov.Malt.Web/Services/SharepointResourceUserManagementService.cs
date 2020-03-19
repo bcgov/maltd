@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Models.SharePoint;
@@ -119,9 +120,17 @@ namespace BcGov.Malt.Web.Services
 
             string logonName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
-            await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName });
+            try
+            {
+                await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName });
+            }
+            catch (ApiException e)
+            {
+                var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
+                _logger.LogWarning(e, "Error adding user to Sharepoint group {@Error}", errorResponse);
+            }
         }
-
+        
         public override async Task RemoveUserAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -240,9 +249,14 @@ namespace BcGov.Malt.Web.Services
 
             HttpClient httpClient = new HttpClient(handler)
             {
-                BaseAddress = ProjectResource.Resource
+                BaseAddress = ProjectResource.BaseAddress
             };
 
+            // use the API Gateway if required
+            if (ProjectResource.BaseAddress.Host != ProjectResource.Resource.Host)
+            {
+                httpClient.DefaultRequestHeaders.Add("RouteToHost", ProjectResource.Resource.Host);
+            }
 
             httpClient.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json;odata=verbose"));
 

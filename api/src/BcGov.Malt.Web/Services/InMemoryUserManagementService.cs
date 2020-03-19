@@ -21,7 +21,7 @@ namespace BcGov.Malt.Web.Services
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to add the user to</param>
         /// <returns>Returns <c>true</c> if the user was added to the project, otherwise <c>false</c></returns>
-        public Task<bool> AddUserToProjectAsync(User user, Project project)
+        public Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, Project project)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (project == null) throw new ArgumentNullException(nameof(project));
@@ -36,8 +36,12 @@ namespace BcGov.Malt.Web.Services
             {
                 projects.Add(project);
             }
+            
+            var statuses = project.Resources
+                .Select(_ => new ProjectResourceStatus {Type = _.Type, Status = ProjectResourceStatuses.Member})
+                .ToList();
 
-            return Task.FromResult(true);
+            return Task.FromResult(statuses);
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace BcGov.Malt.Web.Services
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to remove the user from.</param>
         /// <returns>Returns <c>true</c> if the user was removed from the project, otherwise <c>false</c></returns>
-        public Task<bool> RemoveUserFromProjectAsync(User user, Project project)
+        public Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, Project project)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (project == null) throw new ArgumentNullException(nameof(project));
@@ -57,7 +61,11 @@ namespace BcGov.Malt.Web.Services
                 _database.Add(user, projects);
             }
 
-            return Task.FromResult(projects.Remove(project));
+            var statuses = project.Resources
+                .Select(_ => new ProjectResourceStatus { Type = _.Type, Status = ProjectResourceStatuses.NotMember })
+                .ToList();
+
+            return Task.FromResult(statuses);
         }
 
 

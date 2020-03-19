@@ -21,9 +21,9 @@ namespace BcGov.Malt.Web.Services
 
 
         public UserManagementService(
-            ProjectConfigurationCollection projects, 
-            ILogger<UserManagementService> logger, 
-            IODataClientFactory oDataClientFactory, 
+            ProjectConfigurationCollection projects,
+            ILogger<UserManagementService> logger,
+            IODataClientFactory oDataClientFactory,
             IUserSearchService userSearchService,
             ILogger<DynamicsResourceUserManagementService> dynamicsResourceUserManagementService,
             ILogger<SharePointResourceUserManagementService> sharePointResourceUserManagementServiceLogger)
@@ -36,7 +36,7 @@ namespace BcGov.Malt.Web.Services
             _sharePointResourceUserManagementServiceLogger = sharePointResourceUserManagementServiceLogger ?? throw new ArgumentNullException(nameof(sharePointResourceUserManagementServiceLogger));
         }
 
-        public async Task<bool> AddUserToProjectAsync(User user, Project project)
+        public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, Project project)
         {
             var requests = CreateAddUserRequests(user, project);
 
@@ -52,8 +52,21 @@ namespace BcGov.Malt.Web.Services
                 _logger.LogWarning(exception, "Error on aggregate request");
             }
 
+            var statuses = new List<ProjectResourceStatus>();
+
+            foreach (var request in requests)
+            {
+                if (request.Task.IsCompletedSuccessfully)
+                {
+                    _logger.LogDebug("Request to add {User} to {Project} {Resource} completed successfully",
+                        new { user.UserName, user.Email },
+                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Resource.Type, request.Resource.Resource }); statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Member });
+                }
+            }
+
             // TODO: do we need to return true/false based on result?
-            return true;
+            return statuses;
         }
 
         public async Task<List<Project>> GetProjectsForUserAsync(User user)
@@ -79,11 +92,11 @@ namespace BcGov.Malt.Web.Services
                 Project project = projects.SingleOrDefault(_ => _.Id == request.Configuration.Id);
                 if (project == null)
                 {
-                    project = new Project 
+                    project = new Project
                     {
-                        Id = request.Configuration.Id, 
-                        Name = request.Configuration.Name, 
-                        Resources = new List<ProjectResourceStatus>() 
+                        Id = request.Configuration.Id,
+                        Name = request.Configuration.Name,
+                        Resources = new List<ProjectResourceStatus>()
                     };
 
                     projects.Add(project);
@@ -91,20 +104,35 @@ namespace BcGov.Malt.Web.Services
 
                 if (request.Task.IsCompletedSuccessfully)
                 {
-                    _logger.LogDebug("Request to {Project} for {Resource} completed successfully", request.Configuration.Name, request.Resource.Type);
+                    _logger.LogDebug("Request to {Project} for {Resource} completed successfully",
+                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Resource.Type, request.Resource.Resource });
+
                     bool userHasAccess = request.Task.Result;
-                    project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = userHasAccess ? "member" : "not-member" });
+                    project.Resources.Add(new ProjectResourceStatus
+                    {
+                        Type = request.Resource.Type.ToString(),
+                        Status = userHasAccess
+                            ? ProjectResourceStatuses.Member
+                            : ProjectResourceStatuses.NotMember
+                    });
 
                 }
                 else if (request.Task.IsFaulted)
                 {
                     if (request.Task.Exception != null)
                     {
-                        _logger.LogError(request.Task.Exception, "Request to {Project} for {Resource} failed", request.Configuration.Name, request.Resource.Type);
+                        // log with exception
+                        _logger.LogError(request.Task.Exception, "Request to project {Project} for resource {Resource} failed",
+                            new { request.Configuration.Name, request.Configuration.Id },
+                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress });
                     }
                     else
                     {
-                        _logger.LogError("Request to {Project} for {Resource} failed", request.Configuration.Name, request.Resource.Type);
+                        // log without exception
+                        _logger.LogError("Request to {Project} for {Resource} failed",
+                            new { request.Configuration.Name, request.Configuration.Id },
+                            new { request.Resource.Type, request.Resource.Resource });
                     }
 
                     project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = "error" });
@@ -114,7 +142,7 @@ namespace BcGov.Malt.Web.Services
             return projects;
         }
 
-        public async Task<bool> RemoveUserFromProjectAsync(User user, Project project)
+        public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, Project project)
         {
             var requests = CreateRemoveUserRequests(user, project);
 
@@ -130,8 +158,22 @@ namespace BcGov.Malt.Web.Services
                 _logger.LogWarning(exception, "Error on aggregate request");
             }
 
-            // TODO: do we need to return true/false based on result?
-            return true;
+            var statuses = new List<ProjectResourceStatus>();
+
+            foreach (var request in requests)
+            {
+                if (request.Task.IsCompletedSuccessfully)
+                {
+                    _logger.LogDebug("Request to remove {User} from {Project} {Resource} completed successfully",
+                        new { user.UserName, user.Email },
+                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Resource.Type, request.Resource.Resource });
+
+                    statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.NotMember });
+                }
+            }
+
+            return statuses;
         }
 
         private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> CreateUserHasAccessRequests(User user)
@@ -174,7 +216,6 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-
         private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user, Project project)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
@@ -199,9 +240,9 @@ namespace BcGov.Malt.Web.Services
         {
             switch (resource.Type)
             {
-                case ProjectType.Dynamics: 
+                case ProjectType.Dynamics:
                     return new DynamicsResourceUserManagementService(project, resource, _oDataClientFactory, _userSearchService, _dynamicsResourceUserManagementService);
-                case ProjectType.SharePoint: 
+                case ProjectType.SharePoint:
                     return new SharePointResourceUserManagementService(project, resource, _userSearchService, _sharePointResourceUserManagementServiceLogger);
                 default:
                     _logger.LogWarning("Unknown resource type {Type}, project resource will be skipped", resource.Type);

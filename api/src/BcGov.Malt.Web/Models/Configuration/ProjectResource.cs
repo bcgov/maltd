@@ -19,6 +19,13 @@ namespace BcGov.Malt.Web.Models.Configuration
         /// </summary>
         public Uri Resource { get; set; }
 
+        /// <summary>
+        /// The resource the base address. This will be different than the
+        /// <see cref="Resource"/> if the API Gateway is used. If no API
+        /// gateway, then it will be the same as the <see cref="Resource"/>.
+        /// </summary>
+        public Uri BaseAddress { get; set; }
+
         public string Username { get; set; }
         public string Password { get; set; }
 
@@ -37,5 +44,11 @@ namespace BcGov.Malt.Web.Models.Configuration
         /// authentication.
         /// </summary>
         public string RelyingPartyIdentifier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the API Gateway policy. If no policy is configured
+        /// the API gateway will not be used.
+        /// </summary>
+        public string ApiGatewayPolicy { get; set; }
     }
 }

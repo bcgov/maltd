@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
+using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
 using MediatR;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -29,43 +30,36 @@ namespace BcGov.Malt.Web.Features.Projects
         {
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
-            private readonly IProjectService _projectService;
+            private readonly ProjectConfigurationCollection _projects;
             private readonly ILogger<Handler> _logger;
 
-            public Handler(IUserSearchService userSearchService, IUserManagementService userManagementService, IProjectService projectService, ILogger<Handler> logger)
+            public Handler(IUserSearchService userSearchService, IUserManagementService userManagementService, ProjectConfigurationCollection projects, ILogger<Handler> logger)
             {
                 _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
                 _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
-                _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+                _projects = projects ?? throw new ArgumentNullException(nameof(projects));
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
             public async Task<ProjectAccess> Handle(Request request, CancellationToken cancellationToken)
             {
-                var projects = await _projectService.GetProjectsAsync();
-
-                var project = projects.SingleOrDefault(_ => _.Id == request.ProjectId);
+                var project = _projects.SingleOrDefault(_ => _.Id == request.ProjectId);
 
                 if (project == null)
                 {
                     _logger.LogInformation("Project {ProjectId} not found", request.ProjectId);
-                    throw new ProjectNotFoundException();
+                    throw new ProjectNotFoundException(request.ProjectId);
                 }
 
                 var user = await _userSearchService.SearchAsync(request.Username);
                 if (user == null)
                 {
                     _logger.LogInformation("User {Username} not found", request.Username);
-                    throw new UserNotFoundException();
+                    throw new UserNotFoundException(request.Username);
                 }
 
-                await _userManagementService.AddUserToProjectAsync(user, project);
-
-                // temporary result, will get the status from the User Management Service
-                var access = project.Resources
-                    .Select(_ => new ProjectResourceStatus {Type = _.Type, Status = ProjectResourceStatuses .Member})
-                    .ToList();
-
+                var access = await _userManagementService.AddUserToProjectAsync(user, project);
+                
                 return new ProjectAccess
                 {
                     Id = project.Id,
