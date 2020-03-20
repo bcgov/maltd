@@ -256,7 +256,7 @@ export default class MainPage extends Component {
 
         return true;
       })
-      .catch(err => {
+      .catch(() => {
         return false;
       });
   }
