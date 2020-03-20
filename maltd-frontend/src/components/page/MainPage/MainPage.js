@@ -240,6 +240,7 @@ export default class MainPage extends Component {
             if (proj.id === selectedDropdownItem.id) {
               updatedProjects.push({
                 ...selectedDropdownItem,
+                name: proj.name,
                 resources: userResources
               });
             } else {
