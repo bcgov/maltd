@@ -52,7 +52,7 @@ namespace BcGov.Malt.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // all endpoint must be authenticated
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             // send header Access-Control-Allow-Origin: *
             services.AddCors(options =>
