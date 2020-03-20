@@ -212,11 +212,71 @@ exports[`Storyshots List Element empty 1`] = `
 </div>
 `;
 
-exports[`Storyshots List Element no resources 1`] = `
-<div>
-  <p>
-    No projects
-  </p>
+exports[`Storyshots List Element not properly added resources 1`] = `
+<div
+  className="project-div"
+>
+  <div
+    className="project-list-item"
+    id="project-info"
+  >
+    <strong
+      className="large-size"
+    >
+      MALTD
+    </strong>
+    <p
+      className="project-list-item"
+      id="member-resources"
+    >
+      Member: 
+      Share
+    </p>
+    <p
+      className="project-list-item"
+      id="member-resources"
+    >
+      Not member: 
+      Dyn
+    </p>
+    <p
+      className="project-list-item"
+      id="member-resources"
+    >
+      <b>
+        Error:
+      </b>
+       
+      error exists
+    </p>
+  </div>
+  <div />
+</div>
+`;
+
+exports[`Storyshots List Element properly added resources 1`] = `
+<div
+  className="project-div"
+>
+  <div
+    className="project-list-item"
+    id="project-info"
+  >
+    <strong
+      className="large-size"
+    >
+      MALTD
+    </strong>
+    <p
+      className="project-list-item"
+      id="member-resources"
+    >
+      Member: 
+      Dyn, Share
+    </p>
+    
+  </div>
+  <div />
 </div>
 `;
 
@@ -240,32 +300,6 @@ exports[`Storyshots List Element user 1`] = `
       user@gov.bc.ca
     </p>
     
-    
-  </div>
-  <div />
-</div>
-`;
-
-exports[`Storyshots List Element with resources 1`] = `
-<div
-  className="project-div"
->
-  <div
-    className="project-list-item"
-    id="project-info"
-  >
-    <strong
-      className="large-size"
-    >
-      MALTD
-    </strong>
-    <p
-      className="project-list-item"
-      id="member-resources"
-    >
-      Member: 
-      Dyn, Share
-    </p>
     
   </div>
   <div />

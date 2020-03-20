@@ -7,7 +7,17 @@ const listElement = {
 };
 
 storiesOf("List Element", module)
-  .add("no resources", () => <ListElement listElement={listElement} />)
+  .add("not properly added resources", () => (
+    <ListElement
+      listElement={{
+        ...listElement,
+        resources: [
+          { type: "Dyn", message: "error exists", status: "not-member" },
+          { type: "Share", message: null, status: "member" }
+        ]
+      }}
+    />
+  ))
   .add("user", () => (
     <ListElement
       listElement={{
@@ -17,11 +27,14 @@ storiesOf("List Element", module)
       }}
     />
   ))
-  .add("with resources", () => (
+  .add("properly added resources", () => (
     <ListElement
       listElement={{
         ...listElement,
-        resources: [{ type: "Dyn" }, { type: "Share" }]
+        resources: [
+          { type: "Dyn", status: "member" },
+          { type: "Share", status: "member" }
+        ]
       }}
     />
   ))
