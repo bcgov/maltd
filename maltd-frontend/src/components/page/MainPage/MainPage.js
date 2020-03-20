@@ -90,7 +90,13 @@ export default class MainPage extends Component {
             }
           });
       })
-      .catch(() => {
+      .catch(err => {
+        const { status } = err.response;
+
+        if (status === 401) {
+          window.location.reload();
+        }
+
         this.clearForm();
       });
   }
@@ -181,7 +187,13 @@ export default class MainPage extends Component {
 
         this.setState({ projects: updatedProjects });
       })
-      .catch(() => {});
+      .catch(err => {
+        const { status } = err.response;
+
+        if (status === 401) {
+          window.location.reload();
+        }
+      });
   }
 
   addUserToProject() {
@@ -257,7 +269,13 @@ export default class MainPage extends Component {
 
         return true;
       })
-      .catch(() => {
+      .catch(err => {
+        const { status } = err.response;
+
+        if (status === 401) {
+          window.location.reload();
+        }
+
         return false;
       });
   }
