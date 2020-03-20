@@ -27,7 +27,7 @@ namespace BcGov.Malt.Web.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override async Task AddUserAsync(string username)
+        public override async Task<string> AddUserAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -71,9 +71,11 @@ namespace BcGov.Malt.Web.Services
             {
                 _logger.LogInformation("{@SystemUser} exists and is already enabled user", entry);
             }
+
+            return string.Empty;
         }
 
-        public override async Task RemoveUserAsync(string username)
+        public override async Task<string> RemoveUserAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -85,12 +87,21 @@ namespace BcGov.Malt.Web.Services
 
             SystemUser entry = await GetSystemUserByLogon(client, logon);
 
-            if (entry == null || entry.IsDisabled.HasValue && entry.IsDisabled.Value)
+            if (entry == null)
             {
-                return; // user does not exist, or is already disabled
+                _logger.LogInformation("User {Username} was not found in Dynamics, will not perform update", username);
+                return string.Empty;
+            }
+
+            if (entry.IsDisabled.HasValue && entry.IsDisabled.Value)
+            {
+                _logger.LogInformation("User {SystemUser} is already disabled in Dynamics, will not perform update", new { entry.DomainName, entry.IsDisabled, entry.SystemUserId });
+                return string.Empty; // user does not exist, or is already disabled
             }
 
             await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true);
+
+            return string.Empty;
         }
 
         public override async Task<bool> UserHasAccessAsync(string username)
@@ -111,6 +122,8 @@ namespace BcGov.Malt.Web.Services
 
         private Task<IDictionary<string, object>> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, bool isDisabled)
         {
+            _logger.LogDebug("Updating  SystemUser with {SystemUserId} with isDisabled flag set to {UsDisabled} in Dynamics", systemUserId, isDisabled);
+
             // using the untyped version because the typed version was giving an error:
             //
             // Microsoft.OData.ODataException: The property 'isdisabled' does not exist on type 'Microsoft.Dynamics.CRM.systemuser'.
@@ -123,16 +136,31 @@ namespace BcGov.Malt.Web.Services
                 .UpdateEntryAsync();
         }
 
-        private Task<SystemUser> GetSystemUserByLogon(IODataClient client, string logon)
+        private async Task<SystemUser> GetSystemUserByLogon(IODataClient client, string logon)
         {
-            return client
+            _logger.LogDebug("Getting SystemUser with {DomainName} from Dynamics", logon);
+
+            var systemUser = await client
                 .For<SystemUser>()
                 .Filter(_ => _.DomainName == logon)
                 .FindEntryAsync();
+
+            if (systemUser != null)
+            {
+                _logger.LogDebug("Found SystemUser {@SystemUser}", new { systemUser.DomainName, systemUser.IsDisabled, systemUser.SystemUserId });
+            }
+            else
+            {
+                _logger.LogDebug("SystemUser with {DomainName} not found", logon);
+            }
+
+            return systemUser;
         }
 
         private async Task<BusinessUnit> GetRootBusinessUnit(IODataClient client)
         {
+            _logger.LogDebug("Getting root business unit from dynamics");
+
             // should be only one, however, get all just in case
             IEnumerable<BusinessUnit> entries = await client
                 .For<BusinessUnit>()

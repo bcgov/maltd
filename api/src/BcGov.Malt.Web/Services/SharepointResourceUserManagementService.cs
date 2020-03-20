@@ -73,7 +73,7 @@ namespace BcGov.Malt.Web.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override async Task AddUserAsync(string username)
+        public override async Task<string> AddUserAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -85,7 +85,7 @@ namespace BcGov.Malt.Web.Services
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot add users access", username);
-                return;
+                return $"Unable to locate user's User Principal Name (UPN)";
             }
 
             ISharePointClient restClient = await GetSharePointRestClientForUpdate();
@@ -95,7 +95,7 @@ namespace BcGov.Malt.Web.Services
             if (string.IsNullOrEmpty(web?.Data?.Title))
             {
                 _logger.LogWarning("Cannot get site group name for {Project} on resource {ResourceType}", Project.Name, ProjectResource.Type);
-                return;
+                return $"Unable to get SharePoint site group name";
             }
 
             // we always add users to '<site-group> Members'
@@ -106,7 +106,7 @@ namespace BcGov.Malt.Web.Services
             if (siteGroups.Data.Results.Count == 0)
             {
                 _logger.LogInformation("Cannot find site group {@SiteGroup}", new SiteGroup { Title = siteGroupTitle });
-                return;
+                return $"SharePoint site group '{siteGroupTitle}' not found";
             }
 
             var siteGroup = siteGroups.Data.Results[0];
@@ -123,15 +123,17 @@ namespace BcGov.Malt.Web.Services
             try
             {
                 await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName });
+                return string.Empty;
             }
             catch (ApiException e)
             {
                 var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
                 _logger.LogWarning(e, "Error adding user to Sharepoint group {@Error}", errorResponse);
+                return $"Error occuring adding user to SharePoint site group '{siteGroupTitle}'";
             }
         }
         
-        public override async Task RemoveUserAsync(string username)
+        public override async Task<string> RemoveUserAsync(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -145,7 +147,7 @@ namespace BcGov.Malt.Web.Services
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
                 _logger.LogInformation("Cannot locate UPN for for {Username}, cannot remove users access", username);
-                return;
+                return "User not found";
             }
             
             // format the SharePoint login name format
@@ -155,6 +157,8 @@ namespace BcGov.Malt.Web.Services
 
             var groups = await restClient.GetSiteGroupsAsync();
             var siteGroups = groups.Data.Results;
+
+            StringBuilder response = new StringBuilder();
 
             foreach (var siteGroup in siteGroups)
             {
@@ -166,9 +170,22 @@ namespace BcGov.Malt.Web.Services
                 {
                     _logger.LogInformation("Removing {@User} from site group {@SiteGroup}", sharePointUser, siteGroup);
 
-                    await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id);
+                    try
+                    {
+                        await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id);
+                    }
+                    catch (ApiException e)
+                    {
+                        var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
+                        _logger.LogWarning(e, "Error removing user from Sharepoint group {@Error}", errorResponse);
+
+                        response.Append(response.Length != 0 ? ", " : "Error removing user from site group(s): ");
+                        response.Append(siteGroup.Title);
+                    }
                 }
             }
+
+            return response.ToString();
         }
 
         public override async Task<bool> UserHasAccessAsync(string username)

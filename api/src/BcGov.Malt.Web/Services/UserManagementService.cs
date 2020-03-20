@@ -56,16 +56,52 @@ namespace BcGov.Malt.Web.Services
 
             foreach (var request in requests)
             {
-                if (request.Task.IsCompletedSuccessfully)
+                var task = request.Task;
+
+                if (task.IsCompletedSuccessfully)
                 {
+                    string message = task.Result;
+                    if (string.IsNullOrEmpty(message))
+                    {
+                        message = null;
+                    }
+
                     _logger.LogDebug("Request to add {User} to {Project} {Resource} completed successfully",
                         new { user.UserName, user.Email },
                         new { request.Configuration.Name, request.Configuration.Id },
-                        new { request.Resource.Type, request.Resource.Resource }); statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Member });
+                        new { request.Resource.Type, request.Resource.Resource });
+
+                    statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Member, Message = message });
+                }
+                else if (task.IsFaulted)
+                {
+                    Guid requestId = Guid.NewGuid();
+                    string message = $"Unknown error executing request id {requestId}";
+
+                    if (task.Exception != null)
+                    {
+                        // log with exception
+                        _logger.LogError(task.Exception,
+                            "Request add user {@User} to project {Project} for resource {Resource} failed ({RequestId}",
+                            new { user.Id, user.UserName, user.UserPrincipalName },
+                            new { request.Configuration.Name, request.Configuration.Id },
+                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress },
+                            requestId);
+                    }
+                    else
+                    {
+                        // log without exception
+                        _logger.LogError("Request add user {@User} to project {Project} for resource {Resource} failed ({RequestId}",
+                            new { user.Id, user.UserName, user.UserPrincipalName },
+                            new { request.Configuration.Name, request.Configuration.Id },
+                            new { request.Resource.Type, request.Resource.Resource },
+                            requestId);
+                    }
+
+                    statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
                 }
             }
 
-            // TODO: do we need to return true/false based on result?
             return statuses;
         }
 
@@ -102,13 +138,15 @@ namespace BcGov.Malt.Web.Services
                     projects.Add(project);
                 }
 
-                if (request.Task.IsCompletedSuccessfully)
+                var task = request.Task;
+
+                if (task.IsCompletedSuccessfully)
                 {
                     _logger.LogDebug("Request to {Project} for {Resource} completed successfully",
                         new { request.Configuration.Name, request.Configuration.Id },
                         new { request.Resource.Type, request.Resource.Resource });
 
-                    bool userHasAccess = request.Task.Result;
+                    bool userHasAccess = task.Result;
                     project.Resources.Add(new ProjectResourceStatus
                     {
                         Type = request.Resource.Type.ToString(),
@@ -118,24 +156,31 @@ namespace BcGov.Malt.Web.Services
                     });
 
                 }
-                else if (request.Task.IsFaulted)
+                else if (task.IsFaulted)
                 {
-                    if (request.Task.Exception != null)
+                    Guid requestId = Guid.NewGuid();
+                    string message = $"Unknown error executing request id {requestId}";
+
+                    if (task.Exception != null)
                     {
                         // log with exception
-                        _logger.LogError(request.Task.Exception, "Request to project {Project} for resource {Resource} failed",
+                        _logger.LogError(task.Exception, "Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
+                            new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
-                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress });
+                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress },
+                            requestId);
                     }
                     else
                     {
                         // log without exception
-                        _logger.LogError("Request to {Project} for {Resource} failed",
+                        _logger.LogError("Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
+                            new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
-                            new { request.Resource.Type, request.Resource.Resource });
+                            new { request.Resource.Type, request.Resource.Resource },
+                            requestId);
                     }
 
-                    project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = "error" });
+                    project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
                 }
             }
 
@@ -162,14 +207,49 @@ namespace BcGov.Malt.Web.Services
 
             foreach (var request in requests)
             {
-                if (request.Task.IsCompletedSuccessfully)
+                var task = request.Task;
+
+                if (task.IsCompletedSuccessfully)
                 {
+                    string message = task.Result;
+                    if (string.IsNullOrEmpty(message))
+                    {
+                        message = null;
+                    }
+
                     _logger.LogDebug("Request to remove {User} from {Project} {Resource} completed successfully",
                         new { user.UserName, user.Email },
                         new { request.Configuration.Name, request.Configuration.Id },
                         new { request.Resource.Type, request.Resource.Resource });
 
-                    statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.NotMember });
+                    statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.NotMember, Message = message });
+                }
+                else if (task.IsFaulted)
+                {
+                    Guid requestId = Guid.NewGuid();
+                    string message = $"Unknown error executing request id {requestId}";
+
+                    if (task.Exception != null)
+                    {
+                        // log with exception
+                        _logger.LogError(task.Exception,
+                            "Request to remove user {@User} from project {Project} for resource {Resource} failed ({RequestId}",
+                            new { user.Id, user.UserName, user.UserPrincipalName },
+                            new { request.Configuration.Name, request.Configuration.Id },
+                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress },
+                            requestId);
+                    }
+                    else
+                    {
+                        // log without exception
+                        _logger.LogError("Request to remove user {@User} fromproject {Project} for resource {Resource} failed ({RequestId}",
+                            new { user.Id, user.UserName, user.UserPrincipalName },
+                            new { request.Configuration.Name, request.Configuration.Id },
+                            new { request.Resource.Type, request.Resource.Resource },
+                            requestId);
+                    }
+
+                    statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
                 }
             }
 
@@ -196,9 +276,10 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateAddUserRequests(User user, ProjectConfiguration project)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateAddUserRequests(User user, ProjectConfiguration project)
         {
-            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
+            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> requests
+                = new List<(ProjectConfiguration, ProjectResource, Task<string> Task)>();
 
             foreach (var projectConfiguration in _projects.Where(_ => _.Id == project.Id))
             {
@@ -216,9 +297,9 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user, ProjectConfiguration project)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateRemoveUserRequests(User user, ProjectConfiguration project)
         {
-            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
+            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task<string>)>();
 
             foreach (var projectConfiguration in _projects.Where(_ => _.Id == project.Id))
             {
