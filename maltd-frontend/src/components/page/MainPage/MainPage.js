@@ -32,73 +32,58 @@ export default class MainPage extends Component {
     };
   }
 
-  onButtonClick() {
+  async onButtonClick() {
     const { value } = this.state;
 
-    return axios
-      .get(`/api/projects`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => {
-        this.setState({
-          items: res.data,
-          isLoading: true,
-          disabledButton: true,
-          disabledInput: true
-        });
-      })
-      .then(() => {
-        axios.get(`/api/users?q=${value}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      })
-      .then(() => {
-        return axios
-          .get(`/api/users/${value}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-          .then(result => {
-            const { data } = result;
-            const finalProjects = [];
-
-            data.projects.forEach(proj => {
-              let shouldAddProject = false;
-              const resources = [];
-
-              proj.resources.forEach(resource => {
-                if (resource.status === "member") {
-                  resources.push(resource);
-                  shouldAddProject = true;
-                }
-              });
-
-              if (shouldAddProject)
-                finalProjects.push({ name: proj.name, resources, id: proj.id });
-            });
-
-            this.setState({
-              projects: finalProjects,
-              isUserSearch: false
-            });
-
-            if (data.email) {
-              this.setState({ userEmail: data.email });
-            }
-
-            if (data.firstName && data.lastName) {
-              this.setState({
-                userName: `${data.firstName} ${data.lastName}`
-              });
-            }
-          });
-      })
-      .catch(err => {
-        const { status } = err.response;
-
-        if (status === 401) {
-          window.location.reload();
-        }
-
-        this.clearForm();
+    try {
+      const res = await axios.get(`/api/projects`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
+      this.setState({
+        items: res.data,
+        isLoading: true,
+        disabledButton: true,
+        disabledInput: true
+      });
+      axios.get(`/api/users?q=${value}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      let result = await axios.get(`/api/users/${value}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const { data } = result;
+      const finalProjects = [];
+      data.projects.forEach(proj => {
+        let shouldAddProject = false;
+        const resources = [];
+        proj.resources.forEach(resource => {
+          if (resource.status === "member") {
+            resources.push(resource);
+            shouldAddProject = true;
+          }
+        });
+        if (shouldAddProject)
+          finalProjects.push({ name: proj.name, resources, id: proj.id });
+      });
+      this.setState({
+        projects: finalProjects,
+        isUserSearch: false
+      });
+      if (data.email) {
+        this.setState({ userEmail: data.email });
+      }
+      if (data.firstName && data.lastName) {
+        this.setState({
+          userName: `${data.firstName} ${data.lastName}`
+        });
+      }
+    } catch (err) {
+      const { status } = err.response;
+      if (status === 401) {
+        window.location.reload();
+      }
+      this.clearForm();
+    }
   }
 
   onInputChange(event) {
@@ -147,56 +132,52 @@ export default class MainPage extends Component {
     }
   }
 
-  removeUserFromProject(projectId) {
+  async removeUserFromProject(projectId) {
     const { value, projects } = this.state;
 
-    return axios
-      .delete(`/api/projects/${projectId}/users/${value}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(res => {
-        // figure out which resources user has access to after remove
-        const { users } = res.data;
-
-        let userResources;
-        users.forEach(user => {
-          if (user.username.toLowerCase() === value) {
-            userResources = user.access.slice(0);
-          }
-        });
-
-        let isNonMemberForAllResources = true;
-        userResources.forEach(userResource => {
-          if (userResource.status !== "not-member") {
-            isNonMemberForAllResources = false;
-          }
-        });
-
-        const updatedProjects = [];
-        projects.forEach(proj => {
-          if (!isNonMemberForAllResources) {
-            updatedProjects.push({
-              id: proj.id,
-              name: proj.name,
-              resources: userResources
-            });
-          } else if (proj.id !== projectId) {
-            updatedProjects.push(proj);
-          }
-        });
-
-        this.setState({ projects: updatedProjects });
-      })
-      .catch(err => {
-        const { status } = err.response;
-
-        if (status === 401) {
-          window.location.reload();
+    try {
+      const res = await axios.delete(
+        `/api/projects/${projectId}/users/${value}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      // figure out which resources user has access to after remove
+      const { users } = res.data;
+      let userResources;
+      users.forEach(user => {
+        if (user.username.toLowerCase() === value) {
+          userResources = user.access.slice(0);
         }
       });
+      let isNonMemberForAllResources = true;
+      userResources.forEach(userResource => {
+        if (userResource.status !== "not-member") {
+          isNonMemberForAllResources = false;
+        }
+      });
+      const updatedProjects = [];
+      projects.forEach(proj => {
+        if (!isNonMemberForAllResources) {
+          updatedProjects.push({
+            id: proj.id,
+            name: proj.name,
+            resources: userResources
+          });
+        } else if (proj.id !== projectId) {
+          updatedProjects.push(proj);
+        }
+      });
+      this.setState({ projects: updatedProjects });
+    } catch (err) {
+      const { status } = err.response;
+      if (status === 401) {
+        window.location.reload();
+      }
+    }
   }
 
-  addUserToProject() {
+  async addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
 
     // get resources currently existing for added project if any
@@ -207,78 +188,69 @@ export default class MainPage extends Component {
       }
     });
 
-    return axios
-      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, null, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(res => {
-        // figure out which resources user has access to after add
-        const { users } = res.data;
-
-        let userResources;
-        users.forEach(user => {
-          if (user.username.toLowerCase() === value) {
-            userResources = user.access.slice(0);
+    try {
+      const res = await axios.put(
+        `/api/projects/${selectedDropdownItem.id}/users/${value}`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      // figure out which resources user has access to after add
+      const { users } = res.data;
+      let userResources;
+      users.forEach(user => {
+        if (user.username.toLowerCase() === value) {
+          userResources = user.access.slice(0);
+        }
+      });
+      if (!existingProjectResources) {
+        this.setState({
+          projects: [
+            ...projects,
+            { id: res.data.id, name: res.data.name, resources: userResources }
+          ],
+          selectedDropdownItem: null
+        });
+        return true;
+      }
+      if (!checkArrayEquality(existingProjectResources, userResources)) {
+        const updatedProjects = [];
+        projects.forEach(proj => {
+          if (proj.id === selectedDropdownItem.id) {
+            updatedProjects.push({
+              ...selectedDropdownItem,
+              name: proj.name,
+              resources: userResources
+            });
+          } else {
+            updatedProjects.push(proj);
           }
         });
-
-        if (!existingProjectResources) {
-          this.setState({
-            projects: [
-              ...projects,
-              { id: res.data.id, name: res.data.name, resources: userResources }
-            ],
-            selectedDropdownItem: null
-          });
-          return true;
-        }
-
-        if (!checkArrayEquality(existingProjectResources, userResources)) {
-          const updatedProjects = [];
-
-          projects.forEach(proj => {
-            if (proj.id === selectedDropdownItem.id) {
-              updatedProjects.push({
-                ...selectedDropdownItem,
-                name: proj.name,
-                resources: userResources
-              });
-            } else {
-              updatedProjects.push(proj);
-            }
-          });
-
-          this.setState({
-            projects: updatedProjects,
-            selectedDropdownItem: null
-          });
-
-          return true;
-        }
-
         this.setState({
-          duplicateErrorMessage:
-            "This project has already been added. Please try again with a different project."
+          projects: updatedProjects,
+          selectedDropdownItem: null
         });
-
-        setTimeout(() => {
-          this.setState({
-            duplicateErrorMessage: null,
-            selectedDropdownItem: null
-          });
-        }, 5000);
-
         return true;
-      })
-      .catch(err => {
-        const { status } = err.response;
-
-        if (status === 401) {
-          window.location.reload();
-        }
-
-        return false;
+      }
+      this.setState({
+        duplicateErrorMessage:
+          "This project has already been added. Please try again with a different project."
       });
+      setTimeout(() => {
+        this.setState({
+          duplicateErrorMessage: null,
+          selectedDropdownItem: null
+        });
+      }, 5000);
+      return true;
+    } catch (err) {
+      const { status } = err.response;
+      if (status === 401) {
+        window.location.reload();
+      }
+      return false;
+    }
   }
 
   updateSelectedDropdownItem(selectedProject) {
