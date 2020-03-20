@@ -163,15 +163,16 @@ export default class MainPage extends Component {
     const { selectedDropdownItem, value, projects } = this.state;
 
     return axios
-      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
+      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, null, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => {
         // figure out which resources user has access to
-        const { users } = res;
+        const { users } = res.data;
         let userResources;
 
         users.forEach(user => {
+          console.log(user.username, value);
           if (user.userName === value) {
             userResources = user.access.slice(0);
           }
