@@ -110,7 +110,7 @@ describe("Main page", () => {
   });
 
   describe("onButtonClick", () => {
-    test("Catches error when /api/projects endpoint is not called successfully", () => {
+    test("Catches error when /api/projects endpoint is not called successfully (400)", () => {
       const clearFormFunc = jest.spyOn(MainPage.prototype, "clearForm");
       const data = { response: true };
       mock.onGet(`/api/projects`).reply(400, data);
@@ -122,6 +122,28 @@ describe("Main page", () => {
         .catch(() => {
           expect(clearFormFunc).toHaveBeenCalled();
         });
+    });
+
+    test("Catches error when /api/projects endpoint is not called successfully (401)", () => {
+      const { location } = window;
+      const data = { response: true };
+
+      delete window.location;
+      window.location = { reload: jest.fn() };
+
+      mock.onGet(`/api/projects`).reply(401, data);
+
+      wrapper
+        .find("UserSearch")
+        .props()
+        .onClick()
+        .catch(() => {
+          expect(jest.isMockFunction(window.location.reload)).toBe(true);
+          window.location.reload();
+          expect(window.location.reload).toHaveBeenCalled();
+        });
+
+      window.location = location;
     });
 
     test("Function should make network request and should update state on success when all fields exist in response with member", async done => {
@@ -288,6 +310,32 @@ describe("Main page", () => {
       expect(removeUserFromProject).toHaveBeenCalled();
     });
 
+    test("Catches error when /api/projects endpoint is not called successfully (401)", () => {
+      const projectId = 1;
+      wrapper.setState({ isUserSearch: false, value: "val" });
+      const { location } = window;
+      const data = { response: true };
+
+      delete window.location;
+      window.location = { reload: jest.fn() };
+
+      mock
+        .onDelete(`/api/projects/${projectId}/users/${wrapper.state().value}`)
+        .reply(401, data);
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onXClick(projectId)
+        .catch(() => {
+          expect(jest.isMockFunction(window.location.reload)).toBe(true);
+          window.location.reload();
+          expect(window.location.reload).toHaveBeenCalled();
+        });
+
+      window.location = location;
+    });
+
     test("Function should make network request and should update state on success when removing a project", async done => {
       expect(wrapper.state().projects).toEqual([]);
       const projectId = 1;
@@ -328,6 +376,62 @@ describe("Main page", () => {
       expect(wrapper.state().projects).toEqual([]);
       done();
     });
+
+    test("Function should make network request and should update state on success when removing a project partially", async done => {
+      expect(wrapper.state().projects).toEqual([]);
+      const projectId = 1;
+
+      wrapper.setState({
+        isUserSearch: false,
+        value: "val",
+        projects: [
+          {
+            id: 1,
+            name: "oldproject",
+            resources: [
+              { status: "member", type: "Dynamics" },
+              { status: "member", type: "Sharepoint" }
+            ]
+          }
+        ]
+      });
+      mock
+        .onDelete(`/api/projects/${projectId}/users/${wrapper.state().value}`)
+        .reply(200, {
+          id: 1,
+          name: "oldproject",
+          users: [
+            {
+              username: wrapper.state().value,
+              access: [
+                { type: "Dynamics", status: "not-member" },
+                { type: "Sharepoint", status: "member" }
+              ]
+            }
+          ]
+        });
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onXClick(projectId);
+
+      await waitUntil(() => {
+        return wrapper.state().projects;
+      });
+
+      expect(wrapper.state().projects).toEqual([
+        {
+          id: 1,
+          name: "oldproject",
+          resources: [
+            { type: "Dynamics", status: "not-member" },
+            { type: "Sharepoint", status: "member" }
+          ]
+        }
+      ]);
+      done();
+    });
   });
 
   describe("addUserToProject", () => {
@@ -345,6 +449,40 @@ describe("Main page", () => {
         .onPlusClick();
 
       expect(addUserToProject).toHaveBeenCalled();
+    });
+
+    test("Catches error when /api/projects endpoint is not called successfully (401)", () => {
+      const { location } = window;
+      const data = { response: true };
+
+      wrapper.setState({
+        isUserSearch: false,
+        value: "val",
+        selectedDropdownItem: { id: 123 }
+      });
+
+      delete window.location;
+      window.location = { reload: jest.fn() };
+
+      mock
+        .onDelete(
+          `/api/projects/${wrapper.state().selectedDropdownItem.id}/users/${
+            wrapper.state().value
+          }`
+        )
+        .reply(401, data);
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick()
+        .catch(() => {
+          expect(jest.isMockFunction(window.location.reload)).toBe(true);
+          window.location.reload();
+          expect(window.location.reload).toHaveBeenCalled();
+        });
+
+      window.location = location;
     });
 
     test("Function should make network request and should update state on success when adding a project", async done => {
