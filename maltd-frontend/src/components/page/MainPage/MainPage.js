@@ -48,7 +48,7 @@ export default class MainPage extends Component {
       axios.get(`/api/users?q=${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      let result = await axios.get(`/api/users/${value}`, {
+      const result = await axios.get(`/api/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const { data } = result;
