@@ -8,16 +8,13 @@ export default function ListElement({
   onXClick
 }) {
   let memberOfResources = "";
-  let errorMessage;
+  let notMemberOfResources = "";
   let message;
-
-  console.log("title", title);
 
   if (resources && resources.length > 0) {
     resources.forEach((resource, index) => {
-      console.log("list element resource", resource);
       if (resource.message) {
-        errorMessage = `Couldn't add/remove to ${resource.type}`;
+        notMemberOfResources += `${resource.type}`;
         message = resource.message;
       } else if (index !== resources.length - 1) {
         memberOfResources += `${resource.type}, `;
@@ -40,16 +37,16 @@ export default function ListElement({
             )}
             {memberOfResources && (
               <p className="project-list-item" id="member-resources">
-                {memberOfResources}
+                Member: {memberOfResources}
               </p>
             )}
-            {errorMessage && (
+            {notMemberOfResources && (
               <React.Fragment>
                 <p className="project-list-item" id="member-resources">
-                  {errorMessage}
+                  Not member: {notMemberOfResources}
                 </p>
                 <p className="project-list-item" id="member-resources">
-                  {message}
+                  <b>Error:</b> {message}
                 </p>
               </React.Fragment>
             )}
@@ -66,17 +63,7 @@ export default function ListElement({
 
   return (
     <div>
-      {errorMessage && (
-        <React.Fragment>
-          <p className="project-list-item" id="member-resources">
-            {errorMessage}
-          </p>
-          <p className="project-list-item" id="member-resources">
-            {message}
-          </p>
-        </React.Fragment>
-      )}
-      {!errorMessage && <p>No projects</p>}
+      <p>No projects</p>
     </div>
   );
 }

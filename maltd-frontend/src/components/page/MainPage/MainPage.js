@@ -201,17 +201,11 @@ export default class MainPage extends Component {
           }
         });
 
-        console.log(userResources);
-
-        const ressssss = [
-          { type: "Sharepoint", status: "not-member", message: "403 forbidden" }
-        ];
-
         const updatedProjects = projects.slice(0);
 
         updatedProjects.push({
           ...selectedDropdownItem,
-          resources: ressssss
+          resources: userResources
         });
 
         this.setState({
