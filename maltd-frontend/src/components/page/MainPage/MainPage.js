@@ -215,7 +215,8 @@ export default class MainPage extends Component {
             projects: [
               ...projects,
               { id: res.data.id, name: res.data.name, resources: userResources }
-            ]
+            ],
+            selectedDropdownItem: null
           });
           return true;
         }
