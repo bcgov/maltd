@@ -8,10 +8,13 @@ export default function ListElement({
   onXClick
 }) {
   let memberOfResources = "";
+  let errorMessage;
 
   if (resources && resources.length > 0) {
     resources.forEach((resource, index) => {
-      if (index !== resources.length - 1) {
+      if (resource.status !== "member" && resource.message) {
+        errorMessage = `Couldn't add to ${resource.type} due to ${resource.message}`;
+      } else if (index !== resources.length - 1) {
         memberOfResources += `${resource.type}, `;
       } else {
         memberOfResources += resource.type;
@@ -33,6 +36,11 @@ export default function ListElement({
             {memberOfResources && (
               <p className="project-list-item" id="member-resources">
                 {memberOfResources}
+              </p>
+            )}
+            {errorMessage && (
+              <p className="project-list-item" id="member-resources">
+                {errorMessage}
               </p>
             )}
           </div>

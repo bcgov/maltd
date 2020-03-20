@@ -161,45 +161,32 @@ export default class MainPage extends Component {
 
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
-    let isDuplicate = false;
-
-    projects.forEach(proj => {
-      if (proj.id === selectedDropdownItem.id) {
-        isDuplicate = true;
-      }
-    });
-
-    if (isDuplicate) {
-      this.setState({
-        duplicateErrorMessage:
-          "This project has already been added. Please try again with a different project."
-      });
-
-      setTimeout(() => {
-        this.setState({ duplicateErrorMessage: null });
-      }, 5000);
-
-      return false;
-    }
 
     return axios
       .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(() => {
+      .then(res => {
+        // figure out which resources user has access to
+        const { users } = res;
+        let userResources;
+
+        users.forEach(user => {
+          if (user.userName === value) {
+            userResources = user.access.slice(0);
+          }
+        });
+
         const updatedProjects = projects.slice(0);
 
         updatedProjects.push({
           ...selectedDropdownItem,
-          resources: [
-            { type: "Dynamics", status: "member" },
-            { type: "Sharepoint", status: "member" }
-          ]
+          resources: userResources
         });
+
         this.setState({
           projects: updatedProjects,
-          selectedDropdownItem: null,
-          duplicateErrorMessage: null
+          selectedDropdownItem: null
         });
       })
       .catch(() => {});
