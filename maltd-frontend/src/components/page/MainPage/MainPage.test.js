@@ -598,6 +598,68 @@ describe("Main page", () => {
       done();
     });
 
+    test("Function should make network request and should update state on success when adding a project partially", async done => {
+      expect(wrapper.state().projects).toEqual([]);
+
+      wrapper.setState({
+        isUserSearch: false,
+        selectedDropdownItem: { id: 1 },
+        value: "val",
+        projects: [
+          {
+            id: 123,
+            name: "oldproject",
+            resources: [{ status: "member", type: "Dynamics" }]
+          }
+        ]
+      });
+      mock
+        .onPut(
+          `/api/projects/${wrapper.state().selectedDropdownItem.id}/users/${
+            wrapper.state().value
+          }`
+        )
+        .reply(200, {
+          id: 1,
+          name: "newproject",
+          users: [
+            {
+              username: wrapper.state().value,
+              access: [
+                { type: "Sharepoint", status: "member" },
+                { type: "Dynamics", status: "not-member" }
+              ]
+            }
+          ]
+        });
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick();
+
+      await waitUntil(() => {
+        return wrapper.state().projects;
+      });
+
+      expect(wrapper.state().projects).toEqual([
+        {
+          id: 123,
+          name: "oldproject",
+          resources: [{ type: "Dynamics", status: "member" }]
+        },
+        {
+          id: 1,
+          name: "newproject",
+          resources: [
+            { type: "Sharepoint", status: "member" },
+            { type: "Dynamics", status: "not-member" }
+          ]
+        }
+      ]);
+      done();
+    });
+
     test("Function should catch duplicate case and set error message when adding duplicate project", async done => {
       wrapper.setState({
         isUserSearch: false,
