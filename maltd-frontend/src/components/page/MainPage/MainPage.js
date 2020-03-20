@@ -147,13 +147,37 @@ export default class MainPage extends Component {
       .delete(`/api/projects/${projectId}/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(() => {
+      .then(res => {
+        // figure out which resources user has access to after remove
+        const { users } = res.data;
+
+        let userResources;
+        users.forEach(user => {
+          if (user.username.toLowerCase() === value) {
+            userResources = user.access.slice(0);
+          }
+        });
+
+        let isNonMemberForAllResources = true;
+        userResources.forEach(userResource => {
+          if (userResource.status !== "not-member") {
+            isNonMemberForAllResources = false;
+          }
+        });
+
         const updatedProjects = [];
         projects.forEach(proj => {
-          if (proj.id !== projectId) {
+          if (!isNonMemberForAllResources) {
+            updatedProjects.push({
+              id: proj.id,
+              name: proj.name,
+              resources: userResources
+            });
+          } else if (proj.id !== projectId) {
             updatedProjects.push(proj);
           }
         });
+
         this.setState({ projects: updatedProjects });
       })
       .catch(() => {});
@@ -167,22 +191,27 @@ export default class MainPage extends Component {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => {
-        // figure out which resources user has access to
+        // figure out which resources user has access to after add
         const { users } = res.data;
-        let userResources;
 
+        let userResources;
         users.forEach(user => {
-          console.log(user.username, value);
-          if (user.userName === value) {
+          if (user.username.toLowerCase() === value) {
             userResources = user.access.slice(0);
           }
         });
+
+        console.log(userResources);
+
+        const ressssss = [
+          { type: "Sharepoint", status: "not-member", message: "403 forbidden" }
+        ];
 
         const updatedProjects = projects.slice(0);
 
         updatedProjects.push({
           ...selectedDropdownItem,
-          resources: userResources
+          resources: ressssss
         });
 
         this.setState({

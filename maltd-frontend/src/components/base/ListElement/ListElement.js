@@ -9,11 +9,16 @@ export default function ListElement({
 }) {
   let memberOfResources = "";
   let errorMessage;
+  let message;
+
+  console.log("title", title);
 
   if (resources && resources.length > 0) {
     resources.forEach((resource, index) => {
-      if (resource.status !== "member" && resource.message) {
-        errorMessage = `Couldn't add to ${resource.type} due to ${resource.message}`;
+      console.log("list element resource", resource);
+      if (resource.message) {
+        errorMessage = `Couldn't add/remove to ${resource.type}`;
+        message = resource.message;
       } else if (index !== resources.length - 1) {
         memberOfResources += `${resource.type}, `;
       } else {
@@ -22,7 +27,7 @@ export default function ListElement({
     });
   }
 
-  if (title) {
+  if (title && (memberOfResources || description)) {
     return (
       <React.Fragment>
         <div className="project-div">
@@ -39,9 +44,14 @@ export default function ListElement({
               </p>
             )}
             {errorMessage && (
-              <p className="project-list-item" id="member-resources">
-                {errorMessage}
-              </p>
+              <React.Fragment>
+                <p className="project-list-item" id="member-resources">
+                  {errorMessage}
+                </p>
+                <p className="project-list-item" id="member-resources">
+                  {message}
+                </p>
+              </React.Fragment>
             )}
           </div>
           <div>
@@ -56,7 +66,17 @@ export default function ListElement({
 
   return (
     <div>
-      <p>No projects</p>
+      {errorMessage && (
+        <React.Fragment>
+          <p className="project-list-item" id="member-resources">
+            {errorMessage}
+          </p>
+          <p className="project-list-item" id="member-resources">
+            {message}
+          </p>
+        </React.Fragment>
+      )}
+      {!errorMessage && <p>No projects</p>}
     </div>
   );
 }
