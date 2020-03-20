@@ -76,6 +76,6 @@ describe("List Element", () => {
     const rows = wrapper.find("#member-resources");
 
     expect(rows.length).toEqual(1);
-    expect(rows.text()).toEqual("Dyn, Share");
+    expect(rows.text()).toEqual("Member: Dyn, Share");
   });
 });

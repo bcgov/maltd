@@ -39,6 +39,7 @@ exports[`User Access Component renders as expected 1`] = `
             useremail@gov.bc.ca
           </p>
           
+          
         </div>
         <div />
       </div>

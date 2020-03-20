@@ -147,13 +147,37 @@ export default class MainPage extends Component {
       .delete(`/api/projects/${projectId}/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(() => {
+      .then(res => {
+        // figure out which resources user has access to after remove
+        const { users } = res.data;
+
+        let userResources;
+        users.forEach(user => {
+          if (user.username.toLowerCase() === value) {
+            userResources = user.access.slice(0);
+          }
+        });
+
+        let isNonMemberForAllResources = true;
+        userResources.forEach(userResource => {
+          if (userResource.status !== "not-member") {
+            isNonMemberForAllResources = false;
+          }
+        });
+
         const updatedProjects = [];
         projects.forEach(proj => {
-          if (proj.id !== projectId) {
+          if (!isNonMemberForAllResources) {
+            updatedProjects.push({
+              id: proj.id,
+              name: proj.name,
+              resources: userResources
+            });
+          } else if (proj.id !== projectId) {
             updatedProjects.push(proj);
           }
         });
+
         this.setState({ projects: updatedProjects });
       })
       .catch(() => {});
@@ -161,45 +185,32 @@ export default class MainPage extends Component {
 
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
-    let isDuplicate = false;
-
-    projects.forEach(proj => {
-      if (proj.id === selectedDropdownItem.id) {
-        isDuplicate = true;
-      }
-    });
-
-    if (isDuplicate) {
-      this.setState({
-        duplicateErrorMessage:
-          "This project has already been added. Please try again with a different project."
-      });
-
-      setTimeout(() => {
-        this.setState({ duplicateErrorMessage: null });
-      }, 5000);
-
-      return false;
-    }
 
     return axios
-      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, {
+      .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, null, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(() => {
+      .then(res => {
+        // figure out which resources user has access to after add
+        const { users } = res.data;
+
+        let userResources;
+        users.forEach(user => {
+          if (user.username.toLowerCase() === value) {
+            userResources = user.access.slice(0);
+          }
+        });
+
         const updatedProjects = projects.slice(0);
 
         updatedProjects.push({
           ...selectedDropdownItem,
-          resources: [
-            { type: "Dynamics", status: "member" },
-            { type: "Sharepoint", status: "member" }
-          ]
+          resources: userResources
         });
+
         this.setState({
           projects: updatedProjects,
-          selectedDropdownItem: null,
-          duplicateErrorMessage: null
+          selectedDropdownItem: null
         });
       })
       .catch(() => {});

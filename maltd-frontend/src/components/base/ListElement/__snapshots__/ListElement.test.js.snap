@@ -20,6 +20,7 @@ exports[`List Element Component renders as expected 1`] = `
       description
     </p>
     
+    
   </div>
   <div />
 </div>
