@@ -6,6 +6,7 @@ import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
+import { checkArrayEquality } from "../../../modules/HelperFunctions";
 
 const token = localStorage.getItem("jwt");
 
@@ -186,6 +187,14 @@ export default class MainPage extends Component {
   addUserToProject() {
     const { selectedDropdownItem, value, projects } = this.state;
 
+    // get resources currently existing for added project if any
+    let existingProjectResources;
+    projects.forEach(p => {
+      if (p.id === selectedDropdownItem.id) {
+        existingProjectResources = p.resources.slice(0);
+      }
+    });
+
     return axios
       .put(`/api/projects/${selectedDropdownItem.id}/users/${value}`, null, {
         headers: { Authorization: `Bearer ${token}` }
@@ -201,19 +210,55 @@ export default class MainPage extends Component {
           }
         });
 
-        const updatedProjects = projects.slice(0);
+        if (!existingProjectResources) {
+          this.setState({
+            projects: [
+              ...projects,
+              { id: res.data.id, name: res.data.name, resources: userResources }
+            ]
+          });
+          return true;
+        }
 
-        updatedProjects.push({
-          ...selectedDropdownItem,
-          resources: userResources
-        });
+        if (!checkArrayEquality(existingProjectResources, userResources)) {
+          const updatedProjects = [];
+
+          projects.forEach(proj => {
+            if (proj.id === selectedDropdownItem.id) {
+              updatedProjects.push({
+                ...selectedDropdownItem,
+                resources: userResources
+              });
+            } else {
+              updatedProjects.push(proj);
+            }
+          });
+
+          this.setState({
+            projects: updatedProjects,
+            selectedDropdownItem: null
+          });
+
+          return true;
+        }
 
         this.setState({
-          projects: updatedProjects,
-          selectedDropdownItem: null
+          duplicateErrorMessage:
+            "This project has already been added. Please try again with a different project."
         });
+
+        setTimeout(() => {
+          this.setState({
+            duplicateErrorMessage: null,
+            selectedDropdownItem: null
+          });
+        }, 5000);
+
+        return true;
       })
-      .catch(() => {});
+      .catch(err => {
+        return false;
+      });
   }
 
   updateSelectedDropdownItem(selectedProject) {
