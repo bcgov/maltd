@@ -5,7 +5,8 @@ using System.Text.Json.Serialization;
 namespace BcGov.Malt.Web.Models
 {
     /// <summary>
-    /// Represents a project that a user can be granted access to.
+    /// Represents a project that a user may or may not be granted access to.
+    /// Contains a list of each resource and if the user is a member or not.
     /// </summary>
     public class Project
     {

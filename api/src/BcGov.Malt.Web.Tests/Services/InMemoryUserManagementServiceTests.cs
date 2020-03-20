@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using BcGov.Malt.Web.Models;
+using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
 using Xunit;
 
@@ -17,7 +18,7 @@ namespace BcGov.Malt.Web.Tests.Services
             Fixture fixture = new Fixture();
 
             var user = fixture.Create<User>();
-            var project = fixture.Create<Project>();
+            var project = fixture.Create<ProjectConfiguration>();
 
             InMemoryUserManagementService sut = new InMemoryUserManagementService();
 
@@ -32,7 +33,7 @@ namespace BcGov.Malt.Web.Tests.Services
             Fixture fixture = new Fixture();
 
             var user = fixture.Create<User>();
-            var project = fixture.Create<Project>();
+            var project = fixture.Create<ProjectConfiguration>();
 
             InMemoryUserManagementService sut = new InMemoryUserManagementService();
 
@@ -47,7 +48,7 @@ namespace BcGov.Malt.Web.Tests.Services
             Fixture fixture = new Fixture();
 
             var user = fixture.Create<User>();
-            var project = fixture.Create<Project>();
+            var project = fixture.Create<ProjectConfiguration>();
 
             InMemoryUserManagementService sut = new InMemoryUserManagementService();
 
@@ -64,7 +65,7 @@ namespace BcGov.Malt.Web.Tests.Services
             // after adding the user should be added to the project
             Assert.NotNull(projects);
             Assert.Single(projects);
-            Assert.Equal(project, projects[0]);
+            Assert.Equal(project.Id, projects[0].Id);
 
             // act
             actual = await sut.RemoveUserFromProjectAsync(user, project);
@@ -73,3 +74,4 @@ namespace BcGov.Malt.Web.Tests.Services
         }
     }
 }
+
