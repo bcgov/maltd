@@ -45,7 +45,7 @@ export default class MainPage extends Component {
         disabledButton: true,
         disabledInput: true
       });
-      axios.get(`/api/users?q=${value}`, {
+      await axios.get(`/api/users?q=${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const result = await axios.get(`/api/users/${value}`, {
