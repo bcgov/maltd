@@ -6,7 +6,7 @@ import UserSearch from "../../composite/UserSearch/UserSearch";
 import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
-import { checkArrayEquality } from "../../../modules/HelperFunctions";
+import checkArrayEquality from "../../../modules/HelperFunctions";
 
 const token = localStorage.getItem("jwt");
 
