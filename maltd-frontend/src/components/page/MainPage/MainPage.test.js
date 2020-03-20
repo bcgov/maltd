@@ -314,7 +314,11 @@ describe("Main page", () => {
         selectedDropdownItem: { id: 123 },
         value: "val",
         projects: [
-          { id: 1, resources: [{ status: "member", type: "Dynamics" }] }
+          {
+            id: 1,
+            name: "oldproject",
+            resources: [{ status: "member", type: "Dynamics" }]
+          }
         ]
       });
       mock
@@ -324,6 +328,8 @@ describe("Main page", () => {
           }`
         )
         .reply(200, {
+          id: 123,
+          name: "Newly added project",
           users: [
             {
               username: wrapper.state().value,
@@ -342,12 +348,57 @@ describe("Main page", () => {
       });
 
       expect(wrapper.state().projects).toEqual([
-        { id: 1, resources: [{ status: "member", type: "Dynamics" }] },
+        {
+          id: 1,
+          name: "oldproject",
+          resources: [{ status: "member", type: "Dynamics" }]
+        },
         {
           id: 123,
+          name: "Newly added project",
           resources: [{ status: "member", type: "Sharepoint" }]
         }
       ]);
+      done();
+    });
+
+    test("Function should catch duplicate case and set error message when adding duplicate project", async done => {
+      wrapper.setState({
+        isUserSearch: false,
+        selectedDropdownItem: { id: 123 },
+        projects: [
+          { id: 123, resources: [{ status: "member", type: "Dynamics" }] }
+        ],
+        value: "val"
+      });
+
+      mock
+        .onPut(
+          `/api/projects/${wrapper.state().selectedDropdownItem.id}/users/${
+            wrapper.state().value
+          }`
+        )
+        .reply(200, {
+          users: [
+            {
+              username: wrapper.state().value,
+              access: [{ type: "Dynamics", status: "member" }]
+            }
+          ]
+        });
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onPlusClick();
+
+      await waitUntil(() => {
+        return wrapper.state().duplicateErrorMessage;
+      });
+
+      expect(wrapper.state().duplicateErrorMessage).toEqual(
+        "This project has already been added. Please try again with a different project."
+      );
       done();
     });
   });
