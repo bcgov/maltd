@@ -89,7 +89,6 @@ namespace BcGov.Malt.Web
             // the services are working
             services.ConfigureProjectResources(Configuration);
 
-            services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<IUserSearchService, LdapUserSearchService>();
             services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
