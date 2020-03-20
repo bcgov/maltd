@@ -465,7 +465,7 @@ describe("Main page", () => {
       window.location = { reload: jest.fn() };
 
       mock
-        .onDelete(
+        .onPut(
           `/api/projects/${wrapper.state().selectedDropdownItem.id}/users/${
             wrapper.state().value
           }`
