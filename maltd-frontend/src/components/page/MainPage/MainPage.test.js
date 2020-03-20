@@ -287,6 +287,47 @@ describe("Main page", () => {
 
       expect(removeUserFromProject).toHaveBeenCalled();
     });
+
+    test("Function should make network request and should update state on success when removing a project", async done => {
+      expect(wrapper.state().projects).toEqual([]);
+      const projectId = 1;
+
+      wrapper.setState({
+        isUserSearch: false,
+        value: "val",
+        projects: [
+          {
+            id: 1,
+            name: "oldproject",
+            resources: [{ status: "member", type: "Dynamics" }]
+          }
+        ]
+      });
+      mock
+        .onDelete(`/api/projects/${projectId}/users/${wrapper.state().value}`)
+        .reply(200, {
+          id: 1,
+          name: "oldproject",
+          users: [
+            {
+              username: wrapper.state().value,
+              access: [{ type: "Dynamics", status: "not-member" }]
+            }
+          ]
+        });
+
+      wrapper
+        .find("UserAccess")
+        .props()
+        .onXClick(projectId);
+
+      await waitUntil(() => {
+        return wrapper.state().projects;
+      });
+
+      expect(wrapper.state().projects).toEqual([]);
+      done();
+    });
   });
 
   describe("addUserToProject", () => {
