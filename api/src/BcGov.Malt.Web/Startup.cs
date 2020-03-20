@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Reflection;
 using BcGov.Malt.Web.Services;
@@ -106,8 +107,25 @@ namespace BcGov.Malt.Web
                              "Audience": "maltd"
                             }
                  */
+
                 string audience = Configuration["Jwt:Audience"];
                 string authority = Configuration["Jwt:Authority"];
+
+                // Jwt:Audience and Jwt:Authority are required to validate authentication tokens.
+                if (string.IsNullOrEmpty(audience))
+                {
+                    Log.Fatal("Required configuration item {Setting} is not set", "Jwt:Audience");
+                }
+
+                if (string.IsNullOrEmpty(authority))
+                {
+                    Log.Fatal("Required configuration item {Setting} is not set", "Jwt:Authority");
+                }
+
+                if (string.IsNullOrEmpty(audience) || string.IsNullOrEmpty(authority))
+                {
+                    throw new ConfigurationErrorsException("One or more required configuration parameters are missing Jwt:Audience or Jwt:Authority");
+                }
 
                 if (!authority.EndsWith("/", StringComparison.InvariantCulture))
                 {
