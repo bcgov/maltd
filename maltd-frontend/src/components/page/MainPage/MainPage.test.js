@@ -306,7 +306,7 @@ describe("Main page", () => {
       expect(addUserToProject).toHaveBeenCalled();
     });
 
-    test("Function should make network request and should update state on success when adding a non-duplicate project", async done => {
+    test("Function should make network request and should update state on success when adding a project", async done => {
       expect(wrapper.state().projects).toEqual([]);
 
       wrapper.setState({
@@ -323,7 +323,14 @@ describe("Main page", () => {
             wrapper.state().value
           }`
         )
-        .reply(200);
+        .reply(200, {
+          users: [
+            {
+              username: wrapper.state().value,
+              access: [{ type: "Sharepoint", status: "member" }]
+            }
+          ]
+        });
 
       wrapper
         .find("UserAccess")
@@ -338,43 +345,10 @@ describe("Main page", () => {
         { id: 1, resources: [{ status: "member", type: "Dynamics" }] },
         {
           id: 123,
-          resources: [
-            { status: "member", type: "Dynamics" },
-            { status: "member", type: "Sharepoint" }
-          ]
+          resources: [{ status: "member", type: "Sharepoint" }]
         }
       ]);
       done();
-    });
-
-    test("Function should catch duplicate case and set error message when adding duplicate project", () => {
-      jest.useFakeTimers();
-
-      wrapper.setState({
-        isUserSearch: false,
-        selectedDropdownItem: { id: 123 },
-        projects: [
-          { id: 123, resources: [{ status: "member", type: "Dynamics" }] }
-        ],
-        value: "val"
-      });
-
-      wrapper
-        .find("UserAccess")
-        .props()
-        .onPlusClick();
-
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 5000);
-      expect(wrapper.state().duplicateErrorMessage).toEqual(
-        "This project has already been added. Please try again with a different project."
-      );
-
-      setTimeout(() => {
-        expect(wrapper.state().duplicateErrorMessage).toEqual(null);
-      }, 5000);
-
-      jest.runAllTimers();
     });
   });
 

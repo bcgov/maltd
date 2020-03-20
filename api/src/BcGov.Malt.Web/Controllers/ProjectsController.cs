@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Features.Projects;
 using BcGov.Malt.Web.Models;
@@ -34,15 +35,15 @@ namespace BcGov.Malt.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ProjectDefinition>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<Project>>> GetAsync()
+        public async Task<ActionResult<List<ProjectDefinition>>> GetAsync()
         {
             _logger.LogDebug("Getting list of available projects");
 
             var projects = await _mediator.Send(new ListProjects.Request());
 
-            return Ok(projects);
+            return Ok(projects.Select(_ => new ProjectDefinition(_.Id, _.Name)));
         }
 
         /// <summary>Adds a user to a project.</summary>

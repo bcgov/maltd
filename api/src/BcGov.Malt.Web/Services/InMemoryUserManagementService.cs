@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
+using BcGov.Malt.Web.Models.Configuration;
 
 namespace BcGov.Malt.Web.Services
 {
@@ -13,7 +14,7 @@ namespace BcGov.Malt.Web.Services
     /// <seealso cref="BcGov.Malt.Web.Services.IUserManagementService" />
     public class InMemoryUserManagementService : IUserManagementService
     {
-        private readonly Dictionary<User, List<Project>> _database = new Dictionary<User, List<Project>>();
+        private readonly Dictionary<User, List<ProjectConfiguration>> _database = new Dictionary<User, List<ProjectConfiguration>>();
 
         /// <summary>
         /// Adds a user to a project.
@@ -21,14 +22,14 @@ namespace BcGov.Malt.Web.Services
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to add the user to</param>
         /// <returns>Returns <c>true</c> if the user was added to the project, otherwise <c>false</c></returns>
-        public Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, Project project)
+        public Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (project == null) throw new ArgumentNullException(nameof(project));
 
-            if (!_database.TryGetValue(user, out List<Project> projects))
+            if (!_database.TryGetValue(user, out List<ProjectConfiguration> projects))
             {
-                projects = new List<Project>();
+                projects = new List<ProjectConfiguration>();
                 _database.Add(user, projects);
             }
 
@@ -38,7 +39,7 @@ namespace BcGov.Malt.Web.Services
             }
             
             var statuses = project.Resources
-                .Select(_ => new ProjectResourceStatus {Type = _.Type, Status = ProjectResourceStatuses.Member})
+                .Select(_ => new ProjectResourceStatus {Type = _.Type.ToString(), Status = ProjectResourceStatuses.Member})
                 .ToList();
 
             return Task.FromResult(statuses);
@@ -50,19 +51,19 @@ namespace BcGov.Malt.Web.Services
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to remove the user from.</param>
         /// <returns>Returns <c>true</c> if the user was removed from the project, otherwise <c>false</c></returns>
-        public Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, Project project)
+        public Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (project == null) throw new ArgumentNullException(nameof(project));
 
-            if (!_database.TryGetValue(user, out List<Project> projects))
+            if (!_database.TryGetValue(user, out List<ProjectConfiguration> projects))
             {
-                projects = new List<Project>();
+                projects = new List<ProjectConfiguration>();
                 _database.Add(user, projects);
             }
 
             var statuses = project.Resources
-                .Select(_ => new ProjectResourceStatus { Type = _.Type, Status = ProjectResourceStatuses.NotMember })
+                .Select(_ => new ProjectResourceStatus { Type = _.Type.ToString(), Status = ProjectResourceStatuses.NotMember })
                 .ToList();
 
             return Task.FromResult(statuses);
@@ -78,13 +79,13 @@ namespace BcGov.Malt.Web.Services
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            if (!_database.TryGetValue(user, out List<Project> projects))
+            if (!_database.TryGetValue(user, out List<ProjectConfiguration> projects))
             {
-                projects = new List<Project>();
+                projects = new List<ProjectConfiguration>();
                 _database.Add(user, projects);
             }
 
-            return Task.FromResult(projects);
+            return Task.FromResult(projects.Select(_ => new Project(_.Id, _.Name)).ToList());
         }
     }
 }

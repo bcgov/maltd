@@ -36,7 +36,7 @@ namespace BcGov.Malt.Web.Services
             _sharePointResourceUserManagementServiceLogger = sharePointResourceUserManagementServiceLogger ?? throw new ArgumentNullException(nameof(sharePointResourceUserManagementServiceLogger));
         }
 
-        public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, Project project)
+        public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project)
         {
             var requests = CreateAddUserRequests(user, project);
 
@@ -142,7 +142,7 @@ namespace BcGov.Malt.Web.Services
             return projects;
         }
 
-        public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, Project project)
+        public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project)
         {
             var requests = CreateRemoveUserRequests(user, project);
 
@@ -196,7 +196,7 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateAddUserRequests(User user, Project project)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateAddUserRequests(User user, ProjectConfiguration project)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
 
@@ -216,7 +216,7 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user, Project project)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> CreateRemoveUserRequests(User user, ProjectConfiguration project)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task)>();
 
