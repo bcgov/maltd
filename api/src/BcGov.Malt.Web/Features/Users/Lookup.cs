@@ -51,7 +51,7 @@ namespace BcGov.Malt.Web.Features.Users
 
                 if (user == null)
                 {
-                    _logger.LogDebug("Lookup for {username} returned null, returning null", request.Username);
+                    _logger.LogDebug("Lookup for {Username} returned null, returning null", request.Username);
                     return null;
                 }
 

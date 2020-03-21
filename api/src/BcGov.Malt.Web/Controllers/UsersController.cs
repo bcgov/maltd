@@ -48,17 +48,17 @@ namespace BcGov.Malt.Web.Controllers
 
             if (string.IsNullOrEmpty(query))
             {
-                _logger.LogInformation("Required parameter {parameter} was not specified, returning 400 Bad Request", nameof(query));
+                _logger.LogInformation("Required parameter {Parameter} was not specified, returning 400 Bad Request", nameof(query));
                 return BadRequest();
             }
 
-            _logger.LogDebug("Searching for user using {query}", query);
+            _logger.LogDebug("Searching for user using {Query}", query);
 
             var user = await _mediator.Send(new Search.Request(query));
 
             if (user == null)
             {
-                _logger.LogDebug("Search for {username} returned null, returning 404 Not Found", query);
+                _logger.LogDebug("Search for {Username} returned null, returning 404 Not Found", query);
                 return NotFound();
             }
 
@@ -85,7 +85,7 @@ namespace BcGov.Malt.Web.Controllers
                 return BadRequest();
             }
 
-            _logger.LogDebug("Looking up user {username}", username);
+            _logger.LogDebug("Looking up user {Username}", username);
 
             DetailedUser result = await _mediator.Send(new Lookup.Request(username));
 

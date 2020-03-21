@@ -24,7 +24,7 @@ namespace BcGov.Malt.Web.Tests.Services
 
             var actual = await sut.AddUserToProjectAsync(user, project);
 
-            Assert.True(actual);
+            Assert.True(actual != null);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace BcGov.Malt.Web.Tests.Services
 
             var actual = await sut.RemoveUserFromProjectAsync(user, project);
 
-            Assert.False(actual);
+            Assert.False(actual != null);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace BcGov.Malt.Web.Tests.Services
 
             // add the user to the project for the testing of removal
             var actual = await sut.AddUserToProjectAsync(user, project);
-            Assert.True(actual);
+            Assert.True(actual != null);
 
             projects = await sut.GetProjectsForUserAsync(user);
             // after adding the user should be added to the project
@@ -70,7 +70,7 @@ namespace BcGov.Malt.Web.Tests.Services
             // act
             actual = await sut.RemoveUserFromProjectAsync(user, project);
 
-            Assert.True(actual);
+            Assert.True(actual != null);
         }
     }
 }

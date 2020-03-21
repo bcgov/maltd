@@ -16,7 +16,7 @@ namespace BcGov.Malt.Web.Services
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to add the user to</param>
         /// <returns>Returns <c>true</c> if the user was added to the project, otherwise <c>false</c></returns>
-        Task<bool> AddUserToProjectAsync(User user, ProjectConfiguration project);
+        Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project);
 
         /// <summary>
         /// Removes a user from a project.
@@ -24,7 +24,7 @@ namespace BcGov.Malt.Web.Services
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to remove the user from.</param>
         /// <returns>Returns <c>true</c> if the user was removed from the project, otherwise <c>false</c></returns>
-        Task<bool> RemoveUserFromProjectAsync(User user, ProjectConfiguration project);
+        Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project);
 
         /// <summary>
         /// Gets all the projects a user is assigned to.

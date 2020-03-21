@@ -48,23 +48,18 @@ namespace BcGov.Malt.Web.Features.Projects
                 if (project == null)
                 {
                     _logger.LogInformation("Project {ProjectId} not found", request.ProjectId);
-                    throw new ProjectNotFoundException();
+                    throw new ProjectNotFoundException(request.ProjectId);
                 }
 
                 var user = await _userSearchService.SearchAsync(request.Username);
                 if (user == null)
                 {
                     _logger.LogInformation("User {Username} not found", request.Username);
-                    throw new UserNotFoundException();
+                    throw new UserNotFoundException(request.Username);
                 }
 
-                await _userManagementService.AddUserToProjectAsync(user, project);
-
-                // temporary result, will get the status from the User Management Service
-                var access = project.Resources
-                    .Select(_ => new ProjectResourceStatus {Type = _.Type.ToString(), Status = ProjectResourceStatuses .Member})
-                    .ToList();
-
+                var access = await _userManagementService.AddUserToProjectAsync(user, project);
+                
                 return new ProjectAccess
                 {
                     Id = project.Id,

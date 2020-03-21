@@ -22,8 +22,8 @@ namespace BcGov.Malt.Web.Services
 
         protected ProjectResource ProjectResource { get; }
 
-        public abstract Task AddUserAsync(string username);
+        public abstract Task<string> AddUserAsync(string username);
         public abstract Task<bool> UserHasAccessAsync(string username);
-        public abstract Task RemoveUserAsync(string username);
+        public abstract Task<string> RemoveUserAsync(string username);
     }
 }

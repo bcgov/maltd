@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -16,10 +17,11 @@ namespace BcGov.Malt.Web.Services
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="configuration">The configuration.</param>
-        public static void ConfigureProjectResources(this IServiceCollection services, IConfiguration configuration)
+        /// <param name="logger">The logger to write logs to.</param>
+        public static void ConfigureProjectResources(this IServiceCollection services, IConfiguration configuration, Serilog.ILogger logger)
         {
             // read the configuration and register the types for each 
-            List<ProjectConfiguration> projects = configuration.GetProjectConfigurations()
+            List<ProjectConfiguration> projects = configuration.GetProjectConfigurations(logger)
                 .OrderBy(_ => _.Name)
                 .ToList();
 
@@ -34,18 +36,18 @@ namespace BcGov.Malt.Web.Services
                     switch (projectResource.Type)
                     {
                         case ProjectType.Dynamics:
-                            ConfigureDynamics(services, project, projectResource);
+                            ConfigureDynamics(services, project, projectResource, logger);
                             break;
 
                         case ProjectType.SharePoint:
-                            ConfigureSharePoint(services, project, projectResource);
+                            // not configured here due to how saml auth works and is implemented
                             break;
                     }
                 }
             }
         }
 
-        private static void ConfigureDynamics(IServiceCollection services, ProjectConfiguration project, ProjectResource projectResource)
+        private static void ConfigureDynamics(IServiceCollection services, ProjectConfiguration project, ProjectResource projectResource, Serilog.ILogger logger)
         {
             Debug.Assert(services != null, "Required ServiceCollection is null");
             Debug.Assert(project != null, "Required ProjectConfiguration is null");
@@ -61,7 +63,17 @@ namespace BcGov.Malt.Web.Services
             // add odata HttpClient 
             // note: I do not like this IoC anti-pattern where we are using the service locator directly, however,
             //       there are many named dependencies. There may be an opportunity to address this in the future
-            services.AddHttpClient(projectResourceKey, configure => configure.BaseAddress = projectResource.Resource)
+            
+            services.AddHttpClient(projectResourceKey, configure =>
+                {
+                    configure.BaseAddress = projectResource.BaseAddress;
+
+                    // use the API Gateway if required
+                    if (projectResource.BaseAddress.Host != projectResource.Resource.Host)
+                    {
+                        configure.DefaultRequestHeaders.Add("RouteToHost", projectResource.Resource.Host);
+                    }
+                })
                 .AddHttpMessageHandler((serviceProvider) =>
                 {
                     // build the token service that talk to the OAuth endpoint 
@@ -77,17 +89,7 @@ namespace BcGov.Malt.Web.Services
                 });
 
         }
-
-        private static void ConfigureSharePoint(IServiceCollection services, ProjectConfiguration project, ProjectResource projectResource)
-        {
-            Debug.Assert(services != null, "Required ServiceCollection is null");
-            Debug.Assert(project != null, "Required ProjectConfiguration is null");
-            Debug.Assert(projectResource != null, "Required ProjectResource is null");
-            Debug.Assert(projectResource.Type == ProjectType.SharePoint, "Project type must be SharePoint");
-
-            // TODO: add required additional configuration settings for accessing SharePoint
-        }
-
+        
         private static OAuthOptions CreateOAuthOptions(ProjectResource projectResource)
         {
             Debug.Assert(projectResource != null, "Required ProjectResource is null");

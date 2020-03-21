@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using BcGov.Malt.Web.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,12 +10,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BcGov.Malt.Web
@@ -26,12 +23,13 @@ namespace BcGov.Malt.Web
     /// </summary>
     public class Startup
     {
-        private static readonly Serilog.ILogger _log = Serilog.Log.ForContext<Startup>();
+        private static readonly Serilog.ILogger Log = Serilog.Log.ForContext<Startup>();
         private readonly IWebHostEnvironment _environment;
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="env"></param>
         /// <param name="configuration"></param>
         public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
@@ -87,7 +85,7 @@ namespace BcGov.Malt.Web
 
             // this will configure the service correctly, comment out for now until
             // the services are working
-            services.ConfigureProjectResources(Configuration);
+            services.ConfigureProjectResources(Configuration, Log);
 
             services.AddTransient<IUserSearchService, LdapUserSearchService>();
             services.AddTransient<IUserManagementService, UserManagementService>();
@@ -109,8 +107,25 @@ namespace BcGov.Malt.Web
                              "Audience": "maltd"
                             }
                  */
+
                 string audience = Configuration["Jwt:Audience"];
                 string authority = Configuration["Jwt:Authority"];
+
+                // Jwt:Audience and Jwt:Authority are required to validate authentication tokens.
+                if (string.IsNullOrEmpty(audience))
+                {
+                    Log.Fatal("Required configuration item {Setting} is not set", "Jwt:Audience");
+                }
+
+                if (string.IsNullOrEmpty(authority))
+                {
+                    Log.Fatal("Required configuration item {Setting} is not set", "Jwt:Authority");
+                }
+
+                if (string.IsNullOrEmpty(audience) || string.IsNullOrEmpty(authority))
+                {
+                    throw new ConfigurationErrorsException("One or more required configuration parameters are missing Jwt:Audience or Jwt:Authority");
+                }
 
                 if (!authority.EndsWith("/", StringComparison.InvariantCulture))
                 {
@@ -265,64 +280,6 @@ namespace BcGov.Malt.Web
                     }
                 }
             }
-        }
-    }
-
-    [Serializable]
-    public class UserNotFoundException : Exception
-    {
-        //
-        // For guidelines regarding the creation of new exception types, see
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-        // and
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-        //
-
-        public UserNotFoundException()
-        {
-        }
-
-        public UserNotFoundException(string message) : base(message)
-        {
-        }
-
-        public UserNotFoundException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected UserNotFoundException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
-        }
-    }
-
-    [Serializable]
-    public class ProjectNotFoundException : Exception
-    {
-        //
-        // For guidelines regarding the creation of new exception types, see
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-        // and
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-        //
-
-        public ProjectNotFoundException()
-        {
-        }
-
-        public ProjectNotFoundException(string message) : base(message)
-        {
-        }
-
-        public ProjectNotFoundException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected ProjectNotFoundException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
         }
     }
 }
