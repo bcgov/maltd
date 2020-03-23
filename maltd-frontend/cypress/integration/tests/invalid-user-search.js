@@ -22,7 +22,8 @@ describe("Validate invalid user inputs", () => {
       // Validates invalid inputs and error message
       let i = invalidUser.length;
 
-      while (i > 0 && (i -= 1)) {
+      while (i > 0) {
+        i -= 1;
         landingPage.getInputField().type(invalidUser[i]);
 
         if (invalidUser[i].length < 3) {
