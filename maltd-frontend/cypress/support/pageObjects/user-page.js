@@ -1,36 +1,56 @@
 /* global cy */
 
 class UserPage {
-  static getDropDown() {
+  getDropDown() {
     return cy.get("#dropdown");
   }
 
-  static getDropDownMenu() {
-    return cy.get("[data-cy=drop-down-menu]");
+  getDropDownTitle() {
+    return cy.get("#title");
   }
 
-  static getDropDownItem() {
+  getDropDownMenu() {
+    return cy.get("[data-cy=drop-down-menu] > :nth-child(1)");
+  }
+
+  getDropDownItem() {
     return cy.get('button[role="menuitem"]');
   }
 
-  static getPlusIcon() {
+  getPlusIcon() {
     return cy.get("[data-cy=plus-icon]");
   }
 
-  static getProjectInfo() {
+  getProjectInfo() {
     return cy.get(":nth-child(2) > .project-div > #project-info > .large-size");
   }
 
-  static getEmailInfo() {
+  getMemberResources() {
+    return cy.get("#member-resources");
+  }
+
+  getEmailInfo() {
     return cy.get("#email-info");
   }
 
-  static getCloseIcon() {
+  getCloseIcon() {
     return cy.get("[data-cy=close-icon]");
   }
 
-  static getBackNav() {
+  getBackNav() {
     return cy.get("[data-cy=back-nav]");
+  }
+
+  getNoProjects() {
+    return cy.get("#noProjects");
+  }
+
+  getDuplilcateError() {
+    return cy.get(".error-message");
+  }
+
+  getLogOutButton() {
+    return cy.get(".general-button");
   }
 }
 export default UserPage;

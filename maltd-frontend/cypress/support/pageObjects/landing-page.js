@@ -1,34 +1,33 @@
 /* globals cy */
 class LandingPage {
   // Get the input field
-  static getInputField() {
+  getInputField() {
     return cy.get('input[name="idir"]');
   }
 
   // Get the Find button
-  static getFindButton() {
+  getFindButton() {
     return cy.get(".d-flex > .general-button");
   }
 
   // Get the Red find button
-  static getFindRedButton() {
+  getFindRedButton() {
     return cy.get(".general-button.my-2.btn.btn-danger.disabled");
   }
 
   // Get the error text element
-  static getErrorText() {
+  getErrorText() {
     return cy.get("[data-cy=error-text]");
   }
 
   // Get the loading text element
-  static getLoading() {
+  getLoading() {
     return cy.get(".loading");
   }
 
   // Get the logout button
-  static getLogoutButton() {
+  getLogoutButton() {
     return cy.get(".collapse.>.general-button");
   }
 }
-
 export default LandingPage;

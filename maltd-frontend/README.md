@@ -66,26 +66,24 @@ Launches the test runner in the interactive watch mode.
 npm install
 ```
 
-Run tests from the tests directory
+Run tests from maltd-frontend
 
-### Run test on electron headless mode
+### Run E2E test on electron headless mode
 
 ```
-npx cypress run
+npm run cy:run -- --spec "cypress/integration/tests/end-to-end-flow.js"
 ```
 
 ### Run tests on headed mode
 
 ```
-npx cypress run --headed
-```
-
-### Run tests on chrome browser
-
-```
-npx cypress run -b chrome
+ npx cypress run --headed chrome --no-exit
 ```
 
 ## Environment Variables
 
 In order to ensure the app runs successfully, you will be required to set some environment variables as specified in the `.env.example` file. Please setup a `.env.development` file for local dev and populate the fields shown with the appropriate values.
+
+## Environment Variables For Testing
+
+In order to ensure the tests runs successfully, you will be required to set some environment variables as specified in the `cypress.env.example.json` file. Please setup a `cypress.env.json` file for local testing and populate the fields shown with the appropriate values.
