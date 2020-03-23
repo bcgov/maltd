@@ -78,9 +78,11 @@ export default class MainPage extends Component {
         });
       }
     } catch (err) {
-      const { status } = err.response;
-      if (status === 401) {
-        window.location.reload();
+      if (err && err.response && err.response.status) {
+        const { status } = err.response;
+        if (status === 401) {
+          window.location.reload();
+        }
       }
       this.clearForm();
     }
@@ -170,9 +172,11 @@ export default class MainPage extends Component {
       });
       this.setState({ projects: updatedProjects });
     } catch (err) {
-      const { status } = err.response;
-      if (status === 401) {
-        window.location.reload();
+      if (err && err.response && err.response.status) {
+        const { status } = err.response;
+        if (status === 401) {
+          window.location.reload();
+        }
       }
     }
   }
@@ -245,11 +249,13 @@ export default class MainPage extends Component {
       }, 5000);
       return true;
     } catch (err) {
-      const { status } = err.response;
-      if (status === 401) {
-        window.location.reload();
+      if (err && err.response && err.response.status) {
+        const { status } = err.response;
+        if (status === 401) {
+          window.location.reload();
+        }
+        return false;
       }
-      return false;
     }
   }
 
