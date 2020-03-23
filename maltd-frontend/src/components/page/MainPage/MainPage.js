@@ -254,8 +254,8 @@ export default class MainPage extends Component {
         if (status === 401) {
           window.location.reload();
         }
-        return false;
       }
+      return false;
     }
   }
 
