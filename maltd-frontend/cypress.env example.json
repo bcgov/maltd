@@ -1,0 +1,6 @@
+{
+  "baseUrl": "environmentUrl",
+  "authUrl": "idirAuthenticationUrl",
+  "userName": "idirUserName",
+  "password": "IdirPassword"
+}

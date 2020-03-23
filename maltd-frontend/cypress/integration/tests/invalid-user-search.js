@@ -1,19 +1,16 @@
-/* global cy, before */
+/* global cy, before, Cypress */
 // / <reference types="Cypress" />
 
 import LandingPage from "../../support/pageObjects/landing-page";
 
-describe("Invalid user test", () => {
-  // Runs once before all tests in the block
+describe("Validate invalid user inputs", () => {
   before(() => {
     cy.fixture("userData.json").as("users");
   });
 
-  it("Asserts invalid usernames are not accepted", () => {
-    // Launches the url
-    cy.visit("/");
-
-    // Validates the Find button is disabled by default
+  it("Asserts invalid inputs are not accepted", () => {
+    cy.visit(Cypress.env("baseUrl"));
+    // Find button is diabled
     LandingPage.getFindButton().should("be.disabled");
 
     cy.get("@users").then(users => {

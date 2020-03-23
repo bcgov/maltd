@@ -31,7 +31,8 @@
     "build-storybook": "build-storybook -s public",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "ci-test": "cross-env CI=true jest --env=jsdom --testResultsProcessor=jest-sonar-reporter --update-snapshot --runInBand --coverage"
+    "ci-test": "cross-env CI=true jest --env=jsdom --testResultsProcessor=jest-sonar-reporter --update-snapshot --runInBand --coverage",
+    "cy:run": "cypress run"
   },
   "jest": {
     "setupFilesAfterEnv": [

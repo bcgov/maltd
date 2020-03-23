@@ -1,6 +1,5 @@
 {
   "userName": {
-    "valid": ["pbolduc", "nyang", "choban", "sdevalapurkar"],
     "invalid": [
       "lChris",
       "&***&",

@@ -30,5 +30,4 @@ class LandingPage {
     return cy.get(".collapse.>.general-button");
   }
 }
-
 export default LandingPage;
