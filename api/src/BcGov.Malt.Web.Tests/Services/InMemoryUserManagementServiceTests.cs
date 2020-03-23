@@ -39,7 +39,7 @@ namespace BcGov.Malt.Web.Tests.Services
 
             var actual = await sut.RemoveUserFromProjectAsync(user, project);
 
-            Assert.False(actual != null);
+            Assert.True(actual != null);
         }
 
         [Fact]
