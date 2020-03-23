@@ -1,22 +1,22 @@
 /* globals cy */
 class IdirLoginPage {
   // Get the idir button
-  getIdirButton() {
+  static getIdirButton() {
     return cy.get("#zocial-idir");
   }
 
   // Get the username field
-  getUserNameField() {
+  static getUserNameField() {
     return cy.get("#user");
   }
 
   // Get the password field
-  getPasswordField() {
+  static getPasswordField() {
     return cy.get("#password");
   }
 
   // Get the continue button
-  getContinueButton() {
+  static getContinueButton() {
     return cy.get('input[value="Continue"]');
   }
 }

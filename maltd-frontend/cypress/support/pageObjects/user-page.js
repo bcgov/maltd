@@ -1,55 +1,55 @@
 /* global cy */
 
 class UserPage {
-  getDropDown() {
+  static getDropDown() {
     return cy.get("#dropdown");
   }
 
-  getDropDownTitle() {
+  static getDropDownTitle() {
     return cy.get("#title");
   }
 
-  getDropDownMenu() {
+  static getDropDownMenu() {
     return cy.get("[data-cy=drop-down-menu] > :nth-child(1)");
   }
 
-  getDropDownItem() {
+  static getDropDownItem() {
     return cy.get('button[role="menuitem"]');
   }
 
-  getPlusIcon() {
+  static getPlusIcon() {
     return cy.get("[data-cy=plus-icon]");
   }
 
-  getProjectInfo() {
+  static getProjectInfo() {
     return cy.get(":nth-child(2) > .project-div > #project-info > .large-size");
   }
 
-  getMemberResources() {
+  static getMemberResources() {
     return cy.get("#member-resources");
   }
 
-  getEmailInfo() {
+  static getEmailInfo() {
     return cy.get("#email-info");
   }
 
-  getCloseIcon() {
+  static getCloseIcon() {
     return cy.get("[data-cy=close-icon]");
   }
 
-  getBackNav() {
+  static getBackNav() {
     return cy.get("[data-cy=back-nav]");
   }
 
-  getNoProjects() {
+  static getNoProjects() {
     return cy.get("#noProjects");
   }
 
-  getDuplilcateError() {
+  static getDuplilcateError() {
     return cy.get(".error-message");
   }
 
-  getLogOutButton() {
+  static getLogOutButton() {
     return cy.get(".general-button");
   }
 }
