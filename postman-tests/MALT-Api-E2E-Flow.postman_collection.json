@@ -1,0 +1,296 @@
+{
+  "info": {
+    "_postman_id": "880a60f1-5b0d-475f-b73e-dd8c587f61a2",
+    "name": "MALT-Api-E2E-Flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "maltGetUsers",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "170f6ddd-f86f-488a-879f-424b680c6fa7",
+            "exec": [
+              "pm.test(\"Content-Type is present\", () => {",
+              "    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+              "});",
+              "",
+              "const isValid = pm.iterationData.get(\"isValid\");",
+              "",
+              " const respJson = pm.response.json();",
+              "",
+              "// Valid request ** Update the data file with the valid user name when running this tests locally or dev to prevent failures **",
+              "",
+              "pm.test(\"Assert the response has correct objects for a valid request\", () => {",
+              "    ",
+              "    if(pm.iterationData.get(\"isValid\") === \"true\") {",
+              "        pm.test(\"Status code is 200\",  () => {",
+              "            pm.response.to.have.status(200);",
+              "            });",
+              "        pm.expect(respJson.projects).to.be.an('array').but.not.an('object');",
+              "        pm.expect(respJson.id).to.not.to.be.null;",
+              "        pm.expect(respJson.username).to.be.a('string').and.not.to.be.null;",
+              "        pm.expect(respJson.firstName).to.be.a('string').and.not.to.be.null;",
+              "        pm.expect(respJson.lastName).to.be.a('string').and.not.to.be.null;",
+              "        pm.expect(respJson.email).to.include('@gov.bc.ca');",
+              "        ",
+              "    if(respJson.projects.length !== 0) {",
+              "        pm.test('The id has valid characters', () => {",
+              "            _.each(respJson.projects, (list) => {",
+              "                pm.expect(/^[0-9a-zA-Z\\-_]+$/.test(list.id)).to.be.true;",
+              "                });",
+              "        });",
+              "",
+              "        pm.test('The name has valid characters', () => {",
+              "            _.each(respJson.projects, (list) => {",
+              "                pm.expect(/^[0-9a-zA-Z\\W*]+$/.test(list.name)).to.be.true;",
+              "                });",
+              "        });",
+              "",
+              "        pm.test('Reponse has valid type', () => {",
+              "            _.each(respJson.projects.resources, (subList) => {",
+              "                pm.expect(/^[a-zA-Z\\W*]+$/.test(subList.type)).to.be.true;",
+              "                });",
+              "        });",
+              "",
+              "        pm.test('Reponse has valid status', () => {",
+              "            _.each(respJson.projects.resources, (subList) => {",
+              "                pm.expect(/^[a-zA-Z\\W*]+$/.test(subList.status)).to.be.true;",
+              "                });",
+              "        });",
+              "    }",
+              "    }",
+              "});",
+              "",
+              "// Not found",
+              "pm.test(\"Assert the response for request with incorrect IDIR\", () => {",
+              "    ",
+              "    const isValid = pm.iterationData.get(\"isValid\")",
+              "    ",
+              "    if((isValid === \"incorrect\") || (isValid === \"invalid\") || (isValid === \"incorrectData\") || (isValid === \"email\") || (isValid === \"name\") || (isValid === \"noData\")) {",
+              "        pm.test(\"Status code is 404\",  () => {",
+              "            pm.response.to.have.status(404);",
+              "});",
+              "",
+              "        pm.expect(respJson.type).to.be.a('string').and.not.to.be.null;",
+              "        pm.expect(respJson.title).to.eql('Not Found');",
+              "        pm.expect(respJson.status).to.eql(404);",
+              "        pm.expect(respJson.traceId).to.include('|').and.not.to.be.null;",
+              "    }",
+              "});",
+              "",
+              "//  Empty rquest",
+              "pm.test(\"Assert the response for request with incorrect param property\", () => {",
+              "    ",
+              "    if((isValid === \"empty\")) {",
+              "        pm.test(\"Status code is 400\",  () => {",
+              "            pm.response.to.have.status(400);",
+              "});",
+              "",
+              "        pm.expect(respJson.type).to.be.a('string').and.not.to.be.null;",
+              "        pm.expect(respJson.title).to.eql('One or more validation errors occurred.');",
+              "        pm.expect(respJson.status).to.eql(400);",
+              "        pm.expect(respJson.traceId).to.include('|').and.not.to.be.null;",
+              "        pm.expect(respJson.errors.q[0]).to.eql(\"A value for the 'q' parameter or property was not provided.\");",
+              "    }",
+              "});",
+              "",
+              "pm.globals.set(\"projectId\", respJson.projects[0].id);",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/users/{{userName}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users", "{{userName}}"],
+          "query": [
+            {
+              "key": "",
+              "value": "",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "maltAddUserToProject",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "9379759d-7821-4cce-9bf8-6dda3ebef02a",
+            "exec": ["pm.globals.get(\"projectId\");"],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "de3d4e7c-9a97-45b7-a71e-8ca199a685d9",
+            "exec": [
+              "pm.test(\"Content-Type is present\", () => {",
+              "    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+              "});",
+              "",
+              "pm.test(\"Status code is 200\",  () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "            ",
+              " const respJson = pm.response.json();",
+              " ",
+              "pm.test(\"Test the response is an array\",  () => {",
+              "    pm.expect(respJson.users).to.be.an('array').but.not.an('object');",
+              "});",
+              "",
+              "pm.test(\"Test the response id matches the project id sent\",  () => {",
+              "    pm.expect(respJson.id).to.eql(pm.globals.get('projectId'));",
+              "});",
+              "",
+              "pm.test(\"Test the response username matches the username sent\",  () => {",
+              "    pm.expect(respJson.users[0].username).to.be.a('string').and.not.to.be.null;",
+              "});",
+              "",
+              "pm.test(\"Test the response has a project name value\",  () => {",
+              "    pm.expect(respJson.name).to.be.a('string').and.not.to.be.null;",
+              "});",
+              "",
+              "pm.test(\"Test the response has a project type value\",  () => {",
+              "    pm.expect(respJson.users[0].access[0].type).to.be.a('string').and.not.to.be.null;",
+              "});",
+              "",
+              "pm.test(\"Test the response has a project type value\",  () => {",
+              "    pm.expect(respJson.users[0].access[0].status).to.be.a('string').and.to.include(\"member\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "warning": "Key contains invalid characters.",
+            "key": "",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/{{projectId}}/users/{{userName}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "projects", "{{projectId}}", "users", "{{userName}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "maltDeleteUserFromProject",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "8150aba5-fdc9-4c57-8a75-8aecaa6709db",
+            "exec": ["pm.globals.get(\"projectId\");"],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "e695d919-d206-48c8-aef3-39326fb63532",
+            "exec": [
+              "pm.test(\"Content-Type is present\", () => {",
+              "    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+              "});",
+              "",
+              "pm.test(\"Status code is 200\",  () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "            ",
+              " const respJson = pm.response.json();",
+              " ",
+              "pm.test(\"Test the response is an array\",  () => {",
+              "    pm.expect(respJson.users).to.be.an('array').but.not.an('object');",
+              "});",
+              "",
+              "pm.test(\"Test the response id matches the project id sent\",  () => {",
+              "    pm.expect(respJson.id).to.eql(pm.globals.get('projectId'));",
+              "});",
+              "",
+              "pm.test(\"Test the response username matches the username sent\",  () => {",
+              "    pm.expect(respJson.users[0].username).to.to.be.a('string').and.not.to.be.null;",
+              "});",
+              "",
+              "pm.test(\"Test the response has a project name value\",  () => {",
+              "    pm.expect(respJson.name).to.be.a('string').and.not.to.be.null;",
+              "});",
+              "",
+              "pm.test(\"Test the response has a project type value\",  () => {",
+              "    pm.expect(respJson.users[0].access[0].type).to.be.a('string').and.not.to.be.null;",
+              "});",
+              "",
+              "pm.test(\"Test the response has a project type changed\",  () => {",
+              "    pm.expect(respJson.users[0].access[0].status).to.be.a('string').and.to.include(\"not-member\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/{{projectId}}/users/{{userName}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "projects", "{{projectId}}", "users", "{{userName}}"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "protocolProfileBehavior": {}
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "/ comment": "Valid user name",
+
+    "userName": "validUserName",
+    "isValid": "true"
+  },
+  {
+    "/ comment": "Valid Project id from previous request",
+
+    "project": "projectId",
+    "userName": "validUserName"
+  }
+]
