@@ -2,7 +2,7 @@
   {
     "/ comment": "Valid user name",
 
-    "q": "use Valid user name",
+    "q": "validUserName",
     "isValid": "true"
   },
   {
@@ -38,7 +38,7 @@
   {
     "/ comment": "Valid name of the idir",
 
-    "q": "userName",
+    "q": "karm",
     "isValid": "name"
   },
   {
@@ -46,11 +46,5 @@
 
     "q": " ",
     "isValid": "empty"
-  },
-  {
-    "/ comment": "Incorrect param property",
-
-    "c": "validUserName",
-    "isValid": "incorrectParam"
   }
 ]

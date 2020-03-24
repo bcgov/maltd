@@ -1,0 +1,142 @@
+{
+  "info": {
+    "_postman_id": "e4c774b1-006f-413d-8f3d-856aee6d55f5",
+    "name": "MALT-Api-Get-Users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "MALT-get-users",
+      "item": [
+        {
+          "name": "maltGetUsers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "170f6ddd-f86f-488a-879f-424b680c6fa7",
+                "exec": [
+                  "pm.test(\"Content-Type is present\", () => {",
+                  "    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+                  "});",
+                  "",
+                  "const isValid = pm.iterationData.get(\"isValid\");",
+                  "",
+                  " const respJson = pm.response.json();",
+                  "",
+                  "// Valid request ** Update the data file with the valid user name when running this tests locally or dev to prevent failures **",
+                  "",
+                  "pm.test(\"Assert the response has correct objects for a valid request\", () => {",
+                  "    ",
+                  "    if(pm.iterationData.get(\"isValid\") === \"true\") {",
+                  "        pm.test(\"Status code is 200\",  () => {",
+                  "            pm.response.to.have.status(200);",
+                  "            });",
+                  "        pm.expect(respJson.projects).to.be.an('array').but.not.an('object');",
+                  "        pm.expect(respJson.id).to.not.to.be.null;",
+                  "        pm.expect(respJson.username).to.be.a('string').and.not.to.be.null;",
+                  "        pm.expect(respJson.firstName).to.be.a('string').and.not.to.be.null;",
+                  "        pm.expect(respJson.lastName).to.be.a('string').and.not.to.be.null;",
+                  "        pm.expect(respJson.email).to.include('@gov.bc.ca');",
+                  "        ",
+                  "    if(respJson.projects.length !== 0) {",
+                  "        pm.test('The id has valid characters', () => {",
+                  "            _.each(respJson.projects, (list) => {",
+                  "                pm.expect(/^[0-9a-zA-Z\\-_]+$/.test(list.id)).to.be.true;",
+                  "                });",
+                  "        });",
+                  "",
+                  "        pm.test('The name has valid characters', () => {",
+                  "            _.each(respJson.projects, (list) => {",
+                  "                pm.expect(/^[0-9a-zA-Z\\W*]+$/.test(list.name)).to.be.true;",
+                  "                });",
+                  "        });",
+                  "",
+                  "        pm.test('Reponse has valid type', () => {",
+                  "            _.each(respJson.projects.resources, (subList) => {",
+                  "                pm.expect(/^[a-zA-Z\\W*]+$/.test(subList.type)).to.be.true;",
+                  "                });",
+                  "        });",
+                  "",
+                  "        pm.test('Reponse has valid status', () => {",
+                  "            _.each(respJson.projects.resources, (subList) => {",
+                  "                pm.expect(/^[a-zA-Z\\W*]+$/.test(subList.status)).to.be.true;",
+                  "                });",
+                  "        });",
+                  "    }",
+                  "    }",
+                  "});",
+                  "",
+                  "// Not found",
+                  "pm.test(\"Assert the response for request with incorrect IDIR\", () => {",
+                  "    ",
+                  "    const isValid = pm.iterationData.get(\"isValid\")",
+                  "    ",
+                  "    if((isValid === \"incorrect\") || (isValid === \"invalid\") || (isValid === \"incorrectData\") || (isValid === \"email\") || (isValid === \"name\") || (isValid === \"noData\")) {",
+                  "        pm.test(\"Status code is 404\",  () => {",
+                  "            pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "        pm.expect(respJson.type).to.be.a('string').and.not.to.be.null;",
+                  "        pm.expect(respJson.title).to.eql('Not Found');",
+                  "        pm.expect(respJson.status).to.eql(404);",
+                  "        pm.expect(respJson.traceId).to.include('|').and.not.to.be.null;",
+                  "    }",
+                  "});",
+                  "",
+                  "//  Empty rquest",
+                  "pm.test(\"Assert the response for request with incorrect param property\", () => {",
+                  "    ",
+                  "    if((isValid === \"empty\")) {",
+                  "        pm.test(\"Status code is 400\",  () => {",
+                  "            pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "        pm.expect(respJson.type).to.be.a('string').and.not.to.be.null;",
+                  "        pm.expect(respJson.title).to.eql('One or more validation errors occurred.');",
+                  "        pm.expect(respJson.status).to.eql(400);",
+                  "        pm.expect(respJson.traceId).to.include('|').and.not.to.be.null;",
+                  "        pm.expect(respJson.errors.q[0]).to.eql(\"A value for the 'q' parameter or property was not provided.\");",
+                  "    }",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userName}}"],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {}
+    }
+  ],
+  "protocolProfileBehavior": {}
+}
