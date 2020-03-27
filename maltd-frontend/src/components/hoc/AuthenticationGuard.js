@@ -50,7 +50,7 @@ export default function AuthenticationGuard() {
       })
       .success(() => {
         keycloak.loadUserInfo().success();
-        if(accessRole != null && accessRole != "" && keycloak.tokenParsed.realm_access.roles.indexOf(accessRole) != -1){
+        if (accessRole && keycloak.tokenParsed.realm_access.roles.indexOf(accessRole) !== -1){
             localStorage.setItem("jwt", keycloak.token);
             setAuthedKeycloak(keycloak);
         }else{
