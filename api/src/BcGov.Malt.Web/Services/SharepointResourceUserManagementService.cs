@@ -315,7 +315,7 @@ namespace BcGov.Malt.Web.Services
             return data;
         }
 
-        public async Task<HttpContent> SerializeAsync<T>(T item)
+        public Task<HttpContent> SerializeAsync<T>(T item)
         {
             StringContent content = null;
 
@@ -323,11 +323,14 @@ namespace BcGov.Malt.Web.Services
             {
                 // this was using a memory stream but it was failing to serialize on the request
                 string json = JsonSerializer.Serialize(item, SerializerOptions);
+#pragma warning disable CA2000 // Call System.IDisposable.Dispose, justification: value is being returned
                 content = new StringContent(json, Encoding.UTF8, "application/json");
+#pragma warning restore CA2000
 
                 content.Headers.ContentType = ContentType;
 
-                return content;
+                HttpContent httpContent = content;
+                return Task.FromResult(httpContent);
             }
             catch (Exception)
             {

@@ -24,9 +24,10 @@ namespace BcGov.Malt.Web.Features.Projects
                 _projects = projects ?? throw new ArgumentNullException(nameof(projects));
             }
 
-            public async Task<List<Project>> Handle(Request request, CancellationToken cancellationToken)
+            public Task<List<Project>> Handle(Request request, CancellationToken cancellationToken)
             {
-                return _projects.Select(_ => new Project(_.Id, _.Name)).ToList();
+                var projects = _projects.Select(_ => new Project(_.Id, _.Name)).ToList();
+                return Task.FromResult(projects);
             }
         }
     }
