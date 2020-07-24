@@ -2,6 +2,8 @@
 
 Management of Accounts and Licensing Tool for Dynamics/Sharepoint
 
+![.NET Core Buid](https://github.com/bcgov/maltd/workflows/.NET%20Core%20Buid/badge.svg)
+
 ## Application (Phase 1)
 
 The Account Management and Licensing tool can be used to help manage the access of various projects and resources for different users. An administrator can log into the application using their IDIR account as shown in Figure 1.0 and 2.0 below and then search for users while also being able to add and remove them from projects (shown in Figures 3.0 and 4.0).
