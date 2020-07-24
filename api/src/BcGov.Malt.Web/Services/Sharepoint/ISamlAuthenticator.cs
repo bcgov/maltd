@@ -18,6 +18,14 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <returns></returns>
         Task<string> GetStsSamlToken(string relyingParty, string username, string password, string stsUrl, bool cached = true);
 
+        /// <summary>
+        /// Gets the Sharepoint federated authentication cookie.
+        /// </summary>
+        /// <param name="samlServerUri">The SAML server URI.</param>
+        /// <param name="samlToken">The SAML token.</param>
+        /// <param name="client">The <see cref="HttpClient"/> to make the request on.</param>
+        /// <param name="cookieContainer">The target cookie container.</param>
+        /// <returns></returns>
         Task GetSharepointFedAuthCookie(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer);
     }
 }
