@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Models.Configuration;
+using BcGov.Malt.Web.Services.Sharepoint;
 using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Services
@@ -16,6 +17,7 @@ namespace BcGov.Malt.Web.Services
         private readonly ProjectConfigurationCollection _projects;
 
         private readonly ILogger<SharePointResourceUserManagementService> _sharePointResourceUserManagementServiceLogger;
+        private readonly ISamlAuthenticator _samlAuthenticator;
         private readonly IUserSearchService _userSearchService;
         private readonly ILogger<DynamicsResourceUserManagementService> _dynamicsResourceUserManagementService;
 
@@ -26,7 +28,8 @@ namespace BcGov.Malt.Web.Services
             IODataClientFactory oDataClientFactory,
             IUserSearchService userSearchService,
             ILogger<DynamicsResourceUserManagementService> dynamicsResourceUserManagementService,
-            ILogger<SharePointResourceUserManagementService> sharePointResourceUserManagementServiceLogger)
+            ILogger<SharePointResourceUserManagementService> sharePointResourceUserManagementServiceLogger,
+            ISamlAuthenticator samlAuthenticator)
         {
             _projects = projects ?? throw new ArgumentNullException(nameof(projects));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -34,6 +37,7 @@ namespace BcGov.Malt.Web.Services
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
             _dynamicsResourceUserManagementService = dynamicsResourceUserManagementService ?? throw new ArgumentNullException(nameof(dynamicsResourceUserManagementService));
             _sharePointResourceUserManagementServiceLogger = sharePointResourceUserManagementServiceLogger ?? throw new ArgumentNullException(nameof(sharePointResourceUserManagementServiceLogger));
+            _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
         }
 
         public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project)
@@ -324,7 +328,7 @@ namespace BcGov.Malt.Web.Services
                 case ProjectType.Dynamics:
                     return new DynamicsResourceUserManagementService(project, resource, _oDataClientFactory, _userSearchService, _dynamicsResourceUserManagementService);
                 case ProjectType.SharePoint:
-                    return new SharePointResourceUserManagementService(project, resource, _userSearchService, _sharePointResourceUserManagementServiceLogger);
+                    return new SharePointResourceUserManagementService(project, resource, _userSearchService, _samlAuthenticator, _sharePointResourceUserManagementServiceLogger);
                 default:
                     _logger.LogWarning("Unknown resource type {Type}, project resource will be skipped", resource.Type);
                     return null;

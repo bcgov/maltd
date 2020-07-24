@@ -1,21 +1,33 @@
-﻿using BcGov.Malt.Web.Models.Authorization;
-using BcGov.Malt.Web.Models.Configuration;
+﻿using System;
 
 namespace BcGov.Malt.Web.Services
 {
-    public interface ITokenCache
+    /// <summary>
+    /// Represents a cache for security tokens.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TToken">The type of the token.</typeparam>
+    public interface ITokenCache<in TKey, TToken>
+        where TKey : class
+        where TToken : class 
     {
         /// <summary>
-        /// Gets the token associated with the specified configuration.
+        /// Gets the security token from the cache.
         /// </summary>
-        /// <returns>A token or null if no valid token is available.</returns>
-        Token GetToken(OAuthOptions configuration);
+        /// <param name="key">The key of the token.</param>
+        /// <returns>The token or <c>null</c> if the token does not exist or is expired.</returns>
+        TToken GetToken(TKey key);
 
         /// <summary>
-        /// Saves the token to the cache. Only non-expired tokens are added to the cache.
+        /// Saves the security token to the cache. The security token will be cached until it expires.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
+        /// <param name="key">The key of the token.</param>
         /// <param name="token">The token.</param>
-        void SaveToken(OAuthOptions configuration, Token token);
+        /// <param name="tokenExpiresAtUtc">The token expires at UTC.</param>
+        /// <remarks>
+        /// The implementation will subtract one minute from the supplied expiration date to prevent
+        /// issues with time drift between machines.
+        /// </remarks>
+        void SaveToken(TKey key, TToken token, DateTimeOffset tokenExpiresAtUtc);
     }
 }

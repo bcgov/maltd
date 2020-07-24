@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Models.SharePoint;
@@ -61,15 +60,18 @@ namespace BcGov.Malt.Web.Services
         };
 
         private readonly IUserSearchService _userSearchService;
+        private readonly ISamlAuthenticator _samlAuthenticator;
 
         public SharePointResourceUserManagementService(
             ProjectConfiguration project,
             ProjectResource projectResource,
             IUserSearchService userSearchService,
+            ISamlAuthenticator samlAuthenticator,
             ILogger<SharePointResourceUserManagementService> logger)
             : base(project, projectResource)
         {
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
+            _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -285,9 +287,9 @@ namespace BcGov.Malt.Web.Services
             var password = ProjectResource.Password;
             var authorizationUrl = ProjectResource.AuthorizationUri.ToString();
 
-            string samlToken = await Authentication.GetStsSamlToken(relyingPartyIdentifier, username, password, authorizationUrl);
+            string samlToken = await _samlAuthenticator.GetStsSamlToken(relyingPartyIdentifier, username, password, authorizationUrl);
 
-            await Authentication.GetSharepointFedAuthCookie(resource, samlToken, httpClient, handler.CookieContainer);
+            await _samlAuthenticator.GetSharepointFedAuthCookie(resource, samlToken, httpClient, handler.CookieContainer);
 
             return httpClient;
         }

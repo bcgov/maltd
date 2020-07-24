@@ -7,7 +7,7 @@ namespace BcGov.Malt.Web.Models
         /// <summary>
         /// The Active Directory domain name for IDIR.
         /// </summary>
-        public const string DomainName = "IDIR";
+        private const string DomainName = "IDIR";
 
         /// <summary>
         /// Gets the domain qualified format of the IDIR, ie IDIR\username

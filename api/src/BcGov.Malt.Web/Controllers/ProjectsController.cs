@@ -27,7 +27,7 @@ namespace BcGov.Malt.Web.Controllers
         public ProjectsController(IMediator mediator, ILogger<ProjectsController> logger)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>

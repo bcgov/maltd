@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using BcGov.Malt.Web.Models.Configuration;
 using Simple.OData.Client;
 
 namespace BcGov.Malt.Web.Services
@@ -7,12 +6,10 @@ namespace BcGov.Malt.Web.Services
     public class DefaultODataClientFactory : IODataClientFactory
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ProjectConfigurationCollection _projects;
 
-        public DefaultODataClientFactory(IHttpClientFactory httpClientFactory, ProjectConfigurationCollection projects)
+        public DefaultODataClientFactory(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory ?? throw new System.ArgumentNullException(nameof(httpClientFactory));
-            _projects = projects ?? throw new System.ArgumentNullException(nameof(projects));
         }
 
         public IODataClient Create(string name)
