@@ -139,7 +139,7 @@ namespace BcGov.Malt.Web.Models.Configuration
                 builder.Host = apiGatewayHost;
 
                 // inject the policy name as the first uri segment
-                builder.Path = builder.Path.StartsWith("/")
+                builder.Path = builder.Path.StartsWith("/", StringComparison.InvariantCulture)
                     ? "/" + projectResource.ApiGatewayPolicy + builder.Path
                     : "/" + projectResource.ApiGatewayPolicy + "/" + builder.Path;
 
