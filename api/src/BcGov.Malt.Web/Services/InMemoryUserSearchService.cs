@@ -35,6 +35,7 @@ namespace BcGov.Malt.Web.Services
 
             if (user == null)
             {
+                // ReSharper disable once ExpressionIsAlwaysNull
                 return Task.FromResult(user);
             }
 

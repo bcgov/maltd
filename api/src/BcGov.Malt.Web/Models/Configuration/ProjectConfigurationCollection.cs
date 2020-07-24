@@ -40,23 +40,12 @@ namespace BcGov.Malt.Web.Models.Configuration
 
             _items.Add(item.Name, item);
         }
-
-        private bool Contains(ProjectConfiguration item)
-        {
-            return _items.ContainsKey(item.Name);
-        }
-
-
+        
         public IEnumerator<ProjectConfiguration> GetEnumerator()
         {
             return _items.Values.GetEnumerator();
         }
-
-        private bool Remove(ProjectConfiguration item)
-        {
-            return _items.Remove(item.Name);
-        }
-
+        
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _items.Values.GetEnumerator();

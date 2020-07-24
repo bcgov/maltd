@@ -7,7 +7,6 @@ using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
 using MediatR;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Features.Projects

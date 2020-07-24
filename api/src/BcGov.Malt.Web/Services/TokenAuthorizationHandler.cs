@@ -10,12 +10,12 @@ namespace BcGov.Malt.Web.Services
     public class TokenAuthorizationHandler : DelegatingHandler
     {
         private readonly ITokenService _tokenService;
-        public readonly OAuthOptions _options;
+        private readonly OAuthOptions _options;
 
         public TokenAuthorizationHandler(ITokenService tokenService, OAuthOptions options)
         {
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(

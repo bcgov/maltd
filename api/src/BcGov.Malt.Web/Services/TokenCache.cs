@@ -2,63 +2,85 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using BcGov.Malt.Web.Models.Authorization;
-using BcGov.Malt.Web.Models.Configuration;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Services
 {
-    public class TokenCache : ITokenCache
+    public abstract class TokenCache<TKey, TToken> : ITokenCache<TKey, TToken>
+        where TKey : class
+        where TToken : class
     {
-        private IMemoryCache _memoryCache;
+        private readonly IMemoryCache _memoryCache;
+        private readonly ILogger<TokenCache<TKey, TToken>> _logger;
+        private readonly Func<DateTimeOffset> _utcNow = () => DateTimeOffset.UtcNow;
+        private readonly string _cachePrefix;
 
-        public TokenCache(IMemoryCache memoryCache) => _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        /// <summary>
+        /// The expiration buffer. We subtract this amount of time from the user's supplied expiration date
+        /// to ensure we dont return an expired token due to time drift on the servers.
+        /// </summary>
+        private readonly TimeSpan _expirationBuffer = TimeSpan.FromMinutes(1);
 
-        public Token GetToken(OAuthOptions configuration)
+        protected TokenCache(IMemoryCache memoryCache, ILogger<TokenCache<TKey, TToken>> logger)
         {
-            string key = GetCacheKey(configuration);
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            if (_memoryCache.TryGetValue<Token>(key, out Token token))
+            // To ensure each specific implementation does not trash other implementation items
+            // in the shared cache. This prefix is added to each computed cache key before it
+            // is hashed.
+            _cachePrefix = typeof(TKey).FullName + "-" + typeof(TToken).FullName + "-";
+        }
+
+        public TToken GetToken(TKey key)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
+            // prefix each cache with the key's 
+            string cacheKey = GetHash(_cachePrefix + GetCacheKey(key));
+            _logger.LogTrace("Getting token using {CacheKey}", cacheKey);
+
+            if (_memoryCache.TryGetValue(cacheKey, out TToken token))
             {
+                _logger.LogTrace("Cached token found");
                 return token;
             }
 
+            _logger.LogTrace("Cached token not found");
             return null;
         }
 
-        public void SaveToken(OAuthOptions configuration, Token token)
+        public void SaveToken(TKey key, TToken token, DateTimeOffset tokenExpiresAtUtc)
         {
-            if (token.IsAccessTokenExpired)
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (token == null) throw new ArgumentNullException(nameof(token));
+
+            _logger.LogDebug("Subtracting {Time} from token expiration date to account for time drift between servers", _expirationBuffer);
+            tokenExpiresAtUtc = tokenExpiresAtUtc.Subtract(_expirationBuffer);
+
+            DateTimeOffset now = _utcNow();
+
+            if (tokenExpiresAtUtc <= now)
             {
-                return;
+                _logger.LogDebug("Token is already expired, not adding to cache. The current time is {Now} and the token expired at {ExpiresAtUtc}", 
+                    now, 
+                    tokenExpiresAtUtc);
+                return; // token is already expired
             }
 
-            string key = GetCacheKey(configuration);
+            string cacheKey = GetHash(_cachePrefix + GetCacheKey(key));
+            _logger.LogTrace("Caching token using cache key {CacheKey} until {ExpiresAtUtc}", cacheKey, tokenExpiresAtUtc);
 
-            _memoryCache.Set(key, token, token.AccessTokenExpiresAtUtc);
+            _memoryCache.Set(cacheKey, token, tokenExpiresAtUtc);
         }
 
-        private string GetCacheKey(OAuthOptions configuration)
-        {
-            StringBuilder buffer = new StringBuilder();
-
-            // create a cache key based on all the parameters
-            buffer.Append(configuration.AuthorizationUri.ToString());
-            buffer.Append('|');
-            buffer.Append(configuration.Resource.ToString());
-            buffer.Append('|');
-            buffer.Append(configuration.ClientId);
-            buffer.Append('|');
-            buffer.Append(configuration.ClientSecret);
-            buffer.Append('|');
-            buffer.Append(configuration.Username);
-            buffer.Append('|');
-            buffer.Append(configuration.Password);
-            buffer.Append('|');
-
-            return GetHash(buffer.ToString());
-        }
-
+        /// <summary>
+        /// Gets the cache key for this entry.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        protected abstract string GetCacheKey(TKey key);
 
         private static string GetHash(string value)
         {
@@ -66,7 +88,7 @@ namespace BcGov.Malt.Web.Services
             // SHA1 should be fine as we are not using this value as a password hash
             using HashAlgorithm hashAlgorithm = SHA1.Create();
 #pragma warning restore CA5350
-            
+
             var byteArray = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
 
             StringBuilder hex = new StringBuilder(byteArray.Length * 2);
@@ -77,5 +99,6 @@ namespace BcGov.Malt.Web.Services
 
             return hex.ToString();
         }
+
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,16 +74,16 @@ namespace BcGov.Malt.Web.Services
                         configure.DefaultRequestHeaders.Add("RouteToHost", projectResource.Resource.Host);
                     }
                 })
-                .AddHttpMessageHandler((serviceProvider) =>
+                .AddHttpMessageHandler(serviceProvider =>
                 {
                     // build the token service that talk to the OAuth endpoint 
                     IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                     HttpClient httpClient = httpClientFactory.CreateClient(projectResourceKey + "-authorization");
 
                     // create the handler that will authenticate the call and add authorization header
-                    ILogger<OAuthClient> logger = serviceProvider.GetRequiredService<ILogger<OAuthClient>>();
-                    ITokenCache tokenCache = serviceProvider.GetRequiredService<ITokenCache>();
-                    ITokenService tokenService = new OAuthTokenService(new OAuthClient(httpClient, logger), tokenCache);
+                    ILogger<OAuthClient> clientLogger = serviceProvider.GetRequiredService<ILogger<OAuthClient>>();
+                    var tokenCache = serviceProvider.GetRequiredService<ITokenCache<OAuthOptions, Token>>();
+                    ITokenService tokenService = new OAuthTokenService(new OAuthClient(httpClient, clientLogger), tokenCache);
                     var handler = new TokenAuthorizationHandler(tokenService, CreateOAuthOptions(projectResource));
                     return handler;
                 });

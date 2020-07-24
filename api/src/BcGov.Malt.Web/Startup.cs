@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using BcGov.Malt.Web.Models.Authorization;
+using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
+using BcGov.Malt.Web.Services.Sharepoint;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -63,6 +66,7 @@ namespace BcGov.Malt.Web
                 });
             });
 
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -95,7 +99,9 @@ namespace BcGov.Malt.Web
             // The DefaultODataClientFactory has dependency on IHttpClientFactory.
             services.AddHttpClient();
 
-            services.AddTransient<ITokenCache, TokenCache>();
+            services.AddTransient<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>();
+            services.AddTransient<ITokenCache<SamlTokenParameters, string>, SamlTokenTokenCache>();
+            services.AddTransient<ISamlAuthenticator, SamlAuthenticator>();
 
             void ConfigureJwtBearerAuthentication(JwtBearerOptions o)
             {
@@ -244,6 +250,7 @@ namespace BcGov.Malt.Web
 
             app.UseEndpoints(endpoints =>
             {
+                // disable the authentication if debugging locally 
                 endpoints.MapControllers().RequireAuthorization();
             });
 

@@ -9,9 +9,9 @@ namespace BcGov.Malt.Web.Services
     public class OAuthTokenService : ITokenService
     {
         private readonly IOAuthClient _client;
-        private readonly ITokenCache _tokenCache;
+        private readonly ITokenCache<OAuthOptions, Token> _tokenCache;
 
-        public OAuthTokenService(IOAuthClient client, ITokenCache tokenCache)
+        public OAuthTokenService(IOAuthClient client, ITokenCache<OAuthOptions, Token> tokenCache)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _tokenCache = tokenCache ?? throw new ArgumentNullException(nameof(tokenCache));
@@ -29,7 +29,7 @@ namespace BcGov.Malt.Web.Services
             // TODO: use refresh token if available 
             token = await _client.GetTokenAsync(configuration, cancellationToken);
 
-            _tokenCache.SaveToken(configuration, token);
+            _tokenCache.SaveToken(configuration, token, token.AccessTokenExpiresAtUtc);
 
             return token;
         }

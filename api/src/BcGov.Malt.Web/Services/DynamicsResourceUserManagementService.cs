@@ -22,7 +22,7 @@ namespace BcGov.Malt.Web.Services
             ILogger<DynamicsResourceUserManagementService> logger)
             : base(project, projectResource)
         {
-            _factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -57,7 +57,7 @@ namespace BcGov.Malt.Web.Services
                     IsDisabled = false
                 };
 
-                entry = await client
+                await client
                     .For<SystemUser>()
                     .Set(entry)
                     .InsertEntryAsync();
