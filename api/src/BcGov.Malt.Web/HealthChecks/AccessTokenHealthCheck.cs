@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
 using BcGov.Malt.Web.Services.Sharepoint;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.HealthChecks
 {
@@ -16,15 +20,14 @@ namespace BcGov.Malt.Web.HealthChecks
         private static readonly Exception _noException = null;
 
         private readonly ProjectConfigurationCollection _projects;
-
-        private readonly IOAuthClient _oauthClient;
         private readonly ISamlAuthenticator _samlAuthenticator;
+        private readonly IServiceProvider _serviceProvider;
 
-        public AccessTokenHealthCheck(ProjectConfigurationCollection projects, IOAuthClient oauthClient, ISamlAuthenticator samlAuthenticator)
+        public AccessTokenHealthCheck(ProjectConfigurationCollection projects, ISamlAuthenticator samlAuthenticator, IServiceProvider serviceProvider)
         {
             _projects = projects ?? throw new ArgumentNullException(nameof(projects));
-            _oauthClient = oauthClient ?? throw new ArgumentNullException(nameof(oauthClient));
             _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
@@ -56,11 +59,11 @@ namespace BcGov.Malt.Web.HealthChecks
         {
             List<Task<Tuple<ProjectResource, Exception>>> tasks = new List<Task<Tuple<ProjectResource, Exception>>>();
 
-            foreach (var projectConfiguration in _projects)
+            foreach (ProjectConfiguration project in _projects)
             {
-                foreach (ProjectResource resource in projectConfiguration.Resources)
+                foreach (ProjectResource resource in project.Resources)
                 {
-                    tasks.Add(CheckAccessTokenAsync(resource));
+                    tasks.Add(CheckAccessTokenAsync(project, resource));
                 }
             }
 
@@ -69,15 +72,15 @@ namespace BcGov.Malt.Web.HealthChecks
             return tasks.Select(_ => _.Result).ToList();
         }
 
-        private async Task<Tuple<ProjectResource, Exception>> CheckAccessTokenAsync(ProjectResource resource)
+        private async Task<Tuple<ProjectResource, Exception>> CheckAccessTokenAsync(ProjectConfiguration project, ProjectResource resource)
         {
             switch (resource.Type)
             {
                 case ProjectType.Dynamics:
-                    return await CheckOAuthAccessTokenAsync(resource);
+                    return await CheckOAuthAccessTokenAsync(project, resource);
  
                 case ProjectType.SharePoint:
-                    return await CheckSamlAccessTokenAsync(resource);
+                    return await CheckSamlAccessTokenAsync(project, resource);
 
                 default:
                     Exception exception = new InvalidProjectTypeException(resource.Type);
@@ -85,7 +88,7 @@ namespace BcGov.Malt.Web.HealthChecks
             }
         }
 
-        private async Task<Tuple<ProjectResource, Exception>> CheckOAuthAccessTokenAsync(ProjectResource resource)
+        private async Task<Tuple<ProjectResource, Exception>> CheckOAuthAccessTokenAsync(ProjectConfiguration project, ProjectResource resource)
         {
 
             var options = new OAuthOptions
@@ -100,8 +103,18 @@ namespace BcGov.Malt.Web.HealthChecks
 
             try
             {
+                // OAuth is always dynamics
+                string projectResourceKey = project.Id + "-dynamics";
+
+                var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
+                HttpClient httpClient = httpClientFactory.CreateClient(projectResourceKey + "-authorization");
+
+                // create the handler that will authenticate the call and add authorization header
+                ILogger<OAuthClient> clientLogger = _serviceProvider.GetRequiredService<ILogger<OAuthClient>>();
+                var oauthClient = new OAuthClient(httpClient, clientLogger);
+
                 // IOAuthClient does not cache tokens
-                var token = await _oauthClient.GetTokenAsync(options, CancellationToken.None);
+                Token token = await oauthClient.GetTokenAsync(options, CancellationToken.None);
                 return Tuple.Create(resource, _noException);
             }
             catch (Exception e)
@@ -110,7 +123,7 @@ namespace BcGov.Malt.Web.HealthChecks
             }
         }
 
-        private async Task<Tuple<ProjectResource, Exception>> CheckSamlAccessTokenAsync(ProjectResource resource)
+        private async Task<Tuple<ProjectResource, Exception>> CheckSamlAccessTokenAsync(ProjectConfiguration project, ProjectResource resource)
         {
             string relyingParty = resource.RelyingPartyIdentifier;
             string username = resource.Username;
@@ -120,7 +133,7 @@ namespace BcGov.Malt.Web.HealthChecks
             try
             {
                 // dont cache the tokens
-                var token = await _samlAuthenticator.GetStsSamlTokenAsync(relyingParty, username, password, stsUri, cached: false);
+                string token = await _samlAuthenticator.GetStsSamlTokenAsync(relyingParty, username, password, stsUri, cached: false);
                 return Tuple.Create(resource, _noException);
             }
             catch (Exception e)

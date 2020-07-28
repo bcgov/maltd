@@ -112,6 +112,8 @@ namespace BcGov.Malt.Web.Services.Sharepoint
                             stsUrl,
                             relyingParty,
                             new { Code = code, Subcode = subcode, Reason = reason });
+
+                        throw new SamlAuthenticationException($"Request to {stsUrl} return HTTP Status {responseMessage.StatusCode}", code, subcode, reason);
                     }
                     else
                     {
@@ -122,7 +124,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
                     }
 
                     // TODO: change to better custom exception, read any possible content and log
-                    throw new SamlAuthenticationException($"Request to {stsUrl} return HTTP Status {responseMessage.StatusCode}");
+                    throw new SamlAuthenticationException($"Request to {stsUrl} return HTTP Status {responseMessage.StatusCode}", string.Empty, string.Empty, string.Empty);
                 }
 
                 else if (action == "http://schemas.xmlsoap.org/ws/2005/02/trust/RSTR/Issue")
@@ -143,7 +145,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
                 else
                 {
                     // TODO: throw custom exception related to SOAP fault
-                    throw new SamlAuthenticationException("Unexpected SOAP Action : " + action);
+                    throw new SamlAuthenticationException($"Unexpected SOAP Action : {action}");
                 }
             }
             else
