@@ -16,7 +16,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <param name="stsUrl"></param>
         /// <param name="cached">if <c>true</c>, will try to use cached token, otherwise a request will be made to real token service.</param>
         /// <returns></returns>
-        Task<string> GetStsSamlToken(string relyingParty, string username, string password, string stsUrl, bool cached = true);
+        Task<string> GetStsSamlTokenAsync(string relyingParty, string username, string password, string stsUrl, bool cached = true);
 
         /// <summary>
         /// Gets the Sharepoint federated authentication cookie.
@@ -26,6 +26,6 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <param name="client">The <see cref="HttpClient"/> to make the request on.</param>
         /// <param name="cookieContainer">The target cookie container.</param>
         /// <returns></returns>
-        Task GetSharepointFedAuthCookie(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer);
+        Task GetSharepointFedAuthCookieAsync(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer);
     }
 }

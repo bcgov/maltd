@@ -14,7 +14,9 @@ namespace BcGov.Malt.Web.Services
         private readonly IMemoryCache _memoryCache;
         private readonly ILogger<TokenCache<TKey, TToken>> _logger;
         private readonly Func<DateTimeOffset> _utcNow = () => DateTimeOffset.UtcNow;
-        private readonly string _cachePrefix;
+
+        private byte[] _instancePrefix;
+        private readonly byte[] _cachePrefix;
 
         /// <summary>
         /// The expiration buffer. We subtract this amount of time from the user's supplied expiration date
@@ -30,7 +32,10 @@ namespace BcGov.Malt.Web.Services
             // To ensure each specific implementation does not trash other implementation items
             // in the shared cache. This prefix is added to each computed cache key before it
             // is hashed.
-            _cachePrefix = typeof(TKey).FullName + "-" + typeof(TToken).FullName + "-";
+            _cachePrefix = Encoding.UTF8.GetBytes(typeof(TKey).FullName + "-" + typeof(TToken).FullName + "-");
+
+            // per instance prefix, can be reset to 'clear' the cache
+            _instancePrefix = NewInstancePrefix();
         }
 
         public TToken GetToken(TKey key)
@@ -38,7 +43,7 @@ namespace BcGov.Malt.Web.Services
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             // prefix each cache with the key's 
-            string cacheKey = GetHash(_cachePrefix + GetCacheKey(key));
+            string cacheKey = GetHash(GetCacheKey(key));
             _logger.LogTrace("Getting token using {CacheKey}", cacheKey);
 
             if (_memoryCache.TryGetValue(cacheKey, out TToken token))
@@ -69,10 +74,16 @@ namespace BcGov.Malt.Web.Services
                 return; // token is already expired
             }
 
-            string cacheKey = GetHash(_cachePrefix + GetCacheKey(key));
+            string cacheKey = GetHash(GetCacheKey(key));
             _logger.LogTrace("Caching token using cache key {CacheKey} until {ExpiresAtUtc}", cacheKey, tokenExpiresAtUtc);
 
             _memoryCache.Set(cacheKey, token, tokenExpiresAtUtc);
+        }
+
+        public void Clear()
+        {
+            // reset the instance prefix to effectively clear the cache
+            _instancePrefix = NewInstancePrefix();
         }
 
         /// <summary>
@@ -82,14 +93,23 @@ namespace BcGov.Malt.Web.Services
         /// <returns></returns>
         protected abstract string GetCacheKey(TKey key);
 
-        private static string GetHash(string value)
+        private static byte[] NewInstancePrefix()
+        {
+            return Guid.NewGuid().ToByteArray();
+        }
+
+        private string GetHash(string value)
         {
 #pragma warning disable CA5350 // a weak cryptographic algorithm SHA1
             // SHA1 should be fine as we are not using this value as a password hash
             using HashAlgorithm hashAlgorithm = SHA1.Create();
 #pragma warning restore CA5350
 
-            var byteArray = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(value));
+            hashAlgorithm.TransformBlock(_instancePrefix, 0, _instancePrefix.Length, null, 0);
+            hashAlgorithm.TransformBlock(_cachePrefix, 0, _cachePrefix.Length, null, 0);
+
+            var data = Encoding.UTF8.GetBytes(value);
+            var byteArray = hashAlgorithm.TransformFinalBlock(data, 0, data.Length);
 
             StringBuilder hex = new StringBuilder(byteArray.Length * 2);
             foreach (byte b in byteArray)
@@ -99,6 +119,5 @@ namespace BcGov.Malt.Web.Services
 
             return hex.ToString();
         }
-
     }
 }

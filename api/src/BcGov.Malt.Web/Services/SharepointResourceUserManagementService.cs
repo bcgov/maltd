@@ -287,9 +287,9 @@ namespace BcGov.Malt.Web.Services
             var password = ProjectResource.Password;
             var authorizationUrl = ProjectResource.AuthorizationUri.ToString();
 
-            string samlToken = await _samlAuthenticator.GetStsSamlToken(relyingPartyIdentifier, username, password, authorizationUrl);
+            string samlToken = await _samlAuthenticator.GetStsSamlTokenAsync(relyingPartyIdentifier, username, password, authorizationUrl);
 
-            await _samlAuthenticator.GetSharepointFedAuthCookie(resource, samlToken, httpClient, handler.CookieContainer);
+            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, handler.CookieContainer);
 
             return httpClient;
         }

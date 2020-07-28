@@ -42,7 +42,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <param name="stsUrl"></param>
         /// <param name="cached"></param>
         /// <returns></returns>
-        public async Task<string> GetStsSamlToken(string relyingParty, string username, string password, string stsUrl, bool cached = true)
+        public async Task<string> GetStsSamlTokenAsync(string relyingParty, string username, string password, string stsUrl, bool cached = true)
         {
             string securityTokenResponse;
 
@@ -154,7 +154,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             }
         }
 
-        public async Task GetSharepointFedAuthCookie(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer)
+        public async Task GetSharepointFedAuthCookieAsync(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer)
         {
             // Single Sign On endpoint to post SAML token too
             var trustUri = new Uri(samlServerUri, "_trust/");

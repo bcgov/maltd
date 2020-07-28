@@ -65,8 +65,7 @@ namespace BcGov.Malt.Web
                     builder.AllowAnyOrigin();
                 });
             });
-
-
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,6 +86,8 @@ namespace BcGov.Malt.Web
 
             services.AddMemoryCache();
 
+            services.AddHealthChecks();
+
             // this will configure the service correctly, comment out for now until
             // the services are working
             services.ConfigureProjectResources(Configuration, Log);
@@ -99,8 +100,11 @@ namespace BcGov.Malt.Web
             // The DefaultODataClientFactory has dependency on IHttpClientFactory.
             services.AddHttpClient();
 
-            services.AddTransient<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>();
-            services.AddTransient<ITokenCache<SamlTokenParameters, string>, SamlTokenTokenCache>();
+            // token caches are singleton because they maintain a per instance prefix
+            // that can be changed to effectively clear the cache
+            services.AddSingleton<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>();
+            services.AddSingleton<ITokenCache<SamlTokenParameters, string>, SamlTokenTokenCache>();
+
             services.AddTransient<ISamlAuthenticator, SamlAuthenticator>();
 
             void ConfigureJwtBearerAuthentication(JwtBearerOptions o)
@@ -252,6 +256,8 @@ namespace BcGov.Malt.Web
             {
                 // disable the authentication if debugging locally 
                 endpoints.MapControllers().RequireAuthorization();
+
+                endpoints.MapHealthChecks("/health");
             });
 
             app.UseSwagger();
