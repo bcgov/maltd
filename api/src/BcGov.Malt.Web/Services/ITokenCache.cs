@@ -29,5 +29,10 @@ namespace BcGov.Malt.Web.Services
         /// issues with time drift between machines.
         /// </remarks>
         void SaveToken(TKey key, TToken token, DateTimeOffset tokenExpiresAtUtc);
+
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
+        void Clear();
     }
 }
