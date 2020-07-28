@@ -113,7 +113,7 @@ namespace BcGov.Malt.Web
                 using (var scope = services.CreateScope())
                 {
                     // get the token loader/initializer
-                    var accessTokenLoader = scope.ServiceProvider.GetRequiredService<AccessTokenLoader>();
+                    var accessTokenLoader = scope.ServiceProvider.GetRequiredService<IAccessTokenLoader>();
 
                     Stopwatch stopwatch = Stopwatch.StartNew();
                     List<Tuple<ProjectResource, Exception>> results = await accessTokenLoader.GetAccessTokensAsync();
@@ -123,17 +123,17 @@ namespace BcGov.Malt.Web
                     var exceptionCount = results.Count(_ => _.Item2 != null);
                     if (exceptionCount == 0)
                     {
-                        logger.Information("Fetched all {AccessTokenCount} access tokens successfully, process took {Elapsed} milliseconds", results.Count, milliseconds);
+                        logger.Information("Fetched all {AccessTokenCount} access tokens successfully, process took {ElapsedMilliseconds} milliseconds", results.Count, milliseconds);
                     }
                     else
                     {
                         if (exceptionCount == results.Count)
                         {
-                            logger.Error("Error fetching all {AccessTokenCount} access tokens, process took {Elapsed} milliseconds", results.Count, milliseconds);
+                            logger.Error("Error fetching all {AccessTokenCount} access tokens, process took {ElapsedMilliseconds} milliseconds", results.Count, milliseconds);
                         }
                         else
                         {
-                            logger.Error("Error fetching {ErrorCount} of total {AccessTokenCount} access tokens, process took {Elapsed} milliseconds",
+                            logger.Error("Error fetching {ErrorCount} of total {AccessTokenCount} access tokens, process took {ElapsedMilliseconds} milliseconds",
                                 exceptionCount,
                                 results.Count, 
                                 milliseconds);
@@ -153,9 +153,9 @@ namespace BcGov.Malt.Web
                                     // log enough information to help identify the issue without actually logging out any credentials/sensitive info
                                     projectResource.Type,
                                     projectResource.Resource,
-                                    // only return the 6 first character of the client id
-                                    ClientId = projectResource.ClientId.Substring(0, 6) + "...",
-                                    projectResource.RelyingPartyIdentifier
+                                    projectResource.Username,
+                                    projectResource.RelyingPartyIdentifier,
+                                    projectResource.AuthorizationUri
                                 });
 
                             }
@@ -166,8 +166,9 @@ namespace BcGov.Malt.Web
                                     // log enough information to help identify the issue without actually logging out any credentials/sensitive info
                                     projectResource.Type,
                                     projectResource.Resource,
+                                    projectResource.Username,
                                     // only return the 6 first character of the client id
-                                    ClientId = projectResource.ClientId.Substring(0, 6) + "..."
+                                    ClientId = GetClientIdForLogging(projectResource)
                                 });
                             }
                         }
@@ -178,6 +179,17 @@ namespace BcGov.Malt.Web
             {
                 logger.Warning(exception, "Error getting access tokens for all resources");
             }
+        }
+
+        private static string GetClientIdForLogging(ProjectResource projectResource)
+        {
+            var clientId = projectResource.ClientId;
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return null;
+            }
+
+            return clientId.Substring(0, 6) + "...";
         }
     }
 }

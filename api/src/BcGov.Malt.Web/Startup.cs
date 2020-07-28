@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using BcGov.Malt.Web.HealthChecks;
 using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
@@ -86,7 +87,8 @@ namespace BcGov.Malt.Web
 
             services.AddMemoryCache();
 
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddCheck<AccessTokenHealthCheck>("Token Validation", null, new[] {"access_token"});
 
             // this will configure the service correctly, comment out for now until
             // the services are working
@@ -96,16 +98,23 @@ namespace BcGov.Malt.Web
             services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
 
+
             // Add HttpClient and IHttpClientFactory in case the project resources do not register it
             // The DefaultODataClientFactory has dependency on IHttpClientFactory.
             services.AddHttpClient();
 
+            // SAML services
+            // token caches are singleton because they maintain a per instance prefix
+            // that can be changed to effectively clear the cache
+            services.AddSingleton<ITokenCache<SamlTokenParameters, string>, SamlTokenTokenCache>();
+            services.AddTransient<ISamlAuthenticator, SamlAuthenticator>();
+
+            // OAuth services
             // token caches are singleton because they maintain a per instance prefix
             // that can be changed to effectively clear the cache
             services.AddSingleton<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>();
-            services.AddSingleton<ITokenCache<SamlTokenParameters, string>, SamlTokenTokenCache>();
 
-            services.AddTransient<ISamlAuthenticator, SamlAuthenticator>();
+            services.AddTransient<IAccessTokenLoader, AccessTokenLoader>();
 
             void ConfigureJwtBearerAuthentication(JwtBearerOptions o)
             {
@@ -257,7 +266,9 @@ namespace BcGov.Malt.Web
                 // disable the authentication if debugging locally 
                 endpoints.MapControllers().RequireAuthorization();
 
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/health")
+                    /*.RequireAuthorization()*/
+                    ;
             });
 
             app.UseSwagger();
