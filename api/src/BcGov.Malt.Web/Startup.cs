@@ -8,14 +8,17 @@ using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
 using BcGov.Malt.Web.Services.Sharepoint;
+using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -66,7 +69,7 @@ namespace BcGov.Malt.Web
                     builder.AllowAnyOrigin();
                 });
             });
-            
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,8 +90,11 @@ namespace BcGov.Malt.Web
 
             services.AddMemoryCache();
 
-            services.AddHealthChecks()
-                .AddCheck<AccessTokenHealthCheck>("Token Validation", null, new[] {"access_token"});
+            AddHealthChecks(services);
+
+            services
+                .AddHealthChecksUI()
+                .AddInMemoryStorage();
 
             // this will configure the service correctly, comment out for now until
             // the services are working
@@ -113,6 +119,7 @@ namespace BcGov.Malt.Web
             // token caches are singleton because they maintain a per instance prefix
             // that can be changed to effectively clear the cache
             services.AddSingleton<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>();
+            services.AddTransient<IOAuthClientFactory, OAuthClientFactory>();
 
             services.AddTransient<IAccessTokenLoader, AccessTokenLoader>();
 
@@ -176,6 +183,28 @@ namespace BcGov.Malt.Web
                     }
                 };
             }
+        }
+
+        private void AddHealthChecks(IServiceCollection services)
+        {
+            var healthCheckBuilder = services.AddHealthChecks();
+
+            foreach (var project in Configuration.GetProjectConfigurations(Log))
+            {
+                string healthCheckName = project.Name + " Access Token Health Check";
+
+                IHealthCheck HealthCheckFactory(IServiceProvider serviceProvider)
+                {
+                    var factory = serviceProvider.GetRequiredService<IProjectAccessTokenHealthCheckFactory>();
+                    return factory.Create(project);
+                }
+
+                healthCheckBuilder.Add(new HealthCheckRegistration(healthCheckName, HealthCheckFactory, null,
+                    new[] { "access_token" }));
+            }
+
+            // add the required services for the the health checks
+            services.AddTransient<IProjectAccessTokenHealthCheckFactory, ProjectAccessTokenHealthCheckFactory>();
         }
 
 
@@ -261,14 +290,22 @@ namespace BcGov.Malt.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseHealthChecksUI();
+
             app.UseEndpoints(endpoints =>
             {
                 // disable the authentication if debugging locally 
                 endpoints.MapControllers().RequireAuthorization();
 
-                endpoints.MapHealthChecks("/health")
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                    {
+                        Predicate = registration => true,
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    })
                     /*.RequireAuthorization()*/
                     ;
+
+                endpoints.MapHealthChecksUI();
             });
 
             app.UseSwagger();
