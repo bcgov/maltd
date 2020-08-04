@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Services
 {
@@ -54,6 +52,10 @@ namespace BcGov.Malt.Web.Services
             Debug.Assert(projectResource != null, "Required ProjectResource is null");
             Debug.Assert(projectResource.Type == ProjectType.Dynamics, "Project type must be Dynamics");
 
+            // the projectResourceKey convention is repeated also in OAuthClientFactory which gets the HttpClient using the same convention,
+            //
+            // {Id}-dynamics-authorization
+            //
             string projectResourceKey = project.Id + "-dynamics";
 
             // add authorization HttpClient 
@@ -77,13 +79,11 @@ namespace BcGov.Malt.Web.Services
                 .AddHttpMessageHandler(serviceProvider =>
                 {
                     // build the token service that talk to the OAuth endpoint 
-                    IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                    HttpClient httpClient = httpClientFactory.CreateClient(projectResourceKey + "-authorization");
+                    IOAuthClientFactory oauthClientFactory = serviceProvider.GetRequiredService<IOAuthClientFactory>();
+                    IOAuthClient client = oauthClientFactory.Create(project);
+                    ITokenCache<OAuthOptions, Token> tokenCache = serviceProvider.GetRequiredService<ITokenCache<OAuthOptions, Token>>();
 
-                    // create the handler that will authenticate the call and add authorization header
-                    ILogger<OAuthClient> clientLogger = serviceProvider.GetRequiredService<ILogger<OAuthClient>>();
-                    var tokenCache = serviceProvider.GetRequiredService<ITokenCache<OAuthOptions, Token>>();
-                    ITokenService tokenService = new OAuthTokenService(new OAuthClient(httpClient, clientLogger), tokenCache);
+                    ITokenService tokenService = new OAuthTokenService(client, tokenCache);
                     var handler = new TokenAuthorizationHandler(tokenService, CreateOAuthOptions(projectResource));
                     return handler;
                 });
