@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
@@ -11,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Exceptions;
+using Serilog.Formatting.Compact;
 
 // this should go in AssemblyInfo.cs
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BcGov.Malt.Web.Tests")]
@@ -27,7 +30,7 @@ namespace BcGov.Malt.Web
         /// </summary>
         public static async Task<int> Main(string[] args)
         {
-            ILogger logger = ConfigureLogging();
+            ILogger logger = GetProgramLogger();
 
             try
             {
@@ -59,7 +62,7 @@ namespace BcGov.Malt.Web
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             var builder = Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .UseSerilog(ConfigureSerilogLogging)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -77,7 +80,7 @@ namespace BcGov.Malt.Web
                 return builder;
         }
 
-        private static ILogger ConfigureLogging()
+        private static ILogger GetProgramLogger()
         {
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json");
@@ -102,6 +105,45 @@ namespace BcGov.Malt.Web
             return logger;
         }
 
+        private static void ConfigureSerilogLogging(HostBuilderContext hostingContext, LoggerConfiguration loggerConfiguration)
+        {
+            loggerConfiguration
+                .ReadFrom.Configuration(hostingContext.Configuration)
+                .Enrich.WithMachineName()
+                .Enrich.WithProcessId()
+                .Enrich.WithProcessName()
+                .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
+                ;
+
+            if (hostingContext.HostingEnvironment.IsDevelopment())
+            {
+                loggerConfiguration.WriteTo.Console();
+            }
+            else
+            {
+                loggerConfiguration.WriteTo.Console(formatter: new RenderedCompactJsonFormatter());
+                var splunkUrl = hostingContext.Configuration.GetValue("SPLUNK_URL", string.Empty);
+                var splunkToken = hostingContext.Configuration.GetValue("SPLUNK_TOKEN", string.Empty);
+                if (string.IsNullOrWhiteSpace(splunkToken) || string.IsNullOrWhiteSpace(splunkUrl))
+                {
+                    Log.Warning("Splunk logging sink is not configured properly, check SPLUNK_TOKEN and SPLUNK_URL env vars");
+                }
+                else
+                {
+                    loggerConfiguration
+                        .WriteTo.EventCollector(
+                            splunkHost: splunkUrl,
+                            eventCollectorToken: splunkToken,
+                            messageHandler: new HttpClientHandler
+                            {
+                                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                            },
+                            renderTemplate: false);
+                }
+            }
+
+        }
 
         private static async Task GetAccessTokensAsync(ILogger logger, IServiceProvider services)
         {
