@@ -266,10 +266,11 @@ namespace BcGov.Malt.Web.Services
             // be sure to enable HTTPS decryption
             ////handler.Proxy = new WebProxy(new Uri("http://localhost:8888"));
 
+            // TODO: how can we use HttpClientFactory?
             HttpClient httpClient = new HttpClient(handler)
             {
                 BaseAddress = ProjectResource.BaseAddress,
-                Timeout = TimeSpan.FromMilliseconds(15000)
+                Timeout = TimeSpan.FromSeconds(15)
             };
 
             // use the API Gateway if required

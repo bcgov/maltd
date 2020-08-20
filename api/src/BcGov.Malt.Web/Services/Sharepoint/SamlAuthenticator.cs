@@ -68,6 +68,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             using var content = new StringContent(samlSoapRequest, Encoding.UTF8, "application/soap+xml");
 
             using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(15);
             var responseMessage = await client.PostAsync(stsUrl, content);
 
             // A valid response needs to be a SOAP element, Content Type = application/soap+xml

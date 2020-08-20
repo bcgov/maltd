@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using BcGov.Malt.Web.Models.Authorization;
@@ -10,6 +11,8 @@ namespace BcGov.Malt.Web.Services
 {
     public static class ProjectExtensions
     {
+        private static readonly TimeSpan DefaultTimeoutTimeout = TimeSpan.FromSeconds(30);
+
         /// <summary>
         /// Configures access to OData services and projects based on configuration.
         /// </summary>
@@ -59,7 +62,11 @@ namespace BcGov.Malt.Web.Services
             string projectResourceKey = project.Id + "-dynamics";
 
             // add authorization HttpClient 
-            services.AddHttpClient(projectResourceKey + "-authorization", configure => configure.BaseAddress = projectResource.AuthorizationUri)
+            services.AddHttpClient(projectResourceKey + "-authorization", configure =>
+                {
+                    configure.BaseAddress = projectResource.AuthorizationUri;
+                    configure.Timeout = DefaultTimeoutTimeout;
+                })
                 ;
 
             // add odata HttpClient 
@@ -69,6 +76,7 @@ namespace BcGov.Malt.Web.Services
             services.AddHttpClient(projectResourceKey, configure =>
                 {
                     configure.BaseAddress = projectResource.BaseAddress;
+                    configure.Timeout = DefaultTimeoutTimeout;
 
                     // use the API Gateway if required
                     if (projectResource.BaseAddress.Host != projectResource.Resource.Host)
