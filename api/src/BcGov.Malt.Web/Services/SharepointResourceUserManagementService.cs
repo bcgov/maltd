@@ -266,10 +266,10 @@ namespace BcGov.Malt.Web.Services
             // be sure to enable HTTPS decryption
             ////handler.Proxy = new WebProxy(new Uri("http://localhost:8888"));
 
-            // TODO: how can we use HttpClientFactory?
             HttpClient httpClient = new HttpClient(handler)
             {
                 BaseAddress = ProjectResource.BaseAddress,
+                Timeout = TimeSpan.FromMilliseconds(15000)
             };
 
             // use the API Gateway if required
@@ -290,8 +290,6 @@ namespace BcGov.Malt.Web.Services
             string samlToken = await _samlAuthenticator.GetStsSamlTokenAsync(relyingPartyIdentifier, username, password, authorizationUrl);
 
             await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, handler.CookieContainer);
-
-            httpClient.Timeout = TimeSpan.FromSeconds(30); // data timeout
 
             return httpClient;
         }
