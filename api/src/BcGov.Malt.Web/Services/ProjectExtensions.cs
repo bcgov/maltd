@@ -11,7 +11,8 @@ namespace BcGov.Malt.Web.Services
 {
     public static class ProjectExtensions
     {
-        private static readonly TimeSpan DefaultTimeoutTimeout = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan DefaultHttpClientDataTimeout = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan DefaultHttpClientAuthTimeout = TimeSpan.FromSeconds(15);
 
         /// <summary>
         /// Configures access to OData services and projects based on configuration.
@@ -65,7 +66,7 @@ namespace BcGov.Malt.Web.Services
             services.AddHttpClient(projectResourceKey + "-authorization", configure =>
                 {
                     configure.BaseAddress = projectResource.AuthorizationUri;
-                    configure.Timeout = DefaultTimeoutTimeout;
+                    configure.Timeout = DefaultHttpClientAuthTimeout;
                 })
                 ;
 
@@ -76,7 +77,7 @@ namespace BcGov.Malt.Web.Services
             services.AddHttpClient(projectResourceKey, configure =>
                 {
                     configure.BaseAddress = projectResource.BaseAddress;
-                    configure.Timeout = DefaultTimeoutTimeout;
+                    configure.Timeout = DefaultHttpClientDataTimeout;
 
                     // use the API Gateway if required
                     if (projectResource.BaseAddress.Host != projectResource.Resource.Host)

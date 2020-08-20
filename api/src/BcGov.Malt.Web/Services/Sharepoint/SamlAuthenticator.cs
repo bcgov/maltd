@@ -24,6 +24,9 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
     public class SamlAuthenticator : ISamlAuthenticator
     {
+        private static readonly TimeSpan DefaultHttpClientDataTimeout = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan DefaultHttpClientAuthTimeout = TimeSpan.FromSeconds(15);
+
         private readonly ITokenCache<SamlTokenParameters, string> _tokenCache;
         private readonly ILogger<SamlAuthenticator> _logger;
 
@@ -68,7 +71,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             using var content = new StringContent(samlSoapRequest, Encoding.UTF8, "application/soap+xml");
 
             using var client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(15);
+            client.Timeout = DefaultHttpClientAuthTimeout;
             var responseMessage = await client.PostAsync(stsUrl, content);
 
             // A valid response needs to be a SOAP element, Content Type = application/soap+xml
@@ -174,7 +177,14 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
             using var content = new FormUrlEncodedContent(data);
 
+            // save the timeout so we can restore after our request
+            var previousTimeout = client.Timeout;
+            client.Timeout = DefaultHttpClientAuthTimeout;
+
             var httpPostResponse = await client.PostAsync(trustUri, content);
+
+            // restore the timeout
+            client.Timeout = previousTimeout;
 
             // the response could be 302 as well
             if (!httpPostResponse.IsSuccessStatusCode && httpPostResponse.StatusCode != HttpStatusCode.Found)
