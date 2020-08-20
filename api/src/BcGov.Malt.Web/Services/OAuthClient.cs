@@ -65,7 +65,7 @@ namespace BcGov.Malt.Web.Services
 
             using var stream = await response.Content.ReadAsStreamAsync();
 
-            var token = await JsonSerializer.DeserializeAsync<Token>(stream);
+            var token = await JsonSerializer.DeserializeAsync<Token>(stream, cancellationToken: cancellationToken);
             return token;
         }
 

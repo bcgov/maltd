@@ -20,7 +20,7 @@ namespace BcGov.Malt.Web.Services
             IODataClientFactory factory,
             IUserSearchService userSearchService,
             ILogger<DynamicsResourceUserManagementService> logger)
-            : base(project, projectResource)
+            : base(project, projectResource, logger)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
@@ -36,6 +36,8 @@ namespace BcGov.Malt.Web.Services
 
             IODataClient client = GetODataClient();
             string logon = IDIR.Logon(username);
+
+            _logger.LogDebug("Adding {Username} to project", username);
 
             SystemUser entry = await GetSystemUserByLogon(client, logon);
 
@@ -85,6 +87,7 @@ namespace BcGov.Malt.Web.Services
             IODataClient client = GetODataClient();
             string logon = IDIR.Logon(username);
 
+            _logger.LogDebug("Removing {Username} from project", username);
             SystemUser entry = await GetSystemUserByLogon(client, logon);
 
             if (entry == null)
@@ -115,6 +118,7 @@ namespace BcGov.Malt.Web.Services
 
             string logon = IDIR.Logon(username);
 
+            _logger.LogDebug("Checking {Username} has access to project", username);
             var entry = await GetSystemUserByLogon(client, logon);
 
             return entry?.IsDisabled != null && !entry.IsDisabled.Value;
@@ -138,23 +142,32 @@ namespace BcGov.Malt.Web.Services
 
         private async Task<SystemUser> GetSystemUserByLogon(IODataClient client, string logon)
         {
-            _logger.LogDebug("Getting SystemUser with {DomainName} from Dynamics", logon);
+            _logger.LogDebug("Getting Dynamics SystemUser with {DomainName}", logon);
 
-            var systemUser = await client
-                .For<SystemUser>()
-                .Filter(_ => _.DomainName == logon)
-                .FindEntryAsync();
-
-            if (systemUser != null)
+            try
             {
-                _logger.LogDebug("Found SystemUser {@SystemUser}", new { systemUser.DomainName, systemUser.IsDisabled, systemUser.SystemUserId });
-            }
-            else
-            {
-                _logger.LogDebug("SystemUser with {DomainName} not found", logon);
-            }
+                SystemUser systemUser = await client
+                    .For<SystemUser>()
+                    .Filter(_ => _.DomainName == logon)
+                    .FindEntryAsync();
 
-            return systemUser;
+                if (systemUser != null)
+                {
+                    _logger.LogDebug("Found Dynamics SystemUser {@SystemUser}", new { systemUser.DomainName, systemUser.IsDisabled, systemUser.SystemUserId });
+                }
+                else
+                {
+                    _logger.LogDebug("Dynamics SystemUser with {DomainName} not found", logon);
+                }
+
+                return systemUser;
+            }
+            catch (Exception exception)
+            {
+                // we have seen TaskCanceledException being thrown in testing
+                _logger.LogWarning(exception, "An error was thrown looking up dynamics SystemUser with {DomainName}", logon);
+                throw; // return null?
+            }
         }
 
         private async Task<BusinessUnit> GetRootBusinessUnit(IODataClient client)

@@ -70,7 +70,7 @@ namespace BcGov.Malt.Web.Models.Dynamics
                 {
                     if (buffer.Length != 0)
                     {
-                        buffer.Append(" ");
+                        buffer.Append(' ');
                     }
 
                     buffer.Append("(disabled)");
