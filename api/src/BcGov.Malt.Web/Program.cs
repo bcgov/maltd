@@ -122,7 +122,6 @@ namespace BcGov.Malt.Web
             }
             else
             {
-                loggerConfiguration.WriteTo.Console(formatter: new RenderedCompactJsonFormatter());
                 var splunkUrl = hostingContext.Configuration.GetValue("SPLUNK_URL", string.Empty);
                 var splunkToken = hostingContext.Configuration.GetValue("SPLUNK_TOKEN", string.Empty);
                 if (string.IsNullOrWhiteSpace(splunkToken) || string.IsNullOrWhiteSpace(splunkUrl))
@@ -142,7 +141,6 @@ namespace BcGov.Malt.Web
                             renderTemplate: false);
                 }
             }
-
         }
 
         private static async Task GetAccessTokensAsync(ILogger logger, IServiceProvider services)
