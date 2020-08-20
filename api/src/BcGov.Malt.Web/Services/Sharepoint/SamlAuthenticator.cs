@@ -175,7 +175,8 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
             var httpPostResponse = await client.PostAsync(trustUri, content);
 
-            if (!httpPostResponse.IsSuccessStatusCode)
+            // the response could be 302 as well
+            if (!httpPostResponse.IsSuccessStatusCode && httpPostResponse.StatusCode != HttpStatusCode.Found)
             {
                 _logger.LogError("POST request to {TrustUri} was not successful, HttpStatusCode={HttpStatusCode}",
                     trustUri,
