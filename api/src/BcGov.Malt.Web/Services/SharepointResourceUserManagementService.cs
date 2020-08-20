@@ -68,7 +68,7 @@ namespace BcGov.Malt.Web.Services
             IUserSearchService userSearchService,
             ISamlAuthenticator samlAuthenticator,
             ILogger<SharePointResourceUserManagementService> logger)
-            : base(project, projectResource)
+            : base(project, projectResource, logger)
         {
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
             _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
