@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
@@ -13,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Exceptions;
-using Serilog.Formatting.Compact;
 
 // this should go in AssemblyInfo.cs
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BcGov.Malt.Web.Tests")]
@@ -30,7 +28,7 @@ namespace BcGov.Malt.Web
         /// </summary>
         public static async Task<int> Main(string[] args)
         {
-            ILogger logger = GetProgramLogger();
+            ILogger logger = GetProgramLogger(args);
 
             try
             {
@@ -63,39 +61,45 @@ namespace BcGov.Malt.Web
         {
             var builder = Host.CreateDefaultBuilder(args)
                 .UseSerilog(ConfigureSerilogLogging)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    // Added before AddUserSecrets to let user secrets override environment variables.
-                    config.AddEnvironmentVariables();
-
-                    var env = hostingContext.HostingEnvironment;
-                    if (env.IsDevelopment())
-                    {
-                        var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-                        config.AddUserSecrets(appAssembly, optional: true);
-                    }
-                });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 
                 return builder;
         }
 
-        private static ILogger GetProgramLogger()
+        private static IConfiguration GetProgramConfiguration(string[] args)
         {
-            var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json");
+            string environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (string.IsNullOrEmpty(environmentName))
+            {
+                environmentName = Environments.Production;
+            }
 
-            // Added before AddUserSecrets to let user secrets override environment variables.
+            // mirror what Host.CreateDefaultBuilder(args) does
+            var configurationBuilder = new ConfigurationBuilder();
+
+            configurationBuilder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true);
+
+            if (environmentName.Equals(Environments.Development, StringComparison.OrdinalIgnoreCase))
+            {
+                // load using this assembly's user secret id 
+                configurationBuilder.AddUserSecrets(typeof(Program).Assembly, optional: true);
+            }
+
             configurationBuilder.AddEnvironmentVariables();
 
-#if DEBUG
-            // use appsettings.Development.json and user secrets on debug builds
-            configurationBuilder.AddJsonFile("appsettings.Development.json", optional: true);
-            configurationBuilder.AddUserSecrets(typeof(Program).Assembly, optional: true);
-#endif
+            if (args != null && args.Length != 0)
+            {
+                configurationBuilder.AddCommandLine(args);
+            }
 
             var configuration = configurationBuilder.Build();
+            return configuration;
+        }
 
+        private static ILogger GetProgramLogger(string[] args)
+        {
+            var configuration = GetProgramConfiguration(args);
             var logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
@@ -116,11 +120,7 @@ namespace BcGov.Malt.Web
                 .Enrich.WithExceptionDetails()
                 ;
 
-            if (hostingContext.HostingEnvironment.IsDevelopment())
-            {
-                loggerConfiguration.WriteTo.Console();
-            }
-            else
+            if (!hostingContext.HostingEnvironment.IsDevelopment())
             {
                 var splunkUrl = hostingContext.Configuration.GetValue("SPLUNK_URL", string.Empty);
                 var splunkToken = hostingContext.Configuration.GetValue("SPLUNK_TOKEN", string.Empty);
@@ -145,7 +145,6 @@ namespace BcGov.Malt.Web
 
         private static async Task GetAccessTokensAsync(ILogger logger, IServiceProvider services)
         {
-
             try
             {
                 logger.Information("Getting access tokens for all resources");

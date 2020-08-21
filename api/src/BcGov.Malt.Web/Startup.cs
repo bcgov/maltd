@@ -277,7 +277,6 @@ namespace BcGov.Malt.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
             }
 
             app.UseHttpsRedirection();
@@ -287,15 +286,20 @@ namespace BcGov.Malt.Web
             // Apply CORS policies to all endpoints
             app.UseCors();
 
+#if (!DEBUG)
             app.UseAuthentication();
             app.UseAuthorization();
-
+#endif
             app.UseHealthChecksUI();
 
             app.UseEndpoints(endpoints =>
             {
                 // disable the authentication if debugging locally 
-                endpoints.MapControllers().RequireAuthorization();
+                endpoints.MapControllers()
+#if (!DEBUG)
+                    .RequireAuthorization()
+#endif
+                    ;
 
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions
                     {

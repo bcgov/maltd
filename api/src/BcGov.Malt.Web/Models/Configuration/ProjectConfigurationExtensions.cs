@@ -6,18 +6,26 @@ namespace BcGov.Malt.Web.Models.Configuration
 {
     public static class ProjectConfigurationExtensions
     {
+        private static bool _apiGatewayHostConfigurationLogged = false;
+
         public static IEnumerable<ProjectConfiguration> GetProjectConfigurations(this IConfiguration configuration, Serilog.ILogger logger)
         {
             // it is ok if this is null or empty if we do not want to use the API Gateway
             string apiGatewayHost = configuration["ApiGatewayHost"];
 
-            if (string.IsNullOrEmpty(apiGatewayHost))
+            // this function is called from multiple places, avoid having these logs written multiple times at startup
+            if (!_apiGatewayHostConfigurationLogged)
             {
-                logger.Information("ApiGatewayHost is not configured, API Gateway will not be used.");
-            }
-            else
-            {
-                logger.Information("ApiGatewayHost is configured as {ApiGatewayHost}, API Gateway will be used on those resources with a ApiGatewayPolicy.", apiGatewayHost);
+                if (string.IsNullOrEmpty(apiGatewayHost))
+                {
+                    logger.Information("ApiGatewayHost is not configured, API Gateway will not be used.");
+                }
+                else
+                {
+                    logger.Information("ApiGatewayHost is configured as {ApiGatewayHost}, API Gateway will be used on those resources with a ApiGatewayPolicy.", apiGatewayHost);
+                }
+
+                _apiGatewayHostConfigurationLogged = true;
             }
 
             HashSet<string> uniqueProjectNames = new HashSet<string>();

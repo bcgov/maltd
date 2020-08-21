@@ -270,6 +270,7 @@ namespace BcGov.Malt.Web.Services
             HttpClient httpClient = new HttpClient(handler)
             {
                 BaseAddress = ProjectResource.BaseAddress,
+                Timeout = TimeSpan.FromSeconds(30)
             };
 
             // use the API Gateway if required
@@ -291,7 +292,6 @@ namespace BcGov.Malt.Web.Services
 
             await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, handler.CookieContainer);
 
-            httpClient.Timeout = TimeSpan.FromSeconds(30); // data timeout
 
             return httpClient;
         }

@@ -120,9 +120,16 @@ namespace BcGov.Malt.Web.Services
             {
                 await aggregateTask;
             }
-            catch (Exception exception)
+            catch (AggregateException exception)
             {
-                _logger.LogWarning(exception, "Error on aggregate request");
+                // in testing, this appear to always be a time out, ie TaskCancelledException
+                int innerExceptionCount = exception.InnerExceptions.Count;
+                for (var i = 0; i < exception.InnerExceptions.Count; i++)
+                {
+                    var innerException = exception.InnerExceptions[i];
+                    _logger.LogWarning(innerException, "Error on aggregate request, inner exception {ExceptionIndex} of {InnerExceptionsCount}",
+                        i+1, innerExceptionCount);
+                }
             }
 
             List<Project> projects = new List<Project>();
