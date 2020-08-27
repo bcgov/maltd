@@ -22,6 +22,7 @@ namespace BcGov.Malt.Web.Services
             HttpClient httpClient = _httpClientFactory.CreateClient(name);
 
             ODataClientSettings settings = new ODataClientSettings(httpClient);
+            settings.UseAbsoluteReferenceUris = false;
 
             ODataClient oDataClient = new ODataClient(settings);
 
