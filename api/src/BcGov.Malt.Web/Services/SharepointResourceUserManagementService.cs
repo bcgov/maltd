@@ -270,7 +270,11 @@ namespace BcGov.Malt.Web.Services
 
             HttpClient httpClient = new HttpClient(handler)
             {
+<<<<<<< HEAD
                 BaseAddress = ProjectResource.BaseAddress
+=======
+                BaseAddress = ProjectResource.Resource
+>>>>>>> master
             };
 
             if (!string.IsNullOrEmpty(ProjectResource.ApiGatewayHost) && !string.IsNullOrEmpty(ProjectResource.ApiGatewayPolicy))

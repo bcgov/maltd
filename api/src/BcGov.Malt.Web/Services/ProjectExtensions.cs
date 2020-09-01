@@ -69,7 +69,7 @@ namespace BcGov.Malt.Web.Services
             
             var builder = services.AddHttpClient(projectResourceKey, configure =>
                 {
-                    configure.BaseAddress = projectResource.BaseAddress;
+                    configure.BaseAddress = projectResource.Resource;
                 })
                 .AddHttpMessageHandler(serviceProvider =>
                 {
