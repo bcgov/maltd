@@ -11,6 +11,7 @@ using BcGov.Malt.Web.Infrastructure;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Models.SharePoint;
 using BcGov.Malt.Web.Services.Sharepoint;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Refit;
 
@@ -255,30 +256,23 @@ namespace BcGov.Malt.Web.Services
 
         private async Task<HttpClient> GetHttpClientAsync()
         {
+            var cookieContainer = new CookieContainer();
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            HttpClientHandler handler = new HttpClientHandler
+            HttpMessageHandler handler = new HttpClientHandler
             {
                 UseCookies = true,
                 AllowAutoRedirect = false,
-                CookieContainer = new CookieContainer()
-            };
-#pragma warning restore CA2000 // Dispose objects before losing scope
-
-            // uncomment this if you need to debug the requests to SharePoint using Fiddler
-            // be sure to enable HTTPS decryption
-            ////handler.Proxy = new WebProxy(new Uri("http://localhost:8888"));
-
-            HttpClient httpClient = new HttpClient(handler)
-            {
-                BaseAddress = ProjectResource.Resource
+                CookieContainer = cookieContainer
             };
 
             if (!string.IsNullOrEmpty(ProjectResource.ApiGatewayHost) && !string.IsNullOrEmpty(ProjectResource.ApiGatewayPolicy))
             {
-                // TODO: use ApiGatewayHandler
-                _logger.LogError("ApiGateway for SharePoint not supported yet");
+                handler = new ApiGatewayHandler(handler, ProjectResource.ApiGatewayHost, ProjectResource.ApiGatewayPolicy);
             }
-            
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
+            HttpClient httpClient = new HttpClient(handler);
+            httpClient.BaseAddress = ProjectResource.Resource;
             httpClient.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json;odata=verbose"));
 
             // simplify the parameters
@@ -290,7 +284,7 @@ namespace BcGov.Malt.Web.Services
 
             string samlToken = await _samlAuthenticator.GetStsSamlTokenAsync(relyingPartyIdentifier, username, password, authorizationUrl);
 
-            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, handler.CookieContainer);
+            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, cookieContainer);
 
             return httpClient;
         }
