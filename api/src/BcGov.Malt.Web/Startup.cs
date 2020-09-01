@@ -277,7 +277,6 @@ namespace BcGov.Malt.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
             }
 
             app.UseHttpsRedirection();
@@ -295,7 +294,12 @@ namespace BcGov.Malt.Web
             app.UseEndpoints(endpoints =>
             {
                 // disable the authentication if debugging locally 
-                endpoints.MapControllers().RequireAuthorization();
+                var endpointConventionBuilder = endpoints.MapControllers();
+                if (!env.IsDevelopment())
+                {
+                    // make it easier for testing to only require authorization in non development
+                    endpointConventionBuilder.RequireAuthorization();
+                }
 
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions
                     {
@@ -308,13 +312,15 @@ namespace BcGov.Malt.Web
                 endpoints.MapHealthChecksUI();
             });
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            if (!env.IsProduction())
             {
-                // name here shows up in the 'Select a definition' drop down
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dynamics Account Management API V1");
-            });
-
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    // name here shows up in the 'Select a definition' drop down
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dynamics Account Management API V1");
+                });
+            }
         }
 
         internal class ConsumesAndProductOnlyJSonContentTypeFilter : IOperationFilter

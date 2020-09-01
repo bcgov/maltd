@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using BcGov.Malt.Web.Infrastructure;
 using BcGov.Malt.Web.Models.Authorization;
 using BcGov.Malt.Web.Models.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -66,15 +67,9 @@ namespace BcGov.Malt.Web.Services
             // note: I do not like this IoC anti-pattern where we are using the service locator directly, however,
             //       there are many named dependencies. There may be an opportunity to address this in the future
             
-            services.AddHttpClient(projectResourceKey, configure =>
+            var builder = services.AddHttpClient(projectResourceKey, configure =>
                 {
                     configure.BaseAddress = projectResource.BaseAddress;
-
-                    // use the API Gateway if required
-                    if (projectResource.BaseAddress.Host != projectResource.Resource.Host)
-                    {
-                        configure.DefaultRequestHeaders.Add("RouteToHost", projectResource.Resource.Host);
-                    }
                 })
                 .AddHttpMessageHandler(serviceProvider =>
                 {
@@ -88,6 +83,15 @@ namespace BcGov.Malt.Web.Services
                     return handler;
                 });
 
+            var apiGatewayHost = projectResource.ApiGatewayHost;
+            var apiGatewayPolicy = projectResource.ApiGatewayPolicy;
+
+            if (!string.IsNullOrEmpty(apiGatewayHost) && !string.IsNullOrEmpty(apiGatewayPolicy))
+            {
+                // add the ApiGatewayHandler
+                logger.Information("Using {@ApiGateway} for {Resource}", new { Host = apiGatewayHost, Policy = apiGatewayPolicy }, projectResource.Resource);
+                builder.AddHttpMessageHandler(() => new ApiGatewayHandler(apiGatewayHost, apiGatewayPolicy));
+            }
         }
         
         private static OAuthOptions CreateOAuthOptions(ProjectResource projectResource)
