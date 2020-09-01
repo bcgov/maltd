@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Features.Users;
@@ -35,6 +36,7 @@ namespace BcGov.Malt.Web.Controllers
 
         /// <summary>Searches for a user.</summary>
         /// <param name="query">The username to search for.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The found user or 400, 401 or 404 status codes.</returns>
         [HttpGet]
         [SwaggerOperation(OperationId = "UserSearch")]
@@ -42,7 +44,7 @@ namespace BcGov.Malt.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<User>> SearchAsync([FromQuery(Name = "q")] [BindRequired] string query)
+        public async Task<ActionResult<User>> SearchAsync([FromQuery(Name = "q")] [BindRequired] string query, CancellationToken cancellationToken)
         {
             // TODO: user model validation
 
@@ -54,7 +56,7 @@ namespace BcGov.Malt.Web.Controllers
 
             _logger.LogDebug("Searching for user using {Query}", query);
 
-            var user = await _mediator.Send(new Search.Request(query));
+            var user = await _mediator.Send(new Search.Request(query), cancellationToken);
 
             if (user == null)
             {
@@ -67,6 +69,7 @@ namespace BcGov.Malt.Web.Controllers
 
         /// <summary>Gets a user</summary>
         /// <param name="username">The username to get</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>The user details or 400, 401 or 404 status codes</returns>
         [HttpGet]
         [Route("{username}")]
@@ -75,7 +78,7 @@ namespace BcGov.Malt.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DetailedUser>> LookupAsync(string username)
+        public async Task<ActionResult<DetailedUser>> LookupAsync(string username, CancellationToken cancellationToken)
         {
             // TODO: user model validation
 
@@ -87,7 +90,7 @@ namespace BcGov.Malt.Web.Controllers
 
             _logger.LogDebug("Looking up user {Username}", username);
 
-            DetailedUser result = await _mediator.Send(new Lookup.Request(username));
+            DetailedUser result = await _mediator.Send(new Lookup.Request(username), cancellationToken);
 
             return result;
         }

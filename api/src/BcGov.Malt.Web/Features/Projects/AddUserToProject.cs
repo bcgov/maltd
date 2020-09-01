@@ -25,7 +25,7 @@ namespace BcGov.Malt.Web.Features.Projects
             public string Username { get; }
         }
 
-        public class Handler : IRequestHandler<Request, ProjectAccess>
+        public class Handler : RequestHandlerBase<Request, ProjectAccess>
         {
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
@@ -40,7 +40,7 @@ namespace BcGov.Malt.Web.Features.Projects
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
-            public async Task<ProjectAccess> Handle(Request request, CancellationToken cancellationToken)
+            public override async Task<ProjectAccess> Handle(Request request, CancellationToken cancellationToken)
             {
                 var project = _projects.SingleOrDefault(_ => _.Id == request.ProjectId);
 
@@ -57,7 +57,9 @@ namespace BcGov.Malt.Web.Features.Projects
                     throw new UserNotFoundException(request.Username);
                 }
 
-                var access = await _userManagementService.AddUserToProjectAsync(user, project);
+                using CancellationTokenSource cts = CreateCancellationTokenSource(cancellationToken);
+
+                var access = await _userManagementService.AddUserToProjectAsync(user, project, cts.Token);
                 
                 return new ProjectAccess
                 {

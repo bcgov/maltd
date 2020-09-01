@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
 using Microsoft.Extensions.Logging;
@@ -34,9 +35,9 @@ namespace BcGov.Malt.Web.Services
 
         protected ProjectResource ProjectResource { get; }
 
-        public abstract Task<string> AddUserAsync(string username);
-        public abstract Task<bool> UserHasAccessAsync(string username);
-        public abstract Task<string> RemoveUserAsync(string username);
+        public abstract Task<string> AddUserAsync(string username, CancellationToken cancellationToken);
+        public abstract Task<bool> UserHasAccessAsync(string username, CancellationToken cancellationToken);
+        public abstract Task<string> RemoveUserAsync(string username, CancellationToken cancellationToken);
         
         public void Dispose()
         {

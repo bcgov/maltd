@@ -22,7 +22,7 @@ namespace BcGov.Malt.Web
     /// <summary>
     /// The Program class represents the main entry point to the API.
     /// </summary>
-    public class Program
+    public static class Program
     {
         /// <summary>
         /// The main entry point.
@@ -89,7 +89,7 @@ namespace BcGov.Malt.Web
                 return string.Equals(environmentName, Environments.Development, StringComparison.OrdinalIgnoreCase);
             }
 
-            string GetEnvironmentName()
+            static string GetEnvironmentName()
             {
                 string name = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                 if (string.IsNullOrEmpty(name))
