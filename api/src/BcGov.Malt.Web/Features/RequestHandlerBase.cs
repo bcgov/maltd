@@ -14,7 +14,10 @@ namespace BcGov.Malt.Web.Features
 
         protected CancellationTokenSource CreateCancellationTokenSource(CancellationToken cancellationToken)
         {
+#pragma warning disable CA2000 // Dispose objects before losing scope
             CancellationTokenSource timeout = new CancellationTokenSource(TimeSpan.FromSeconds(29));
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
             return CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
         }
     }

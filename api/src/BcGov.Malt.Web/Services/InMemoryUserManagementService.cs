@@ -22,6 +22,7 @@ namespace BcGov.Malt.Web.Services
         /// </summary>
         /// <param name="user">The user to change</param>
         /// <param name="project">The project to add the user to</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>Returns <c>true</c> if the user was added to the project, otherwise <c>false</c></returns>
         public Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)
         {

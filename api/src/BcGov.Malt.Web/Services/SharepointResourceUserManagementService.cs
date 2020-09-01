@@ -267,6 +267,11 @@ namespace BcGov.Malt.Web.Services
 
             if (!string.IsNullOrEmpty(ProjectResource.ApiGatewayHost) && !string.IsNullOrEmpty(ProjectResource.ApiGatewayPolicy))
             {
+                // since this is executed on every access to sharepoint, only log at debug level
+                _logger.LogDebug("Using {@ApiGateway} for {Resource}", 
+                    new { Host = ProjectResource.ApiGatewayHost, Policy = ProjectResource.ApiGatewayPolicy }, 
+                    ProjectResource.Resource);
+
                 handler = new ApiGatewayHandler(handler, ProjectResource.ApiGatewayHost, ProjectResource.ApiGatewayPolicy);
             }
 #pragma warning restore CA2000 // Dispose objects before losing scope
