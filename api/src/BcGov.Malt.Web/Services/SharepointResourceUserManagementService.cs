@@ -268,8 +268,7 @@ namespace BcGov.Malt.Web.Services
 
             HttpClient httpClient = new HttpClient(handler)
             {
-                BaseAddress = ProjectResource.BaseAddress,
-                Timeout = TimeSpan.FromMilliseconds(15000)
+                BaseAddress = ProjectResource.Resource
             };
 
             // use the API Gateway if required

@@ -89,7 +89,7 @@ namespace BcGov.Malt.Web.Services
                             "Request add user {@User} to project {Project} for resource {Resource} failed ({RequestId}",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
-                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress },
+                            new { request.Resource.Type, request.Resource.Resource },
                             requestId);
                     }
                     else
@@ -171,7 +171,7 @@ namespace BcGov.Malt.Web.Services
                         _logger.LogError(task.Exception, "Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
-                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress },
+                            new { request.Resource.Type, request.Resource.Resource },
                             requestId);
                     }
                     else
@@ -240,7 +240,7 @@ namespace BcGov.Malt.Web.Services
                             "Request to remove user {@User} from project {Project} for resource {Resource} failed ({RequestId}",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
-                            new { request.Resource.Type, request.Resource.Resource, request.Resource.BaseAddress },
+                            new { request.Resource.Type, request.Resource.Resource },
                             requestId);
                     }
                     else

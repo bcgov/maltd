@@ -19,12 +19,8 @@ namespace BcGov.Malt.Web.Models.Configuration
         /// </summary>
         public Uri Resource { get; set; }
 
-        /// <summary>
-        /// The resource the base address. This will be different than the
-        /// <see cref="Resource"/> if the API Gateway is used. If no API
-        /// gateway, then it will be the same as the <see cref="Resource"/>.
-        /// </summary>
-        public Uri BaseAddress { get; set; }
+        [Obsolete("Use Resource")]
+        public Uri BaseAddress => Resource;
 
         public string Username { get; set; }
         public string Password { get; set; }
