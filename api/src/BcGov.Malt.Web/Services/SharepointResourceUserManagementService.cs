@@ -5,7 +5,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
+using BcGov.Malt.Web.Infrastructure;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Models.SharePoint;
 using BcGov.Malt.Web.Services.Sharepoint;
@@ -17,35 +19,35 @@ namespace BcGov.Malt.Web.Services
     public interface ISharePointClient
     {
         [Get("/_api/Web?$select=Title,ServerRelativeUrl")]
-        public Task<GetSharePointWebVerboseResponse> GetWebAsync();
+        public Task<GetSharePointWebVerboseResponse> GetWebAsync(CancellationToken cancellationToken);
 
         [Get("/_api/Web/SiteGroups?$select=Id,Title")]
-        public Task<GetSiteGroupsVerboseResponse> GetSiteGroupsAsync();
+        public Task<GetSiteGroupsVerboseResponse> GetSiteGroupsAsync(CancellationToken cancellationToken);
 
         [Get("/_api/Web/SiteGroups/GetById({siteGroupId})/Users")]
         public Task<string> GetSiteGroupUsersAsync(int siteGroupId);
 
         [Get("/_api/Web/SiteGroups?$filter=Title%20eq%20'{title}'")]
-        public Task<GetSiteGroupsVerboseResponse> GetSiteGroupsByTitleAsync(string title);
+        public Task<GetSiteGroupsVerboseResponse> GetSiteGroupsByTitleAsync(string title, CancellationToken cancellationToken);
 
         [Get("/_api/Web/GetUserById({userId})/Groups")]
-        public Task<GetSiteGroupsVerboseResponse> GetUserGroupsAsync(int userId);
+        public Task<GetSiteGroupsVerboseResponse> GetUserGroupsAsync(int userId, CancellationToken cancellationToken);
 
         /////// <remarks>Current version of Refit always encodes the loginName making this not working</remarks>>
         ////[Get("/_api/Web/SiteGroups/GetById({siteGroupId})/Users?$filter=LoginName eq '{loginName}'")]
         ////public Task<GetSiteUsersVerboseResponse> GetUserInGroupByLoginNameAsync(int siteGroupId, string loginName);
 
         [Get("/_api/Web/SiteGroups/GetById({siteGroupId})/Users")]
-        public Task<GetSiteUsersVerboseResponse> GetUsersInGroupAsync(int siteGroupId);
+        public Task<GetSiteUsersVerboseResponse> GetUsersInGroupAsync(int siteGroupId, CancellationToken cancellationToken);
 
         [Post("/_api/Web/SiteGroups({siteGroupId})/Users/RemoveById({userId})")]
-        public Task RemoveUserFromSiteGroupAsync(int siteGroupId, int userId);
+        public Task RemoveUserFromSiteGroupAsync(int siteGroupId, int userId, CancellationToken cancellationToken);
 
         [Post("/_api/ContextInfo")]
-        public Task<GetContextWebInformationVerboseResponse> GetContextWebInformationAsync();
+        public Task<GetContextWebInformationVerboseResponse> GetContextWebInformationAsync(CancellationToken cancellationToken);
 
         [Post("/_api/Web/SiteGroups({siteGroupId})/Users")]
-        public Task AddUserToGroupAsync(int siteGroupId, User user);
+        public Task AddUserToGroupAsync(int siteGroupId, User user, CancellationToken cancellationToken);
     }
 
     public class SharePointResourceUserManagementService : ResourceUserManagementService
@@ -75,7 +77,7 @@ namespace BcGov.Malt.Web.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override async Task<string> AddUserAsync(string username)
+        public override async Task<string> AddUserAsync(string username, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -90,9 +92,9 @@ namespace BcGov.Malt.Web.Services
                 return $"Unable to locate user's User Principal Name (UPN)";
             }
 
-            ISharePointClient restClient = await GetSharePointRestClientForUpdate();
+            ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken);
 
-            GetSharePointWebVerboseResponse web = await restClient.GetWebAsync();
+            GetSharePointWebVerboseResponse web = await restClient.GetWebAsync(cancellationToken);
 
             if (string.IsNullOrEmpty(web?.Data?.Title))
             {
@@ -103,7 +105,7 @@ namespace BcGov.Malt.Web.Services
             // we always add users to '<site-group> Members'
             var siteGroupTitle = web.Data.Title + " Members";
 
-            GetSiteGroupsVerboseResponse siteGroups = await restClient.GetSiteGroupsByTitleAsync(siteGroupTitle);
+            GetSiteGroupsVerboseResponse siteGroups = await restClient.GetSiteGroupsByTitleAsync(siteGroupTitle, cancellationToken);
 
             if (siteGroups.Data.Results.Count == 0)
             {
@@ -124,7 +126,7 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName });
+                await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName }, cancellationToken);
                 return string.Empty;
             }
             catch (ApiException e)
@@ -135,7 +137,7 @@ namespace BcGov.Malt.Web.Services
             }
         }
         
-        public override async Task<string> RemoveUserAsync(string username)
+        public override async Task<string> RemoveUserAsync(string username, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -155,16 +157,16 @@ namespace BcGov.Malt.Web.Services
             // format the SharePoint login name format
             string loginName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
-            ISharePointClient restClient = await GetSharePointRestClientForUpdate();
+            ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken);
 
-            var groups = await restClient.GetSiteGroupsAsync();
+            var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
             var siteGroups = groups.Data.Results;
 
             StringBuilder response = new StringBuilder();
 
             foreach (var siteGroup in siteGroups)
             {
-                var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id);
+                var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
 
                 var users = getUsersResponse.Data.Results.Where(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
@@ -174,12 +176,12 @@ namespace BcGov.Malt.Web.Services
 
                     try
                     {
-                        await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id);
+                        await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id, cancellationToken);
                     }
                     catch (ApiException e)
                     {
                         var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
-                        _logger.LogWarning(e, "Error removing user from Sharepoint group {@Error}", errorResponse);
+                        _logger.LogWarning(e, "Error removing user from SharePoint group {@Error}", errorResponse);
 
                         response.Append(response.Length != 0 ? ", " : "Error removing user from site group(s): ");
                         response.Append(siteGroup.Title);
@@ -190,7 +192,7 @@ namespace BcGov.Malt.Web.Services
             return response.ToString();
         }
 
-        public override async Task<bool> UserHasAccessAsync(string username)
+        public override async Task<bool> UserHasAccessAsync(string username, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -210,12 +212,12 @@ namespace BcGov.Malt.Web.Services
 
             ISharePointClient restClient = await GetSharePointRestClient();
 
-            var groups = await restClient.GetSiteGroupsAsync();
+            var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
             var siteGroups = groups.Data.Results;
 
             foreach (var siteGroup in siteGroups)
             {
-                var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id);
+                var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
                 var groupMember = getUsersResponse.Data.Results.Any(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
                 if (groupMember)
@@ -237,14 +239,14 @@ namespace BcGov.Malt.Web.Services
             return RestService.For<ISharePointClient>(httpClient, _refitSettings);
         }
 
-        private async Task<ISharePointClient> GetSharePointRestClientForUpdate()
+        private async Task<ISharePointClient> GetSharePointRestClientForUpdate(CancellationToken cancellationToken)
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
             var httpClient = await GetHttpClientAsync();
 #pragma warning restore CA2000 // Dispose objects before losing scope
             var restClient = RestService.For<ISharePointClient>(httpClient, _refitSettings);
 
-            var contextWebInformationResponse = await restClient.GetContextWebInformationAsync();
+            var contextWebInformationResponse = await restClient.GetContextWebInformationAsync(cancellationToken);
 
             httpClient.DefaultRequestHeaders.Add("X-RequestDigest", contextWebInformationResponse.Data.ContextWebInformation.FormDigestValue);
 
@@ -271,12 +273,12 @@ namespace BcGov.Malt.Web.Services
                 BaseAddress = ProjectResource.Resource
             };
 
-            // use the API Gateway if required
-            if (ProjectResource.BaseAddress.Host != ProjectResource.Resource.Host)
+            if (!string.IsNullOrEmpty(ProjectResource.ApiGatewayHost) && !string.IsNullOrEmpty(ProjectResource.ApiGatewayPolicy))
             {
-                httpClient.DefaultRequestHeaders.Add("RouteToHost", ProjectResource.Resource.Host);
+                // TODO: use ApiGatewayHandler
+                _logger.LogError("ApiGateway for SharePoint not supported yet");
             }
-
+            
             httpClient.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json;odata=verbose"));
 
             // simplify the parameters

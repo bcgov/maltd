@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using BcGov.Malt.Web.Models;
@@ -20,7 +21,9 @@ namespace BcGov.Malt.Web.Tests.Services
 
             InMemoryUserManagementService sut = new InMemoryUserManagementService();
 
-            var actual = await sut.AddUserToProjectAsync(user, project);
+            
+
+            var actual = await sut.AddUserToProjectAsync(user, project, CancellationToken.None);
 
             Assert.True(actual != null);
         }
@@ -35,7 +38,7 @@ namespace BcGov.Malt.Web.Tests.Services
 
             InMemoryUserManagementService sut = new InMemoryUserManagementService();
 
-            var actual = await sut.RemoveUserFromProjectAsync(user, project);
+            var actual = await sut.RemoveUserFromProjectAsync(user, project, CancellationToken.None);
 
             Assert.True(actual != null);
         }
@@ -50,23 +53,23 @@ namespace BcGov.Malt.Web.Tests.Services
 
             InMemoryUserManagementService sut = new InMemoryUserManagementService();
 
-            List<Project> projects = await sut.GetProjectsForUserAsync(user);
+            List<Project> projects = await sut.GetProjectsForUserAsync(user, CancellationToken.None);
             // user should not be in the generated project by default
             Assert.NotNull(projects);
             Assert.Empty(projects);
 
             // add the user to the project for the testing of removal
-            var actual = await sut.AddUserToProjectAsync(user, project);
+            var actual = await sut.AddUserToProjectAsync(user, project, CancellationToken.None);
             Assert.True(actual != null);
 
-            projects = await sut.GetProjectsForUserAsync(user);
+            projects = await sut.GetProjectsForUserAsync(user, CancellationToken.None);
             // after adding the user should be added to the project
             Assert.NotNull(projects);
             Assert.Single(projects);
             Assert.Equal(project.Id, projects[0].Id);
 
             // act
-            actual = await sut.RemoveUserFromProjectAsync(user, project);
+            actual = await sut.RemoveUserFromProjectAsync(user, project, CancellationToken.None);
 
             Assert.True(actual != null);
         }

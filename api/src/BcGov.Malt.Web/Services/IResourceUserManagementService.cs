@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace BcGov.Malt.Web.Services
 {
@@ -10,17 +11,16 @@ namespace BcGov.Malt.Web.Services
         /// <summary>
         /// Adds the specified user.
         /// </summary>
-        Task<string> AddUserAsync(string username);
+        Task<string> AddUserAsync(string username, CancellationToken cancellationToken);
 
         /// <summary>
         /// Removes the specified user.
         /// </summary>
-        Task<string> RemoveUserAsync(string username);
+        Task<string> RemoveUserAsync(string username, CancellationToken cancellationToken);
 
         /// <summary>
         /// Determines whether the specified user has access.
         /// </summary>
-        /// <param name="username">The user.</param>
-        Task<bool> UserHasAccessAsync(string username);
+        Task<bool> UserHasAccessAsync(string username, CancellationToken cancellationToken);
     }
 }

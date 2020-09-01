@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Features.Projects;
 using BcGov.Malt.Web.Models;
@@ -37,11 +38,11 @@ namespace BcGov.Malt.Web.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<ProjectDefinition>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ProjectDefinition>>> GetAsync()
+        public async Task<ActionResult<List<ProjectDefinition>>> GetAsync(CancellationToken cancellationToken)
         {
             _logger.LogDebug("Getting list of available projects");
 
-            var projects = await _mediator.Send(new ListProjects.Request());
+            var projects = await _mediator.Send(new ListProjects.Request(), cancellationToken);
 
             return Ok(projects.Select(_ => new ProjectDefinition(_.Id, _.Name)));
         }
@@ -49,6 +50,7 @@ namespace BcGov.Malt.Web.Controllers
         /// <summary>Adds a user to a project.</summary>
         /// <param name="username">The username of the user</param>
         /// <param name="project">The project identifier.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("{project}/users/{username}")]
@@ -56,7 +58,7 @@ namespace BcGov.Malt.Web.Controllers
         [ProducesResponseType(typeof(ProjectAccess), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> AddUserToProjectAsync(string project, string username)
+        public async Task<ActionResult> AddUserToProjectAsync(string project, string username, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(project))
             {
@@ -74,7 +76,7 @@ namespace BcGov.Malt.Web.Controllers
 
             try
             {
-                var access = await _mediator.Send(new AddUserToProject.Request(project, username));
+                var access = await _mediator.Send(new AddUserToProject.Request(project, username), cancellationToken);
 
                 return Ok(access);
             }
@@ -94,6 +96,7 @@ namespace BcGov.Malt.Web.Controllers
         /// <summary>Removes a user from a project.</summary>
         /// <param name="username">The username of the user.</param>
         /// <param name="project">The project identifier.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpDelete]
         [Route("{project}/users/{username}")]
@@ -101,7 +104,7 @@ namespace BcGov.Malt.Web.Controllers
         [ProducesResponseType(typeof(ProjectAccess), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> RemoveUserFromProjectAsync(string project, string username)
+        public async Task<ActionResult> RemoveUserFromProjectAsync(string project, string username, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(project))
             {
@@ -119,7 +122,7 @@ namespace BcGov.Malt.Web.Controllers
 
             try
             {
-                var access = await _mediator.Send(new RemoveUserFromProject.Request(project, username));
+                var access = await _mediator.Send(new RemoveUserFromProject.Request(project, username), cancellationToken);
 
                 return Ok(access);
             }

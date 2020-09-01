@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Models.Configuration;
@@ -40,9 +41,9 @@ namespace BcGov.Malt.Web.Services
             _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
         }
 
-        public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project)
+        public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)
         {
-            var requests = CreateAddUserRequests(user, project);
+            var requests = CreateAddUserRequests(user, project, cancellationToken);
 
             // wait for all tasks to complete
             Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
@@ -109,9 +110,9 @@ namespace BcGov.Malt.Web.Services
             return statuses;
         }
 
-        public async Task<List<Project>> GetProjectsForUserAsync(User user)
+        public async Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken)
         {
-            var requests = CreateUserHasAccessRequests(user);
+            var requests = CreateUserHasAccessRequests(user, cancellationToken);
 
             // wait for all tasks to complete
             Task<bool[]> aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
@@ -191,9 +192,9 @@ namespace BcGov.Malt.Web.Services
             return projects;
         }
 
-        public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project)
+        public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)
         {
-            var requests = CreateRemoveUserRequests(user, project);
+            var requests = CreateRemoveUserRequests(user, project, cancellationToken);
 
             // wait for all tasks to complete
             Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
@@ -260,7 +261,7 @@ namespace BcGov.Malt.Web.Services
             return statuses;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> CreateUserHasAccessRequests(User user)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> CreateUserHasAccessRequests(User user, CancellationToken cancellationToken)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task<bool>)>();
 
@@ -271,7 +272,7 @@ namespace BcGov.Malt.Web.Services
                     var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                     if (resourceUserManagementService != null)
                     {
-                        var task = resourceUserManagementService.UserHasAccessAsync(user.UserName);
+                        var task = resourceUserManagementService.UserHasAccessAsync(user.UserName, cancellationToken);
                         requests.Add((projectConfiguration, resource, task));
                     }
                 }
@@ -280,7 +281,7 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateAddUserRequests(User user, ProjectConfiguration project)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateAddUserRequests(User user, ProjectConfiguration project, CancellationToken cancellationToken)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> requests
                 = new List<(ProjectConfiguration, ProjectResource, Task<string> Task)>();
@@ -292,7 +293,7 @@ namespace BcGov.Malt.Web.Services
                     var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                     if (resourceUserManagementService != null)
                     {
-                        var task = resourceUserManagementService.AddUserAsync(user.UserName);
+                        var task = resourceUserManagementService.AddUserAsync(user.UserName, cancellationToken);
                         requests.Add((projectConfiguration, resource, task));
                     }
                 }
@@ -301,7 +302,7 @@ namespace BcGov.Malt.Web.Services
             return requests;
         }
 
-        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateRemoveUserRequests(User user, ProjectConfiguration project)
+        private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateRemoveUserRequests(User user, ProjectConfiguration project, CancellationToken cancellationToken)
         {
             List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task<string>)>();
 
@@ -312,7 +313,7 @@ namespace BcGov.Malt.Web.Services
                     var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                     if (resourceUserManagementService != null)
                     {
-                        var task = resourceUserManagementService.RemoveUserAsync(user.UserName);
+                        var task = resourceUserManagementService.RemoveUserAsync(user.UserName, cancellationToken);
                         requests.Add((projectConfiguration, resource, task));
                     }
                 }

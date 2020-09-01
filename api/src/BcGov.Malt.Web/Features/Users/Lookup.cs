@@ -10,6 +10,7 @@ namespace BcGov.Malt.Web.Features.Users
 {
     public class Lookup
     {
+#pragma warning disable CA1034 // do not next type
         public class Request : IRequest<DetailedUser>
         {
             public Request(string username)
@@ -25,7 +26,7 @@ namespace BcGov.Malt.Web.Features.Users
             public string Username { get; }
         }
 
-        public class Handler : IRequestHandler<Request, DetailedUser>
+        public class Handler : RequestHandlerBase<Request, DetailedUser>
         {
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
@@ -38,8 +39,10 @@ namespace BcGov.Malt.Web.Features.Users
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
-            public async Task<DetailedUser> Handle(Request request, CancellationToken cancellationToken)
+            public override async Task<DetailedUser> Handle(Request request, CancellationToken cancellationToken)
             {
+                using CancellationTokenSource cts = CreateCancellationTokenSource(cancellationToken);
+
                 if (request is null)
                 {
                     throw new ArgumentNullException(nameof(request));
@@ -56,7 +59,7 @@ namespace BcGov.Malt.Web.Features.Users
                 }
 
                 _logger.LogDebug("Looking for project membership for user {Username}", user.UserName);
-                var projects = await _userManagementService.GetProjectsForUserAsync(user);
+                var projects = await _userManagementService.GetProjectsForUserAsync(user, cts.Token);
 
                 DetailedUser result = new DetailedUser(user, projects);
 

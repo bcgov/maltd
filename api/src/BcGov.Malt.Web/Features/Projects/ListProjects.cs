@@ -11,6 +11,7 @@ namespace BcGov.Malt.Web.Features.Projects
 {
     public static class ListProjects
     {
+#pragma warning disable CA1034 // do not next type
         public class Request : IRequest<List<Project>>
         {
         }
