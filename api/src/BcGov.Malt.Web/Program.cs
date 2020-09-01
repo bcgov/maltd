@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Exceptions;
-using Serilog.Formatting.Compact;
 
 // this should go in AssemblyInfo.cs
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BcGov.Malt.Web.Tests")]
@@ -30,7 +29,7 @@ namespace BcGov.Malt.Web
         /// </summary>
         public static async Task<int> Main(string[] args)
         {
-            ILogger logger = GetProgramLogger();
+            ILogger logger = GetProgramLogger(args);
 
             try
             {
@@ -80,19 +79,42 @@ namespace BcGov.Malt.Web
                 return builder;
         }
 
-        private static ILogger GetProgramLogger()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json");
+        private static ILogger GetProgramLogger(string[] args)
+        {            
+            // configure the program logger in the same way as CreateDefaultBuilder does
+            string environmentName = GetEnvironmentName();
 
-            // Added before AddUserSecrets to let user secrets override environment variables.
+            bool IsDevelopment()
+            {
+                return string.Equals(environmentName, Environments.Development, StringComparison.OrdinalIgnoreCase);
+            }
+
+            string GetEnvironmentName()
+            {
+                string name = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                if (string.IsNullOrEmpty(name))
+                {
+                    name = Environments.Production;
+                }
+
+                return name;
+            }
+
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true);
+
+            if (IsDevelopment())
+            {
+                configurationBuilder.AddUserSecrets(typeof(Program).Assembly, optional: true);
+            }
+
             configurationBuilder.AddEnvironmentVariables();
 
-#if DEBUG
-            // use appsettings.Development.json and user secrets on debug builds
-            configurationBuilder.AddJsonFile("appsettings.Development.json", optional: true);
-            configurationBuilder.AddUserSecrets(typeof(Program).Assembly, optional: true);
-#endif
+            if (args != null)
+            {
+                configurationBuilder.AddCommandLine(args);
+            }
 
             var configuration = configurationBuilder.Build();
 
@@ -100,11 +122,9 @@ namespace BcGov.Malt.Web
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
-            Log.Logger = logger;
-
             return logger;
         }
-
+        
         private static void ConfigureSerilogLogging(HostBuilderContext hostingContext, LoggerConfiguration loggerConfiguration)
         {
             loggerConfiguration
@@ -116,30 +136,23 @@ namespace BcGov.Malt.Web
                 .Enrich.WithExceptionDetails()
                 ;
 
-            if (hostingContext.HostingEnvironment.IsDevelopment())
+            var splunkUrl = hostingContext.Configuration.GetValue("SPLUNK_URL", string.Empty);
+            var splunkToken = hostingContext.Configuration.GetValue("SPLUNK_TOKEN", string.Empty);
+            if (string.IsNullOrWhiteSpace(splunkToken) || string.IsNullOrWhiteSpace(splunkUrl))
             {
-                loggerConfiguration.WriteTo.Console();
+                Log.Warning("Splunk logging sink is not configured properly, check SPLUNK_TOKEN and SPLUNK_URL env vars");
             }
             else
             {
-                var splunkUrl = hostingContext.Configuration.GetValue("SPLUNK_URL", string.Empty);
-                var splunkToken = hostingContext.Configuration.GetValue("SPLUNK_TOKEN", string.Empty);
-                if (string.IsNullOrWhiteSpace(splunkToken) || string.IsNullOrWhiteSpace(splunkUrl))
-                {
-                    Log.Warning("Splunk logging sink is not configured properly, check SPLUNK_TOKEN and SPLUNK_URL env vars");
-                }
-                else
-                {
-                    loggerConfiguration
-                        .WriteTo.EventCollector(
-                            splunkHost: splunkUrl,
-                            eventCollectorToken: splunkToken,
-                            messageHandler: new HttpClientHandler
-                            {
-                                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-                            },
-                            renderTemplate: false);
-                }
+                loggerConfiguration
+                    .WriteTo.EventCollector(
+                        splunkHost: splunkUrl,
+                        eventCollectorToken: splunkToken,
+                        messageHandler: new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                        },
+                        renderTemplate: false);
             }
         }
 

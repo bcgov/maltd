@@ -46,6 +46,14 @@ namespace BcGov.Malt.Web.Models.Configuration
         public string RelyingPartyIdentifier { get; set; }
 
         /// <summary>
+        /// Gets or sets the optional API gateway host.
+        /// </summary>
+        /// <value>
+        /// The API gateway host.
+        /// </value>
+        public string ApiGatewayHost { get; set; }
+
+        /// <summary>
         /// Gets or sets the API Gateway policy. If no policy is configured
         /// the API gateway will not be used.
         /// </summary>

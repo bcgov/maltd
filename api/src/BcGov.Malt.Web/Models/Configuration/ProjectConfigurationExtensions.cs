@@ -11,13 +11,9 @@ namespace BcGov.Malt.Web.Models.Configuration
             // it is ok if this is null or empty if we do not want to use the API Gateway
             string apiGatewayHost = configuration["ApiGatewayHost"];
 
-            if (string.IsNullOrEmpty(apiGatewayHost))
+            if (!string.IsNullOrEmpty(apiGatewayHost))
             {
-                logger.Information("ApiGatewayHost is not configured, API Gateway will not be used.");
-            }
-            else
-            {
-                logger.Information("ApiGatewayHost is configured as {ApiGatewayHost}, API Gateway will be used on those resources with a ApiGatewayPolicy.", apiGatewayHost);
+                logger.Warning("Deprecation Warning: ApiGatewayHost is configured at the root level with value {ApiGatewayHost}, set the ApiGatewayHost on each resource.", apiGatewayHost);
             }
 
             HashSet<string> uniqueProjectNames = new HashSet<string>();
@@ -31,7 +27,7 @@ namespace BcGov.Malt.Web.Models.Configuration
             {
                 var projectConfiguration = project.Get<ProjectConfiguration>();
 
-                if (IsValid(apiGatewayHost, projectConfiguration, index, logger))
+                if (IsValid(projectConfiguration, index, logger))
                 {
                     if (!uniqueProjectNames.Contains(projectConfiguration.Name))
                     {
@@ -48,7 +44,7 @@ namespace BcGov.Malt.Web.Models.Configuration
             }
         }
 
-        private static bool IsValid(string apiGatewayHost, ProjectConfiguration projectConfiguration, int index, Serilog.ILogger logger)
+        private static bool IsValid(ProjectConfiguration projectConfiguration, int index, Serilog.ILogger logger)
         {
             List<string> errors = new List<string>();
 
@@ -76,10 +72,6 @@ namespace BcGov.Malt.Web.Models.Configuration
                     if (projectResource.Resource == null)
                     {
                         errors.Add($"Project resource url is null at index {i}");
-                    }
-                    else
-                    {
-                        ApplyApiGatewayPolicy(apiGatewayHost, projectResource, logger);
                     }
 
                     if (!Enum.IsDefined(typeof(ProjectType), projectResource.Type))
@@ -116,36 +108,13 @@ namespace BcGov.Malt.Web.Models.Configuration
 
             if (errors.Count != 0)
             {
-                Serilog.Log.Logger
+                logger
                     .ForContext("Project", new { Name = projectName, Index = index })
                     .ForContext("Errors", errors)
                     .Error("Project configuration has errors and will be skipped");
             }
 
             return errors.Count == 0;
-        }
-
-        private static void ApplyApiGatewayPolicy(string apiGatewayHost, ProjectResource projectResource, Serilog.ILogger logger)
-        {
-            if (string.IsNullOrEmpty(apiGatewayHost) || string.IsNullOrEmpty(projectResource.ApiGatewayPolicy))
-            {
-                projectResource.BaseAddress = projectResource.Resource;
-            }
-            else
-            {
-                // https://<host>/policy
-                UriBuilder builder = new UriBuilder(projectResource.Resource);
-                builder.Host = apiGatewayHost;
-
-                // inject the policy name as the first uri segment
-                builder.Path = builder.Path.StartsWith("/", StringComparison.InvariantCulture)
-                    ? "/" + projectResource.ApiGatewayPolicy + builder.Path
-                    : "/" + projectResource.ApiGatewayPolicy + "/" + builder.Path;
-
-                projectResource.BaseAddress = builder.Uri;
-            }
-
-            logger.Information("Using {BaseAddress} for {Resource}", projectResource.BaseAddress, projectResource.Resource);
         }
     }
 }
