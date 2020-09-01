@@ -27,8 +27,8 @@ namespace BcGov.Malt.Web.Services
 
             ODataClientSettings settings = new ODataClientSettings(httpClient);
 
-            settings.TraceFilter = ODataTrace.All;
-            settings.OnTrace = (message, args) => _odataClientLogger.LogInformation(message, args);
+            ////settings.TraceFilter = ODataTrace.All;
+            ////settings.OnTrace = (message, args) => _odataClientLogger.LogInformation(message, args);
 
             ODataClient oDataClient = new ODataClient(settings);
 

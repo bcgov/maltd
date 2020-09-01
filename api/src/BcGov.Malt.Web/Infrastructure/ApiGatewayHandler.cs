@@ -10,6 +10,13 @@ namespace BcGov.Malt.Web.Infrastructure
         private readonly string _apiGatewayHost;
         private readonly string _apiGatewayPolicy;
 
+        public ApiGatewayHandler(HttpMessageHandler innerHandler, string apiGatewayHost, string apiGatewayPolicy) 
+            : base(innerHandler)
+        {
+            _apiGatewayHost = apiGatewayHost;
+            _apiGatewayPolicy = apiGatewayPolicy;
+        }
+
         public ApiGatewayHandler(string apiGatewayHost, string apiGatewayPolicy)
         {
             _apiGatewayHost = apiGatewayHost;
