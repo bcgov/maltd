@@ -11,7 +11,7 @@ import checkArrayEquality from "../../../modules/HelperFunctions";
 const Unauthorized = 401;
 const jwtLocalStorageKey = "jwt";
 
-var token = localStorage.getItem(jwtLocalStorageKey);
+const token = localStorage.getItem(jwtLocalStorageKey);
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -89,7 +89,7 @@ export default class MainPage extends Component {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
-          onUnauthorizedResponse();
+          this.onUnauthorizedResponse();
         }
       }
       this.clearForm();
@@ -183,7 +183,7 @@ export default class MainPage extends Component {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
-          onUnauthorizedResponse();
+          this.onUnauthorizedResponse();
         }
       }
     }
@@ -260,7 +260,7 @@ export default class MainPage extends Component {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
-          onUnauthorizedResponse();
+          this.onUnauthorizedResponse();
         }
       }
       return false;
