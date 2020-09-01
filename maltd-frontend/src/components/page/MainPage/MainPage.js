@@ -8,7 +8,10 @@ import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 import checkArrayEquality from "../../../modules/HelperFunctions";
 
-const token = localStorage.getItem("jwt");
+const Unauthorized = 401;
+const jwtLocalStorageKey = "jwt";
+
+var token = localStorage.getItem(jwtLocalStorageKey);
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -30,6 +33,11 @@ export default class MainPage extends Component {
       selectedDropdownItem: null,
       duplicateErrorMessage: null
     };
+  }
+
+  onUnauthorizedResponse() {
+    localStorage.removeItem(jwtLocalStorageKey);
+    window.location.reload();
   }
 
   async onButtonClick() {
@@ -80,8 +88,8 @@ export default class MainPage extends Component {
     } catch (err) {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
-        if (status === 401) {
-          window.location.reload();
+        if (status === Unauthorized) {
+          onUnauthorizedResponse();
         }
       }
       this.clearForm();
@@ -174,8 +182,8 @@ export default class MainPage extends Component {
     } catch (err) {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
-        if (status === 401) {
-          window.location.reload();
+        if (status === Unauthorized) {
+          onUnauthorizedResponse();
         }
       }
     }
@@ -251,8 +259,8 @@ export default class MainPage extends Component {
     } catch (err) {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
-        if (status === 401) {
-          window.location.reload();
+        if (status === Unauthorized) {
+          onUnauthorizedResponse();
         }
       }
       return false;
