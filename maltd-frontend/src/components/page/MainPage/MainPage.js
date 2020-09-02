@@ -35,7 +35,7 @@ export default class MainPage extends Component {
     };
   }
 
-  onUnauthorizedResponse() {
+  static onUnauthorizedResponse() {
     localStorage.removeItem(jwtLocalStorageKey);
     window.location.reload();
   }
