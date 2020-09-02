@@ -148,10 +148,12 @@ namespace BcGov.Malt.Web
                     .WriteTo.EventCollector(
                         splunkHost: splunkUrl,
                         eventCollectorToken: splunkToken,
+#pragma warning disable CA2000 // Dispose objects before losing scope
                         messageHandler: new HttpClientHandler
                         {
                             ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                         },
+#pragma warning restore CA2000 // Dispose objects before losing scope
                         renderTemplate: false);
             }
         }
