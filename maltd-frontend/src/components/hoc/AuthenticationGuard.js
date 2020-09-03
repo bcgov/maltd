@@ -15,25 +15,30 @@ if (process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE)
 export default function AuthenticationGuard() {
   const [authedKeycloak, setAuthedKeycloak] = useState(null);
 
-  function getSetting(name) {
-    return window[name] ? window[name] : process.env[name];
-  }
-
   function geKeycloakConfig() {
-    const url = getSetting("REACT_APP_KEYCLOAK_URL");
+    const url = window.REACT_APP_KEYCLOAK_URL
+      ? window.REACT_APP_KEYCLOAK_URL
+      : process.env.REACT_APP_KEYCLOAK_URL;
+
+    const realm = window.REACT_APP_KEYCLOAK_REALM
+      ? window.REACT_APP_KEYCLOAK_REALM
+      : process.env.REACT_APP_KEYCLOAK_REALM;
+
+    const clientId = window.REACT_APP_KEYCLOAK_CLIENT_ID
+      ? window.REACT_APP_KEYCLOAK_CLIENT_ID
+      : process.env.REACT_APP_KEYCLOAK_CLIENT_ID;
 
     if (!url) {
       return null;
     }
 
-    return {
-      url,
-      realm: getSetting("REACT_APP_KEYCLOAK_REALM"),
-      clientId: getSetting("REACT_APP_KEYCLOAK_CLIENT_ID")
-    };
+    return { url, realm, clientId };
   }
 
-  const redirectUri = getSetting("REACT_APP_KEYCLOAK_REDIRECT_URI");
+  const redirectUri = window.REACT_APP_KEYCLOAK_REDIRECT_URI
+    ? window.REACT_APP_KEYCLOAK_REDIRECT_URI
+    : process.env.REACT_APP_KEYCLOAK_REDIRECT_URI;
+
   const keycloakConfig = geKeycloakConfig();
 
   // Initialize client
