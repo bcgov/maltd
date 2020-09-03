@@ -89,7 +89,7 @@ export default class MainPage extends Component {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
-          this.onUnauthorizedResponse();
+          MainPage.onUnauthorizedResponse();
         }
       }
       this.clearForm();
@@ -183,7 +183,7 @@ export default class MainPage extends Component {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
-          this.onUnauthorizedResponse();
+          MainPage.onUnauthorizedResponse();
         }
       }
     }
@@ -260,7 +260,7 @@ export default class MainPage extends Component {
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
-          this.onUnauthorizedResponse();
+          MainPage.onUnauthorizedResponse();
         }
       }
       return false;
