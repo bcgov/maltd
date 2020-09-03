@@ -1,4 +1,4 @@
-/* eslint-disable no-alert */
+/* eslint-disable no-alert,no-console */
 import React, { useState, useEffect } from "react";
 import Keycloak from "keycloak-js";
 import MainPage from "../page/MainPage/MainPage";
@@ -14,26 +14,36 @@ if (process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE)
 
 export default function AuthenticationGuard() {
   const [authedKeycloak, setAuthedKeycloak] = useState(null);
-  let redirectUri;
 
-  if (process.env.REACT_APP_KEYCLOAK_REDIRECT_URI) {
-    redirectUri = process.env.REACT_APP_KEYCLOAK_REDIRECT_URI;
+  function getSetting(name) {
+    return window[name] ? window[name] : process.env[name];
   }
 
-  const keycloakConfig = {
-    url: process.env.REACT_APP_KEYCLOAK_URL,
-    realm: process.env.REACT_APP_KEYCLOAK_REALM,
-    clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID
-  };
+  function geKeycloakConfig() {
+    const url = getSetting("REACT_APP_KEYCLOAK_URL");
+
+    if (!url) {
+      return null;
+    }
+
+    return {
+      url,
+      realm: getSetting("REACT_APP_KEYCLOAK_REALM"),
+      clientId: getSetting("REACT_APP_KEYCLOAK_CLIENT_ID")
+    };
+  }
+
+  const redirectUri = getSetting("REACT_APP_KEYCLOAK_REDIRECT_URI");
+  const keycloakConfig = geKeycloakConfig();
 
   // Initialize client
   // if the keycloakConfig.url is not set, the allow keycloak to load configuration from keycloak.json
   console.log(
-    keycloakConfig.url
+    keycloakConfig
       ? "Using internal keycloak config"
       : "Using keycloak.json keycloak config"
   );
-  const keycloak = keycloakConfig.url ? Keycloak(keycloakConfig) : Keycloak();
+  const keycloak = keycloakConfig ? Keycloak(keycloakConfig) : Keycloak();
 
   function onLogoutClick() {
     authedKeycloak.logout({ redirectUri });
