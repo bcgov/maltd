@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useState, useEffect } from "react";
 import Keycloak from "keycloak-js";
 import MainPage from "../page/MainPage/MainPage";
@@ -50,15 +51,20 @@ export default function AuthenticationGuard() {
       })
       .success(() => {
         keycloak.loadUserInfo().success();
-        if (accessRole && keycloak.tokenParsed.realm_access.roles.indexOf(accessRole) !== -1){
-            localStorage.setItem("jwt", keycloak.token);
-            setAuthedKeycloak(keycloak);
-        }else{
-             keycloak.clearToken();
-             localStorage.clear();
-             alert('Authenticated but not Authorized, request access from your portal administrator');                 
-             window.location.assign(keycloak.createLogoutUrl());
-        }        
+        if (
+          accessRole &&
+          keycloak.tokenParsed.realm_access.roles.indexOf(accessRole) !== -1
+        ) {
+          localStorage.setItem("jwt", keycloak.token);
+          setAuthedKeycloak(keycloak);
+        } else {
+          keycloak.clearToken();
+          localStorage.clear();
+          alert(
+            "Authenticated but not Authorized, request access from your portal administrator"
+          );
+          window.location.assign(keycloak.createLogoutUrl());
+        }
       });
   }
 
