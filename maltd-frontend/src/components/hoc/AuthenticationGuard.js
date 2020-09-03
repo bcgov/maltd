@@ -14,11 +14,11 @@ if (process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE)
 
 export default function AuthenticationGuard() {
   const [authedKeycloak, setAuthedKeycloak] = useState(null);
-  let redirectUri;
+  // let redirectUri;
 
-  if (process.env.REACT_APP_KEYCLOAK_REDIRECT_URI) {
-    redirectUri = process.env.REACT_APP_KEYCLOAK_REDIRECT_URI;
-  }
+  // if (process.env.REACT_APP_KEYCLOAK_REDIRECT_URI) {
+  //   redirectUri = process.env.REACT_APP_KEYCLOAK_REDIRECT_URI;
+  // }
 
   const keycloakConfig = {
     url: process.env.REACT_APP_KEYCLOAK_URL,
