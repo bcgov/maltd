@@ -3,11 +3,6 @@ import React, { useState, useEffect } from "react";
 import Keycloak from "keycloak-js";
 import MainPage from "../page/MainPage/MainPage";
 
-let accessRole;
-
-if (process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE)
-  accessRole = process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE;
-
 /**
  * @constant authenticationGuard - a higher order component that checks for user authorization and returns the wrapped component if the user is authenticated
  */
@@ -38,6 +33,16 @@ export default function AuthenticationGuard() {
   const redirectUri = window.REACT_APP_KEYCLOAK_REDIRECT_URI
     ? window.REACT_APP_KEYCLOAK_REDIRECT_URI
     : process.env.REACT_APP_KEYCLOAK_REDIRECT_URI;
+
+  const accessRole = window.REACT_APP_KEYCLOAK_ACCESS_ROLE
+    ? window.REACT_APP_KEYCLOAK_ACCESS_ROLE
+    : process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE;
+
+  if (!accessRole) {
+    console.log(
+      "warning: accessRole is not defined, users will not have access to the app, check the configuration"
+    );
+  }
 
   const keycloakConfig = geKeycloakConfig();
 
