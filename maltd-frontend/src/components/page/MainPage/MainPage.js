@@ -13,6 +13,14 @@ const jwtLocalStorageKey = "jwt";
 
 const token = localStorage.getItem(jwtLocalStorageKey);
 
+let apiBasePath = window.REACT_APP_API_BASE_PATH
+  ? window.REACT_APP_API_BASE_PATH
+  : process.env.REACT_APP_API_BASE_PATH;
+
+if (!apiBasePath) {
+  apiBasePath = "/api";
+}
+
 export default class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +52,7 @@ export default class MainPage extends Component {
     const { value } = this.state;
 
     try {
-      const res = await axios.get(`/api/projects`, {
+      const res = await axios.get(`${apiBasePath}/projects`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       this.setState({
@@ -53,10 +61,10 @@ export default class MainPage extends Component {
         disabledButton: true,
         disabledInput: true
       });
-      await axios.get(`/api/users?q=${value}`, {
+      await axios.get(`${apiBasePath}/users?q=${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const result = await axios.get(`/api/users/${value}`, {
+      const result = await axios.get(`${apiBasePath}/users/${value}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const { data } = result;
@@ -147,7 +155,7 @@ export default class MainPage extends Component {
 
     try {
       const res = await axios.delete(
-        `/api/projects/${projectId}/users/${value}`,
+        `${apiBasePath}/projects/${projectId}/users/${value}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -202,7 +210,7 @@ export default class MainPage extends Component {
 
     try {
       const res = await axios.put(
-        `/api/projects/${selectedDropdownItem.id}/users/${value}`,
+        `${apiBasePath}/projects/${selectedDropdownItem.id}/users/${value}`,
         null,
         {
           headers: { Authorization: `Bearer ${token}` }
