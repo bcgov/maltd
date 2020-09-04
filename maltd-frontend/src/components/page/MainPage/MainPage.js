@@ -13,11 +13,13 @@ const jwtLocalStorageKey = "jwt";
 
 const token = localStorage.getItem(jwtLocalStorageKey);
 
-const apiBasePath = window.REACT_APP_API_BASE_PATH
+let apiBasePath = window.REACT_APP_API_BASE_PATH
   ? window.REACT_APP_API_BASE_PATH
-  : process.env.REACT_APP_API_BASE_PATH
-  ? process.env.REACT_APP_API_BASE_PATH
-  : "/api";
+  : process.env.REACT_APP_API_BASE_PATH;
+
+if (!apiBasePath) {
+  apiBasePath = "/api";
+}
 
 export default class MainPage extends Component {
   constructor(props) {
