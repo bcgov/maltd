@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
@@ -58,29 +57,17 @@ namespace BcGov.Malt.Web
         /// <summary>
         /// Creates the host builder.
         /// </summary>
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
             var builder = Host.CreateDefaultBuilder(args)
                 .UseSerilog(ConfigureSerilogLogging)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    // Added before AddUserSecrets to let user secrets override environment variables.
-                    config.AddEnvironmentVariables();
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 
-                    var env = hostingContext.HostingEnvironment;
-                    if (env.IsDevelopment())
-                    {
-                        var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-                        config.AddUserSecrets(appAssembly, optional: true);
-                    }
-                });
-
-                return builder;
+            return builder;
         }
 
         private static ILogger GetProgramLogger(string[] args)
-        {            
+        {
             // configure the program logger in the same way as CreateDefaultBuilder does
             string environmentName = GetEnvironmentName();
 
@@ -124,7 +111,7 @@ namespace BcGov.Malt.Web
 
             return logger;
         }
-        
+
         private static void ConfigureSerilogLogging(HostBuilderContext hostingContext, LoggerConfiguration loggerConfiguration)
         {
             loggerConfiguration
@@ -152,14 +139,15 @@ namespace BcGov.Malt.Web
                         messageHandler: new HttpClientHandler
                         {
                             ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-                        },
+                        });
 #pragma warning restore CA2000 // Dispose objects before losing scope
-                        renderTemplate: false);
             }
         }
 
         private static async Task GetAccessTokensAsync(ILogger logger, IServiceProvider services)
         {
+            // use a logger with context
+            logger = logger.ForContext<IAccessTokenLoader>();
 
             try
             {
@@ -190,7 +178,7 @@ namespace BcGov.Malt.Web
                         {
                             logger.Error("Error fetching {ErrorCount} of total {AccessTokenCount} access tokens, process took {ElapsedMilliseconds} milliseconds",
                                 exceptionCount,
-                                results.Count, 
+                                results.Count,
                                 milliseconds);
 
                         }
