@@ -33,7 +33,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "ci-test": "cross-env CI=true jest --env=jsdom --testResultsProcessor=jest-sonar-reporter --update-snapshot --runInBand --coverage",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "format-staged": "pretty-quick --staged"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -108,7 +109,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged",
+      "pre-commit": "npm run format-staged",
       "pre-push": "npx eslint ."
     }
   }
