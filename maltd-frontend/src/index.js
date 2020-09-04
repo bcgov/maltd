@@ -6,7 +6,9 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 
-if (process.env.REACT_APP_MALTD_API) {
+if (window.REACT_APP_MALTD_API) {
+  axios.defaults.baseURL = window.REACT_APP_MALTD_API;
+} else if (process.env.REACT_APP_MALTD_API) {
   axios.defaults.baseURL = process.env.REACT_APP_MALTD_API;
 }
 
