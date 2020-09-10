@@ -59,7 +59,7 @@ namespace BcGov.Malt.Web.Services
                 //    responseData,
                 //    response.Headers.ToDictionary(x => x.Key, x => x.Value), null);
 
-                _logger.LogError("Error getting getting OAuth for {Resource} using {ClientId} : {HttpStatus} - {ErrorMessage}", options.Resource, options.ClientId, response.StatusCode, responseData);
+                _logger.LogError("Error getting OAuth for {Resource} using {ClientId} : {HttpStatus} - {ErrorMessage}", options.Resource, options.ClientId, response.StatusCode, responseData);
                 throw new OAuthApiException("Error getting OAuth token", (int)response.StatusCode, responseData, new Dictionary<string, string>(), string.Empty);
             }
 

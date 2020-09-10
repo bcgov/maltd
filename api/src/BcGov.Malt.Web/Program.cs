@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models.Configuration;
@@ -32,6 +33,9 @@ namespace BcGov.Malt.Web
 
             try
             {
+                // configure ServicePointManager before making any network requests
+                ConfigureServicePointManager(logger);
+
                 // create the host
                 IHost host = CreateHostBuilder(args).Build();
 
@@ -233,6 +237,23 @@ namespace BcGov.Malt.Web
             }
 
             return clientId.Substring(0, 6) + "...";
+        }
+
+
+        private static void ConfigureServicePointManager(ILogger logger)
+        {
+            logger.Information("ServicePointManager settings = {@ServicePointManager}",
+                new
+                {
+                    ServicePointManager.UseNagleAlgorithm,
+                    ServicePointManager.DnsRefreshTimeout,
+                    ServicePointManager.Expect100Continue,
+                    ServicePointManager.CheckCertificateRevocationList,
+                    ServicePointManager.MaxServicePoints,
+                    ServicePointManager.MaxServicePointIdleTime,
+                    ServicePointManager.DefaultConnectionLimit,
+                    ServicePointManager.DefaultPersistentConnectionLimit
+                });
         }
     }
 }
