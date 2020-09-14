@@ -9,9 +9,6 @@ import UserAccess from "../../composite/UserAccess/UserAccess";
 import checkArrayEquality from "../../../modules/HelperFunctions";
 
 const Unauthorized = 401;
-const jwtLocalStorageKey = "jwt";
-
-const token = localStorage.getItem(jwtLocalStorageKey);
 
 let apiBasePath = window.REACT_APP_API_BASE_PATH
   ? window.REACT_APP_API_BASE_PATH
@@ -43,8 +40,12 @@ export default class MainPage extends Component {
     };
   }
 
+  static getAccessToken() {
+    return localStorage.getItem("jwt");
+  }
+
   static onUnauthorizedResponse() {
-    localStorage.removeItem(jwtLocalStorageKey);
+    localStorage.removeItem("jwt");
     window.location.reload();
   }
 
@@ -53,7 +54,7 @@ export default class MainPage extends Component {
 
     try {
       const res = await axios.get(`${apiBasePath}/projects`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       this.setState({
         items: res.data,
@@ -62,10 +63,10 @@ export default class MainPage extends Component {
         disabledInput: true
       });
       await axios.get(`${apiBasePath}/users?q=${value}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       const result = await axios.get(`${apiBasePath}/users/${value}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       const { data } = result;
       const finalProjects = [];
@@ -157,7 +158,7 @@ export default class MainPage extends Component {
       const res = await axios.delete(
         `${apiBasePath}/projects/${projectId}/users/${value}`,
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         }
       );
       // figure out which resources user has access to after remove
@@ -213,7 +214,7 @@ export default class MainPage extends Component {
         `${apiBasePath}/projects/${selectedDropdownItem.id}/users/${value}`,
         null,
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         }
       );
       // figure out which resources user has access to after add
