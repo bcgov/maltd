@@ -154,7 +154,8 @@ namespace BcGov.Malt.Web.Services
 
                 if (systemUser != null)
                 {
-                    _logger.LogDebug("Found Dynamics SystemUser {@SystemUser}", new { systemUser.DomainName, systemUser.IsDisabled, systemUser.SystemUserId });
+                    _logger.LogDebug("Found Dynamics SystemUser {@SystemUser}",
+                        new {systemUser.DomainName, systemUser.IsDisabled, systemUser.SystemUserId});
                 }
                 else
                 {
@@ -162,6 +163,11 @@ namespace BcGov.Malt.Web.Services
                 }
 
                 return systemUser;
+            }
+            catch (TaskCanceledException)
+            {
+                // timeout
+                throw;
             }
             catch (Exception exception)
             {
