@@ -216,7 +216,11 @@ namespace BcGov.Malt.Web.Services
             var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
             var siteGroups = groups.Data.Results;
 
-            foreach (var siteGroup in siteGroups)
+            var comparer = StringComparer.OrdinalIgnoreCase;
+
+            // service account does not have permission to view membership of "Excel Services Viewers"
+            // TODO: make this configurable
+            foreach (var siteGroup in siteGroups.Where(_ => !comparer.Equals(_.Title, "Excel Services Viewers")))
             {
                 var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
                 var groupMember = getUsersResponse.Data.Results.Any(_ => LoginNameComparer.Equals(_.LoginName, loginName));
