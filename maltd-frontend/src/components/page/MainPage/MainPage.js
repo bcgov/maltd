@@ -54,6 +54,7 @@ export default class MainPage extends Component {
 
     try {
       const res = await axios.get(`${apiBasePath}/projects`, {
+        timeout: 2 * 60 * 1000,
         headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       this.setState({
@@ -63,9 +64,11 @@ export default class MainPage extends Component {
         disabledInput: true
       });
       await axios.get(`${apiBasePath}/users?q=${value}`, {
+        timeout: 2 * 60 * 1000,
         headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       const result = await axios.get(`${apiBasePath}/users/${value}`, {
+        timeout: 2 * 60 * 1000,
         headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       const { data } = result;
@@ -158,6 +161,7 @@ export default class MainPage extends Component {
       const res = await axios.delete(
         `${apiBasePath}/projects/${projectId}/users/${value}`,
         {
+          timeout: 2 * 60 * 1000,
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         }
       );
@@ -214,6 +218,7 @@ export default class MainPage extends Component {
         `${apiBasePath}/projects/${selectedDropdownItem.id}/users/${value}`,
         null,
         {
+          timeout: 2 * 60 * 1000,
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         }
       );
