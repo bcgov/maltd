@@ -167,26 +167,34 @@ namespace BcGov.Malt.Web.Services
 
             foreach (var siteGroup in siteGroups)
             {
-                var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
-
-                var users = getUsersResponse.Data.Results.Where(_ => LoginNameComparer.Equals(_.LoginName, loginName));
-
-                foreach (var sharePointUser in users)
+                try
                 {
-                    _logger.LogInformation("Removing {@User} from site group {@SiteGroup}", sharePointUser, siteGroup);
+                    var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
 
-                    try
-                    {
-                        await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id, cancellationToken);
-                    }
-                    catch (ApiException e)
-                    {
-                        var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
-                        _logger.LogWarning(e, "Error removing user from SharePoint group {@Error}", errorResponse);
+                    var users = getUsersResponse.Data.Results.Where(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
-                        response.Append(response.Length != 0 ? ", " : "Error removing user from site group(s): ");
-                        response.Append(siteGroup.Title);
+                    foreach (var sharePointUser in users)
+                    {
+                        _logger.LogInformation("Removing {@User} from site group {@SiteGroup}", sharePointUser, siteGroup);
+
+                        try
+                        {
+                            await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id, cancellationToken);
+                        }
+                        catch (ApiException e)
+                        {
+                            var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
+                            _logger.LogWarning(e, "Error removing user from SharePoint group {@Error}", errorResponse);
+
+                            response.Append(response.Length != 0 ? ", " : "Error removing user from site group(s): ");
+                            response.Append(siteGroup.Title);
+                        }
                     }
+                }
+                catch (ApiException e) when (e.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    // we dont have access to all site groups
+                    _logger.LogDebug(e, "No access to {@SiteGroup}, unable to remove {Username} access", siteGroup, username);
                 }
             }
 
@@ -216,15 +224,25 @@ namespace BcGov.Malt.Web.Services
             var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
             var siteGroups = groups.Data.Results;
 
+            // service account does not have permission to view membership of "Excel Services Viewers"
+            // TODO: make this configurable
             foreach (var siteGroup in siteGroups)
             {
-                var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
-                var groupMember = getUsersResponse.Data.Results.Any(_ => LoginNameComparer.Equals(_.LoginName, loginName));
-
-                if (groupMember)
+                try
                 {
-                    _logger.LogInformation("{@User} has access because they are in site group {@SiteGroup}", user, siteGroup);
-                    return true;
+                    var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
+                    var groupMember = getUsersResponse.Data.Results.Any(_ => LoginNameComparer.Equals(_.LoginName, loginName));
+
+                    if (groupMember)
+                    {
+                        _logger.LogDebug("{@User} has access because they are in site group {@SiteGroup}", user, siteGroup);
+                        return true;
+                    }
+                }
+                catch (ApiException e) when (e.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    // we dont have access to all site groups
+                    _logger.LogDebug(e, "No access to {@SiteGroup}, unable to check access", siteGroup);
                 }
             }
 
