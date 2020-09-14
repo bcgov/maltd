@@ -164,9 +164,10 @@ namespace BcGov.Malt.Web.Services
 
                 return systemUser;
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException exception)
             {
                 // timeout
+                _logger.LogWarning(exception, "Task was cancelled looking up dynamics SystemUser with {DomainName}", logon);
                 throw;
             }
             catch (Exception exception)
