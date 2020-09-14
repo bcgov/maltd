@@ -74,7 +74,7 @@ export default function AuthenticationGuard() {
           setAuthedKeycloak(keycloak);
         } else {
           keycloak.clearToken();
-          localStorage.clear();
+          localStorage.removeItem("jwt");
           alert(
             "Authenticated but not Authorized, request access from your portal administrator"
           );
