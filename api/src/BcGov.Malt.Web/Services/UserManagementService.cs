@@ -121,7 +121,7 @@ namespace BcGov.Malt.Web.Services
             {
                 await aggregateTask;
             }
-            catch (Exception exception)
+            catch (AggregateException exception)
             {
                 _logger.LogWarning(exception, "Error on aggregate request");
             }
@@ -166,10 +166,15 @@ namespace BcGov.Malt.Web.Services
                     Guid requestId = Guid.NewGuid();
                     string message = $"Unknown error executing request id {requestId}";
 
-                    if (task.Exception != null)
+                    Exception exception = task.Exception?.InnerException;
+
+                    // TaskCancelledException - timeout
+                    // Refit.ApiException - forbidden, etc
+
+                    if (exception != null)
                     {
                         // log with exception
-                        _logger.LogError(task.Exception, "Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
+                        _logger.LogError(exception, "Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
