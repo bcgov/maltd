@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using BcGov.Malt.Web.Models;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services.Sharepoint;
 using Microsoft.Extensions.Logging;
+using Refit;
 
 namespace BcGov.Malt.Web.Services
 {
@@ -121,9 +123,11 @@ namespace BcGov.Malt.Web.Services
             {
                 await aggregateTask;
             }
-            catch (AggregateException exception)
+            catch (Exception)
             {
-                _logger.LogWarning(exception, "Error on aggregate request");
+                // if any of the tasks throws an error, that first exception will be thrown
+                // we can safely ignore this exception because we are going to iterate over
+                // all of the requests and if faulted, log them out too
             }
 
             List<Project> projects = new List<Project>();
@@ -163,14 +167,11 @@ namespace BcGov.Malt.Web.Services
                 }
                 else if (task.IsFaulted)
                 {
-                    Guid requestId = Guid.NewGuid();
-                    string message = $"Unknown error executing request id {requestId}";
-
                     Exception exception = task.Exception?.InnerException;
+                    Guid requestId = Guid.NewGuid();
 
-                    // TaskCancelledException - timeout
-                    // Refit.ApiException - forbidden, etc
-
+                    string message = GetUserErrorMessageFor(exception, requestId);
+                    
                     if (exception != null)
                     {
                         // log with exception
@@ -195,6 +196,28 @@ namespace BcGov.Malt.Web.Services
             }
 
             return projects;
+        }
+
+        private string GetUserErrorMessageFor(Exception exception, Guid requestId)
+        {
+            if (exception is ApiException apiException)
+            {
+                switch (apiException.StatusCode)
+                {
+                    case HttpStatusCode.Forbidden:
+                        return $"Application does not have permissions to check user's membership (Error Id: {requestId})";
+                    default:
+                        return $"Remote project returned {apiException.StatusCode} when checking user's membership (Error Id: {requestId})";
+                }
+            }
+
+
+            if (exception is TaskCanceledException taskCancelledException)
+            {
+                return $"Timeout checking user's membership (Error Id: {requestId})";
+            }
+
+            return $"Unknown error executing request id {requestId}";
         }
 
         public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)

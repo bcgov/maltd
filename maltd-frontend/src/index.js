@@ -12,6 +12,14 @@ if (window.REACT_APP_MALTD_API) {
   axios.defaults.baseURL = process.env.REACT_APP_MALTD_API;
 }
 
+if (window.REACT_APP_MALTD_API_TIMEOUT) {
+  axios.defaults.timeout = window.REACT_APP_MALTD_API_TIMEOUT;
+} else if (process.env.REACT_APP_MALTD_API_TIMEOUT) {
+  axios.defaults.timeout = process.env.REACT_APP_MALTD_API_TIMEOUT;
+} else {
+  axios.defaults.timeout = 2 * 60 * 1000; // default to 2 minutes
+}
+
 ReactDOM.render(<App />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change

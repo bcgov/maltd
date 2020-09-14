@@ -41,29 +41,37 @@ namespace BcGov.Malt.Web.Features.Users
 
             public override async Task<DetailedUser> Handle(Request request, CancellationToken cancellationToken)
             {
-                using CancellationTokenSource cts = CreateCancellationTokenSource(cancellationToken);
-
-                if (request is null)
+                try
                 {
-                    throw new ArgumentNullException(nameof(request));
+                    using CancellationTokenSource cts = CreateCancellationTokenSource(cancellationToken);
+
+                    if (request is null)
+                    {
+                        throw new ArgumentNullException(nameof(request));
+                    }
+
+                    _logger.LogDebug("Searching for user {Username}", request.Username);
+
+                    var user = await _userSearchService.SearchAsync(request.Username);
+
+                    if (user == null)
+                    {
+                        _logger.LogDebug("Lookup for {Username} returned null, returning null", request.Username);
+                        return null;
+                    }
+
+                    _logger.LogDebug("Looking for project membership for user {Username}", user.UserName);
+                    var projects = await _userManagementService.GetProjectsForUserAsync(user, cts.Token);
+
+                    DetailedUser result = new DetailedUser(user, projects);
+
+                    return result;
                 }
-
-                _logger.LogDebug("Searching for user {Username}", request.Username);
-
-                var user = await _userSearchService.SearchAsync(request.Username);
-
-                if (user == null)
+                catch (Exception e)
                 {
-                    _logger.LogDebug("Lookup for {Username} returned null, returning null", request.Username);
-                    return null;
+                    _logger.LogError(e, "Error lookup user");
+                    throw;
                 }
-
-                _logger.LogDebug("Looking for project membership for user {Username}", user.UserName);
-                var projects = await _userManagementService.GetProjectsForUserAsync(user, cts.Token);
-
-                DetailedUser result = new DetailedUser(user, projects);
-
-                return result;
             }
         }
     }
