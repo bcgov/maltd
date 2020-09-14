@@ -12,13 +12,17 @@ if (window.REACT_APP_MALTD_API) {
   axios.defaults.baseURL = process.env.REACT_APP_MALTD_API;
 }
 
+let timeout = 2 * 60 * 1000; // default to 2 minutes
 if (window.REACT_APP_MALTD_API_TIMEOUT) {
-  axios.defaults.timeout = window.REACT_APP_MALTD_API_TIMEOUT;
+  timeout = window.REACT_APP_MALTD_API_TIMEOUT;
 } else if (process.env.REACT_APP_MALTD_API_TIMEOUT) {
-  axios.defaults.timeout = process.env.REACT_APP_MALTD_API_TIMEOUT;
-} else {
-  axios.defaults.timeout = 2 * 60 * 1000; // default to 2 minutes
+  timeout = process.env.REACT_APP_MALTD_API_TIMEOUT;
 }
+
+axios.interceptors.request.use(request => {
+  request.timeout = timeout;
+  return request;
+});
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
