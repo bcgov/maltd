@@ -31,7 +31,7 @@ export default class MainPage extends Component {
       duplicateErrorMessage: null
     };
 
-    let baseURL = window.REACT_APP_MALTD_API
+    const baseURL = window.REACT_APP_MALTD_API
       ? window.REACT_APP_MALTD_API
       : process.env.REACT_APP_MALTD_API;
 
@@ -43,12 +43,12 @@ export default class MainPage extends Component {
       this.apiBasePath = "/api";
     }
 
-    let config = {
+    const config = {
       timeout: 120000
     };
 
     if (baseURL) {
-      config["baseURL"] = baseURL;
+      config.baseURL = baseURL;
     }
 
     this.axios = axios.create(config);
