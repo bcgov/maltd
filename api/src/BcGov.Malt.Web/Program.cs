@@ -42,7 +42,7 @@ namespace BcGov.Malt.Web
                 IHost host = CreateHostBuilder(args).Build();
 
                 // try to load all the access tokens on startup
-                await GetAccessTokensAsync(logger, host.Services);
+                await GetAccessTokensAsync(logger, host.Services).ConfigureAwait(false);
 
                 logger.Information("Starting web host");
                 await host.RunAsync();
@@ -165,7 +165,7 @@ namespace BcGov.Malt.Web
                     var accessTokenLoader = scope.ServiceProvider.GetRequiredService<IAccessTokenLoader>();
 
                     Stopwatch stopwatch = Stopwatch.StartNew();
-                    List<Tuple<ProjectResource, Exception>> results = await accessTokenLoader.GetAccessTokensAsync();
+                    List<Tuple<ProjectResource, Exception>> results = await accessTokenLoader.GetAccessTokensAsync().ConfigureAwait(false);
                     stopwatch.Stop();
                     var milliseconds = stopwatch.Elapsed.TotalMilliseconds;
 

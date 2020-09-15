@@ -68,12 +68,12 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             using var content = new StringContent(samlSoapRequest, Encoding.UTF8, "application/soap+xml");
 
             using var client = new HttpClient();
-            var responseMessage = await client.PostAsync(stsUrl, content);
+            var responseMessage = await client.PostAsync(stsUrl, content).ConfigureAwait(false);
 
             // A valid response needs to be a SOAP element, Content Type = application/soap+xml
             // Invalid parameters can still return 200 but will be an HTML document
 
-            var responseContent = await responseMessage.Content.ReadAsStringAsync();
+            var responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             
             if (TryParseXml(responseContent, out XmlDocument soapResponse))
             {
@@ -173,7 +173,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
             using var content = new FormUrlEncodedContent(data);
 
-            var httpPostResponse = await client.PostAsync(trustUri, content);
+            var httpPostResponse = await client.PostAsync(trustUri, content).ConfigureAwait(false);
 
             // the response could be 302 as well
             if (!httpPostResponse.IsSuccessStatusCode && httpPostResponse.StatusCode != HttpStatusCode.Found)
