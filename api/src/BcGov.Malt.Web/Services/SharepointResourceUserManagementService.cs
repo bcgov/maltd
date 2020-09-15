@@ -208,6 +208,9 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
+            _logger.LogDebug("Checking {Username} has access to project", username);
+
+
             var user = await _userSearchService.SearchAsync(username).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
