@@ -90,11 +90,13 @@ namespace BcGov.Malt.Web
 
             services.AddMemoryCache();
 
+#if false
             AddHealthChecks(services);
 
             services
                 .AddHealthChecksUI()
                 .AddInMemoryStorage();
+#endif
 
             // this will configure the service correctly, comment out for now until
             // the services are working
@@ -301,6 +303,7 @@ namespace BcGov.Malt.Web
                     endpointConventionBuilder.RequireAuthorization();
                 }
 
+#if false
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions
                     {
                         Predicate = registration => true,
@@ -310,9 +313,11 @@ namespace BcGov.Malt.Web
                     ;
 
                 endpoints.MapHealthChecksUI();
+#endif
             });
 
-            if (!env.IsProduction())
+
+                if (!env.IsProduction())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
