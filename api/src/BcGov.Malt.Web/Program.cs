@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BcGov.Malt.Web.Infrastructure;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +35,8 @@ namespace BcGov.Malt.Web
             try
             {
                 // configure ServicePointManager before making any network requests
-                ConfigureServicePointManager(logger);
+                ServicePointManagerConfiguration.Configure(logger);
+                ThreadPoolConfiguration.Configure(logger);
 
                 // create the host
                 IHost host = CreateHostBuilder(args).Build();
@@ -240,36 +242,5 @@ namespace BcGov.Malt.Web
         }
 
 
-        private static void ConfigureServicePointManager(ILogger logger)
-        {
-            // DefaultConnectionLimit : The maximum number of concurrent connections allowed to a single host (ServicePoint)
-            int defaultConnectionLimit;
-            
-            var value = Environment.GetEnvironmentVariable("DEFAULTCONNECTIONLIMIT");
-            if (!string.IsNullOrEmpty(value) && int.TryParse(value, out defaultConnectionLimit))
-            {
-                logger.Information("Environment variable DEFAULTCONNECTIONLIMIT is set to {DefaultConnectionLimit}", defaultConnectionLimit);
-            }
-            else
-            {
-                logger.Information("Environment variable DEFAULTCONNECTIONLIMIT is not set or is not an integer, defaulting DefaultConnectionLimit to 50");
-                defaultConnectionLimit = 50;
-            }
-
-            ServicePointManager.DefaultConnectionLimit = defaultConnectionLimit;
-
-            logger.Information("ServicePointManager settings = {@ServicePointManager}",
-            new
-            {
-                ServicePointManager.UseNagleAlgorithm,
-                ServicePointManager.DnsRefreshTimeout,
-                ServicePointManager.Expect100Continue,
-                ServicePointManager.CheckCertificateRevocationList,
-                ServicePointManager.MaxServicePoints,
-                ServicePointManager.MaxServicePointIdleTime,
-                ServicePointManager.DefaultConnectionLimit,
-                ServicePointManager.DefaultPersistentConnectionLimit
-            });
-        }
     }
 }
