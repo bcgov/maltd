@@ -30,13 +30,12 @@ namespace BcGov.Malt.Web.Features.Users
         {
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
-            private readonly ILogger<Handler> _logger;
 
             public Handler(IUserSearchService userSearchService, IUserManagementService userManagementService, ILogger<Handler> logger)
+                : base(logger)
             {
                 _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
                 _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
             public override async Task<DetailedUser> Handle(Request request, CancellationToken cancellationToken)
@@ -50,17 +49,17 @@ namespace BcGov.Malt.Web.Features.Users
                         throw new ArgumentNullException(nameof(request));
                     }
 
-                    _logger.LogDebug("Searching for user {Username}", request.Username);
+                    Logger.LogDebug("Searching for user {Username}", request.Username);
 
                     var user = await _userSearchService.SearchAsync(request.Username).ConfigureAwait(false);
 
                     if (user == null)
                     {
-                        _logger.LogDebug("Lookup for {Username} returned null, returning null", request.Username);
+                        Logger.LogDebug("Lookup for {Username} returned null, returning null", request.Username);
                         return null;
                     }
 
-                    _logger.LogDebug("Looking for project membership for user {Username}", user.UserName);
+                    Logger.LogDebug("Looking for project membership for user {Username}", user.UserName);
                     var projects = await _userManagementService.GetProjectsForUserAsync(user, cts.Token).ConfigureAwait(false);
 
                     DetailedUser result = new DetailedUser(user, projects);
@@ -69,7 +68,7 @@ namespace BcGov.Malt.Web.Features.Users
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Error lookup user");
+                    Logger.LogError(e, "Error lookup user");
                     throw;
                 }
             }

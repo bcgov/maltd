@@ -173,7 +173,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
             using var content = new FormUrlEncodedContent(data);
 
-            var httpPostResponse = await client.PostAsync(trustUri, content).ConfigureAwait(false);
+            var httpPostResponse = await client.PostAsync("/_trust/", content).ConfigureAwait(false);
 
             // the response could be 302 as well
             if (!httpPostResponse.IsSuccessStatusCode && httpPostResponse.StatusCode != HttpStatusCode.Found)

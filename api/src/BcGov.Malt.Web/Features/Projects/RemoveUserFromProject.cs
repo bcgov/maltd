@@ -30,14 +30,13 @@ namespace BcGov.Malt.Web.Features.Projects
             private readonly IUserSearchService _userSearchService;
             private readonly IUserManagementService _userManagementService;
             private readonly ProjectConfigurationCollection _projects;
-            private readonly ILogger<Handler> _logger;
 
             public Handler(IUserSearchService userSearchService, IUserManagementService userManagementService, ProjectConfigurationCollection projects, ILogger<Handler> logger)
+                : base(logger)
             {
                 _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
                 _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
                 _projects = projects ?? throw new ArgumentNullException(nameof(projects));
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
             public override async Task<ProjectAccess> Handle(Request request, CancellationToken cancellationToken)
@@ -46,7 +45,7 @@ namespace BcGov.Malt.Web.Features.Projects
 
                 if (project == null)
                 {
-                    _logger.LogInformation("Project {ProjectId} not found", request.ProjectId);
+                    Logger.LogInformation("Project {ProjectId} not found", request.ProjectId);
                     throw new ProjectNotFoundException(request.ProjectId);
                 }
 
@@ -54,7 +53,7 @@ namespace BcGov.Malt.Web.Features.Projects
 
                 if (user == null)
                 {
-                    _logger.LogInformation("User {Username} not found", request.Username);
+                    Logger.LogInformation("User {Username} not found", request.Username);
                     throw new UserNotFoundException(request.Username);
                 }
 
