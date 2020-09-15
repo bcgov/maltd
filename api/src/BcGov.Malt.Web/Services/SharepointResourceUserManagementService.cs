@@ -85,7 +85,7 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
-            var user = await _userSearchService.SearchAsync(username);
+            var user = await _userSearchService.SearchAsync(username).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
@@ -93,9 +93,9 @@ namespace BcGov.Malt.Web.Services
                 return $"Unable to locate user's User Principal Name (UPN)";
             }
 
-            ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken);
+            ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken).ConfigureAwait(false);
 
-            GetSharePointWebVerboseResponse web = await restClient.GetWebAsync(cancellationToken);
+            GetSharePointWebVerboseResponse web = await restClient.GetWebAsync(cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(web?.Data?.Title))
             {
@@ -106,7 +106,7 @@ namespace BcGov.Malt.Web.Services
             // we always add users to '<site-group> Members'
             var siteGroupTitle = web.Data.Title + " Members";
 
-            GetSiteGroupsVerboseResponse siteGroups = await restClient.GetSiteGroupsByTitleAsync(siteGroupTitle, cancellationToken);
+            GetSiteGroupsVerboseResponse siteGroups = await restClient.GetSiteGroupsByTitleAsync(siteGroupTitle, cancellationToken).ConfigureAwait(false);
 
             if (siteGroups.Data.Results.Count == 0)
             {
@@ -127,14 +127,14 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName }, cancellationToken);
+                await restClient.AddUserToGroupAsync(siteGroup.Id, new User { LoginName = logonName }, cancellationToken).ConfigureAwait(false);
                 return string.Empty;
             }
             catch (ApiException e)
             {
-                var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
-                _logger.LogWarning(e, "Error adding user to Sharepoint group {@Error}", errorResponse);
-                return $"Error occuring adding user to SharePoint site group '{siteGroupTitle}'";
+                var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>().ConfigureAwait(false);
+                _logger.LogWarning(e, "Error adding user to SharePoint group {@Error}", errorResponse);
+                return $"Error occurred adding user to SharePoint site group '{siteGroupTitle}'";
             }
         }
         
@@ -147,7 +147,7 @@ namespace BcGov.Malt.Web.Services
 
             _logger.LogDebug("Removing access for {Username}", username);
 
-            var user = await _userSearchService.SearchAsync(username);
+            var user = await _userSearchService.SearchAsync(username).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
@@ -158,9 +158,9 @@ namespace BcGov.Malt.Web.Services
             // format the SharePoint login name format
             string loginName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
-            ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken);
+            ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken).ConfigureAwait(false);
 
-            var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
+            var groups = await restClient.GetSiteGroupsAsync(cancellationToken).ConfigureAwait(false);
             var siteGroups = groups.Data.Results;
 
             StringBuilder response = new StringBuilder();
@@ -169,7 +169,7 @@ namespace BcGov.Malt.Web.Services
             {
                 try
                 {
-                    var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
+                    var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken).ConfigureAwait(false);
 
                     var users = getUsersResponse.Data.Results.Where(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
@@ -179,11 +179,11 @@ namespace BcGov.Malt.Web.Services
 
                         try
                         {
-                            await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id, cancellationToken);
+                            await restClient.RemoveUserFromSiteGroupAsync(siteGroup.Id, sharePointUser.Id, cancellationToken).ConfigureAwait(false);
                         }
                         catch (ApiException e)
                         {
-                            var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
+                            var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>().ConfigureAwait(false);
                             _logger.LogWarning(e, "Error removing user from SharePoint group {@Error}", errorResponse);
 
                             response.Append(response.Length != 0 ? ", " : "Error removing user from site group(s): ");
@@ -208,7 +208,10 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
-            var user = await _userSearchService.SearchAsync(username);
+            _logger.LogDebug("Checking {Username} has access to project", username);
+
+
+            var user = await _userSearchService.SearchAsync(username).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
@@ -219,9 +222,9 @@ namespace BcGov.Malt.Web.Services
             // format the SharePoint login name format
             string loginName = Constants.LoginNamePrefix + user.UserPrincipalName;
 
-            ISharePointClient restClient = await GetSharePointRestClient();
+            ISharePointClient restClient = await GetSharePointRestClient().ConfigureAwait(false);
 
-            var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
+            var groups = await restClient.GetSiteGroupsAsync(cancellationToken).ConfigureAwait(false);
             var siteGroups = groups.Data.Results;
 
             // service account does not have permission to view membership of "Excel Services Viewers"
@@ -230,7 +233,7 @@ namespace BcGov.Malt.Web.Services
             {
                 try
                 {
-                    var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
+                    var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken).ConfigureAwait(false);
                     var groupMember = getUsersResponse.Data.Results.Any(_ => LoginNameComparer.Equals(_.LoginName, loginName));
 
                     if (groupMember)
@@ -252,7 +255,7 @@ namespace BcGov.Malt.Web.Services
         private async Task<ISharePointClient> GetSharePointRestClient()
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            var httpClient = await GetHttpClientAsync();
+            var httpClient = await GetHttpClientAsync().ConfigureAwait(false);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
             return RestService.For<ISharePointClient>(httpClient, _refitSettings);
@@ -261,11 +264,11 @@ namespace BcGov.Malt.Web.Services
         private async Task<ISharePointClient> GetSharePointRestClientForUpdate(CancellationToken cancellationToken)
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            var httpClient = await GetHttpClientAsync();
+            var httpClient = await GetHttpClientAsync().ConfigureAwait(false);
 #pragma warning restore CA2000 // Dispose objects before losing scope
             var restClient = RestService.For<ISharePointClient>(httpClient, _refitSettings);
 
-            var contextWebInformationResponse = await restClient.GetContextWebInformationAsync(cancellationToken);
+            var contextWebInformationResponse = await restClient.GetContextWebInformationAsync(cancellationToken).ConfigureAwait(false);
 
             httpClient.DefaultRequestHeaders.Add("X-RequestDigest", contextWebInformationResponse.Data.ContextWebInformation.FormDigestValue);
 
@@ -305,9 +308,9 @@ namespace BcGov.Malt.Web.Services
             var password = ProjectResource.Password;
             var authorizationUrl = ProjectResource.AuthorizationUri.ToString();
 
-            string samlToken = await _samlAuthenticator.GetStsSamlTokenAsync(relyingPartyIdentifier, username, password, authorizationUrl);
+            string samlToken = await _samlAuthenticator.GetStsSamlTokenAsync(relyingPartyIdentifier, username, password, authorizationUrl).ConfigureAwait(false);
 
-            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, cookieContainer);
+            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, cookieContainer).ConfigureAwait(false);
 
             return httpClient;
         }
@@ -330,8 +333,8 @@ namespace BcGov.Malt.Web.Services
 
         public async Task<T> DeserializeAsync<T>(HttpContent content)
         {
-            using var utf8Json = await content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<T>(utf8Json, SerializerOptions);
+            using var utf8Json = await content.ReadAsStreamAsync().ConfigureAwait(false);
+            var data = await JsonSerializer.DeserializeAsync<T>(utf8Json, SerializerOptions).ConfigureAwait(false);
             return data;
         }
 

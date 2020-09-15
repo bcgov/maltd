@@ -41,7 +41,9 @@ namespace BcGov.Malt.Web.Services
 
             using var content = new FormUrlEncodedContent(data);
 
-            var response = await _httpClient.PostAsync(options.AuthorizationUri, content, cancellationToken);
+            var response = await _httpClient
+                .PostAsync(options.AuthorizationUri, content, cancellationToken)
+                .ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -50,7 +52,7 @@ namespace BcGov.Malt.Web.Services
 
                 if (response.Content != null)
                 {
-                    responseData = await response.Content.ReadAsStringAsync();
+                    responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
 
                 //throw new OAuthApiException(
@@ -63,9 +65,12 @@ namespace BcGov.Malt.Web.Services
                 throw new OAuthApiException("Error getting OAuth token", (int)response.StatusCode, responseData, new Dictionary<string, string>(), string.Empty);
             }
 
-            using var stream = await response.Content.ReadAsStreamAsync();
+            using var stream = await response.Content
+                .ReadAsStreamAsync()
+                .ConfigureAwait(false);
 
-            var token = await JsonSerializer.DeserializeAsync<Token>(stream, cancellationToken: cancellationToken);
+            var token = await JsonSerializer.DeserializeAsync<Token>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+
             return token;
         }
 
