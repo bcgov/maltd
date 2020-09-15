@@ -25,7 +25,7 @@ describe("Main page", () => {
   beforeEach(() => {
     wrapper = shallow(<MainPage onLogoutClick={() => jest.fn()} />);
     instance = wrapper.instance();
-    mock = new MockAdapter(axios);
+    mock = new MockAdapter(instance.axios);
   });
 
   describe("onBackClick", () => {

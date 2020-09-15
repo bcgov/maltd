@@ -10,14 +10,6 @@ import checkArrayEquality from "../../../modules/HelperFunctions";
 
 const Unauthorized = 401;
 
-let apiBasePath = window.REACT_APP_API_BASE_PATH
-  ? window.REACT_APP_API_BASE_PATH
-  : process.env.REACT_APP_API_BASE_PATH;
-
-if (!apiBasePath) {
-  apiBasePath = "/api";
-}
-
 export default class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +30,28 @@ export default class MainPage extends Component {
       selectedDropdownItem: null,
       duplicateErrorMessage: null
     };
+
+    const baseURL = window.REACT_APP_MALTD_API
+      ? window.REACT_APP_MALTD_API
+      : process.env.REACT_APP_MALTD_API;
+
+    this.apiBasePath = window.REACT_APP_API_BASE_PATH
+      ? window.REACT_APP_API_BASE_PATH
+      : process.env.REACT_APP_API_BASE_PATH;
+
+    if (!this.apiBasePath) {
+      this.apiBasePath = "/api";
+    }
+
+    const config = {
+      timeout: 120000
+    };
+
+    if (baseURL) {
+      config.baseURL = baseURL;
+    }
+
+    this.axios = axios.create(config);
   }
 
   static getAccessToken() {
@@ -53,8 +67,7 @@ export default class MainPage extends Component {
     const { value } = this.state;
 
     try {
-      const res = await axios.get(`${apiBasePath}/projects`, {
-        timeout: 2 * 60 * 1000,
+      const res = await this.axios.get(`${this.apiBasePath}/projects`, {
         headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
       this.setState({
@@ -63,14 +76,15 @@ export default class MainPage extends Component {
         disabledButton: true,
         disabledInput: true
       });
-      await axios.get(`${apiBasePath}/users?q=${value}`, {
-        timeout: 2 * 60 * 1000,
+      await this.axios.get(`${this.apiBasePath}/users?q=${value}`, {
         headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
       });
-      const result = await axios.get(`${apiBasePath}/users/${value}`, {
-        timeout: 2 * 60 * 1000,
-        headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
-      });
+      const result = await this.axios.get(
+        `${this.apiBasePath}/users/${value}`,
+        {
+          headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
+        }
+      );
       const { data } = result;
       const finalProjects = [];
       data.projects.forEach(proj => {
@@ -158,10 +172,9 @@ export default class MainPage extends Component {
     const { value, projects } = this.state;
 
     try {
-      const res = await axios.delete(
-        `${apiBasePath}/projects/${projectId}/users/${value}`,
+      const res = await this.axios.delete(
+        `${this.apiBasePath}/projects/${projectId}/users/${value}`,
         {
-          timeout: 2 * 60 * 1000,
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         }
       );
@@ -214,11 +227,10 @@ export default class MainPage extends Component {
     });
 
     try {
-      const res = await axios.put(
-        `${apiBasePath}/projects/${selectedDropdownItem.id}/users/${value}`,
+      const res = await this.axios.put(
+        `${this.apiBasePath}/projects/${selectedDropdownItem.id}/users/${value}`,
         null,
         {
-          timeout: 2 * 60 * 1000,
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         }
       );
