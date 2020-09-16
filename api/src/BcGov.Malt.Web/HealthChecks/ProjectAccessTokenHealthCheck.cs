@@ -66,7 +66,7 @@ namespace BcGov.Malt.Web.HealthChecks
 
             foreach (ProjectResource resource in _project.Resources)
             {
-                tasks.Add(CheckAccessTokenAsync(_project, resource));
+                tasks.Add(Task.Run(() => CheckAccessTokenAsync(_project, resource)));
             }
 
             await Task.WhenAll(tasks);

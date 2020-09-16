@@ -42,7 +42,8 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <param name="stsUrl"></param>
         /// <param name="cached"></param>
         /// <returns></returns>
-        public async Task<string> GetStsSamlTokenAsync(string relyingParty, string username, string password, string stsUrl, bool cached = true)
+        public async Task<string> GetStsSamlTokenAsync(string relyingParty, string username, string password,
+            string stsUrl, bool cached = true)
         {
             string securityTokenResponse;
 
@@ -66,6 +67,10 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             // generate the WS-Trust security token request SOAP message 
             string samlSoapRequest = CreateSamlSoapRequest(relyingParty, username, password, stsUrl);
             using var content = new StringContent(samlSoapRequest, Encoding.UTF8, "application/soap+xml");
+
+            // tried this, it didn't help the slow requests, tokens are cached, so this isn't called on every request
+            //using var handler = new SocketsHttpHandler { MaxConnectionsPerServer = 100 };
+            //using var client = new HttpClient(handler);
 
             using var client = new HttpClient();
             var responseMessage = await client.PostAsync(stsUrl, content);

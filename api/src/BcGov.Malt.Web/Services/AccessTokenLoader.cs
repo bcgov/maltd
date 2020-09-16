@@ -59,7 +59,7 @@ namespace BcGov.Malt.Web.Services
                 }
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks.Select(_ => Task.Run(() => _)));
 
             return tasks.Select(_ => _.Result).ToList();
         }

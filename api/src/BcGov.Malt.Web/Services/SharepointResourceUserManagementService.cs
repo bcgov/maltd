@@ -280,11 +280,12 @@ namespace BcGov.Malt.Web.Services
         {
             var cookieContainer = new CookieContainer();
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            HttpMessageHandler handler = new HttpClientHandler
+            HttpMessageHandler handler = new SocketsHttpHandler
             {
                 UseCookies = true,
                 AllowAutoRedirect = false,
-                CookieContainer = cookieContainer
+                CookieContainer = cookieContainer,
+                MaxConnectionsPerServer = 25
             };
 
             if (!string.IsNullOrEmpty(ProjectResource.ApiGatewayHost) && !string.IsNullOrEmpty(ProjectResource.ApiGatewayPolicy))
@@ -293,6 +294,8 @@ namespace BcGov.Malt.Web.Services
                 _logger.LogDebug("Using {@ApiGateway} for {Resource}", 
                     new { Host = ProjectResource.ApiGatewayHost, Policy = ProjectResource.ApiGatewayPolicy }, 
                     ProjectResource.Resource);
+
+
 
                 handler = new ApiGatewayHandler(handler, ProjectResource.ApiGatewayHost, ProjectResource.ApiGatewayPolicy);
             }
