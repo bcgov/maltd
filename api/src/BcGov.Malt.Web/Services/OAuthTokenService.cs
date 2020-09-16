@@ -36,7 +36,7 @@ namespace BcGov.Malt.Web.Services
             }
 
             // TODO: use refresh token if available 
-            token = await _client.GetTokenAsync(configuration, cancellationToken).ConfigureAwait(false);
+            token = await _client.GetTokenAsync(configuration, cancellationToken);
 
             _tokenCache.SaveToken(configuration, token, token.AccessTokenExpiresAtUtc);
 

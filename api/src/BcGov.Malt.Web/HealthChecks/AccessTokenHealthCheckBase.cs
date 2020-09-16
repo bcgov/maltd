@@ -31,10 +31,10 @@ namespace BcGov.Malt.Web.HealthChecks
             switch (resource.Type)
             {
                 case ProjectType.Dynamics:
-                    return await CheckOAuthAccessTokenAsync(project, resource).ConfigureAwait(false);
+                    return await CheckOAuthAccessTokenAsync(project, resource);
 
                 case ProjectType.SharePoint:
-                    return await CheckSamlAccessTokenAsync(project, resource).ConfigureAwait(false);
+                    return await CheckSamlAccessTokenAsync(project, resource);
 
                 default:
                     Exception exception = new InvalidProjectTypeException(resource.Type);
@@ -60,7 +60,7 @@ namespace BcGov.Malt.Web.HealthChecks
                 var oauthClient = _oauthClientFactory.Create(project);
 
                 // IOAuthClient does not cache tokens
-                Token token = await oauthClient.GetTokenAsync(options, CancellationToken.None).ConfigureAwait(false);
+                Token token = await oauthClient.GetTokenAsync(options, CancellationToken.None);
                 return Tuple.Create(resource, _noException);
             }
             catch (Exception e)
@@ -79,7 +79,7 @@ namespace BcGov.Malt.Web.HealthChecks
             try
             {
                 // dont cache the tokens
-                string token = await _samlAuthenticator.GetStsSamlTokenAsync(relyingParty, username, password, stsUri, cached: false).ConfigureAwait(false);
+                string token = await _samlAuthenticator.GetStsSamlTokenAsync(relyingParty, username, password, stsUri, cached: false);
                 return Tuple.Create(resource, _noException);
             }
             catch (Exception e)

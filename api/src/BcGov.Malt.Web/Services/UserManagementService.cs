@@ -52,7 +52,7 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                await aggregateTask.ConfigureAwait(false);
+                await aggregateTask;
             }
             catch (Exception exception)
             {
@@ -121,7 +121,7 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                await aggregateTask.ConfigureAwait(false);
+                await aggregateTask;
             }
             catch (Exception)
             {
@@ -229,7 +229,7 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                await aggregateTask.ConfigureAwait(false);
+                await aggregateTask;
             }
             catch (Exception exception)
             {

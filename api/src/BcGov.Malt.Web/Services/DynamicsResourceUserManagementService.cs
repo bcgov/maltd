@@ -40,14 +40,14 @@ namespace BcGov.Malt.Web.Services
 
             _logger.LogDebug("Adding {Username} to project", username);
 
-            SystemUser entry = await GetSystemUserByLogon(client, logon, cancellationToken).ConfigureAwait(false);
+            SystemUser entry = await GetSystemUserByLogon(client, logon, cancellationToken);
 
             if (entry == null)
             {
                 _logger.LogInformation("{Username} does not exist, creating a new record", username);
 
-                User user = await _userSearchService.SearchAsync(username).ConfigureAwait(false);
-                BusinessUnit rootBusinessUnit = await GetRootBusinessUnit(client, cancellationToken).ConfigureAwait(false);
+                User user = await _userSearchService.SearchAsync(username);
+                BusinessUnit rootBusinessUnit = await GetRootBusinessUnit(client, cancellationToken);
 
                 // populate the SystemUser with required attributes
                 entry = new SystemUser
@@ -63,13 +63,12 @@ namespace BcGov.Malt.Web.Services
                 await client
                     .For<SystemUser>()
                     .Set(entry)
-                    .InsertEntryAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                    .InsertEntryAsync(cancellationToken);
             }
             else if (entry.IsDisabled != null && entry.IsDisabled.Value)
             {
                 _logger.LogInformation("{@SystemUser} exists but is disabled, enabling user", entry);
-                await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false, cancellationToken).ConfigureAwait(false);
+                await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false, cancellationToken);
             }
             else
             {
@@ -90,7 +89,7 @@ namespace BcGov.Malt.Web.Services
             string logon = IDIR.Logon(username);
 
             _logger.LogDebug("Removing {Username} from project", username);
-            SystemUser entry = await GetSystemUserByLogon(client, logon, cancellationToken).ConfigureAwait(false);
+            SystemUser entry = await GetSystemUserByLogon(client, logon, cancellationToken);
 
             if (entry == null)
             {
@@ -104,7 +103,7 @@ namespace BcGov.Malt.Web.Services
                 return string.Empty; // user does not exist, or is already disabled
             }
 
-            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true, cancellationToken).ConfigureAwait(false);
+            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true, cancellationToken);
 
             return string.Empty;
         }
@@ -121,7 +120,7 @@ namespace BcGov.Malt.Web.Services
             string logon = IDIR.Logon(username);
 
             _logger.LogDebug("Checking {Username} has access to project", username);
-            var entry = await GetSystemUserByLogon(client, logon, cancellationToken).ConfigureAwait(false);
+            var entry = await GetSystemUserByLogon(client, logon, cancellationToken);
 
             return entry?.IsDisabled != null && !entry.IsDisabled.Value;
         }
@@ -151,8 +150,7 @@ namespace BcGov.Malt.Web.Services
                 SystemUser systemUser = await client
                     .For<SystemUser>()
                     .Filter(_ => _.DomainName == logon)
-                    .FindEntryAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                    .FindEntryAsync(cancellationToken);
 
                 if (systemUser != null)
                 {
@@ -188,8 +186,7 @@ namespace BcGov.Malt.Web.Services
             IEnumerable<BusinessUnit> entries = await client
                 .For<BusinessUnit>()
                 .Filter(_ => _.ParentBusinessUnit == null)
-                .FindEntriesAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .FindEntriesAsync(cancellationToken);
 
             BusinessUnit businessUnit = null;
 
