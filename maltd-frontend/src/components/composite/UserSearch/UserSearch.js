@@ -107,5 +107,6 @@ UserSearch.propTypes = {
 UserSearch.defaultProps = {
   onClick: () => {},
   onChange: () => {},
-  onKeyEnter: () => {}
+  onKeyEnter: () => {},
+  isButtonDisabled: false
 };

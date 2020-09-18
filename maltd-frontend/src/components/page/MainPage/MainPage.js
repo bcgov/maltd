@@ -25,7 +25,6 @@ export default class MainPage extends Component {
       projects: [],
       userEmail: null,
       userName: "",
-      color: "primary",
       userExists: null,
       items: [],
       selectedDropdownItem: null,
@@ -149,20 +148,17 @@ export default class MainPage extends Component {
       this.setState({
         invalidInput: false,
         validInput: false,
-        disabledButton: true,
-        color: "primary"
+        disabledButton: true
       });
     } else if (val.length < 3) {
       this.setState({
-        invalidInput: true,
-        color: "danger"
+        invalidInput: true
       });
     } else {
       this.setState({
         invalidInput: false,
         validInput: true,
-        disabledButton: false,
-        color: "primary"
+        disabledButton: false
       });
     }
 
@@ -442,5 +438,9 @@ export default class MainPage extends Component {
 }
 
 MainPage.propTypes = {
-  onLogoutClick: PropTypes.func.isRequired
+  onLogoutClick: PropTypes.func.isRequired,
+  header: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired
+  }).isRequired
 };

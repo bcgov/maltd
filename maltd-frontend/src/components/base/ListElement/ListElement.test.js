@@ -3,7 +3,6 @@ import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
 import ListElement from "./ListElement";
-import XIcon from "../XIcon/XIcon";
 
 Enzyme.configure({ adapter: new Adapter() });
 

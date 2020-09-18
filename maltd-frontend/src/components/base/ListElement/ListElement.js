@@ -61,13 +61,13 @@ export default function ListElement({
         </div>
       </React.Fragment>
     );
-  } else {
-    return (
-      <div>
-        <p>No projects</p>
-      </div>
-    );
   }
+
+  return (
+    <div>
+      <p>No projects</p>
+    </div>
+  );
 }
 
 ListElement.propTypes = {

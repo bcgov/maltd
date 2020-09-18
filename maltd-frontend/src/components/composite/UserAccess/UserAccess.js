@@ -134,6 +134,7 @@ UserAccess.propTypes = {
     userName: PropTypes.string.isRequired,
     userEmail: PropTypes.string
   }).isRequired,
+  isButtonDisabled: PropTypes.bool,
   onXClick: PropTypes.func.isRequired,
   onPlusClick: PropTypes.func.isRequired,
   onDropdownClick: PropTypes.func.isRequired,
@@ -145,5 +146,6 @@ UserAccess.propTypes = {
 };
 
 UserAccess.defaultProps = {
-  duplicateErrorMessage: ""
+  duplicateErrorMessage: "",
+  isButtonDisabled: false
 };

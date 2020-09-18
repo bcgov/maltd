@@ -1,5 +1,6 @@
 /* eslint-disable no-alert,no-console */
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import Keycloak from "keycloak-js";
 import MainPage from "../page/MainPage/MainPage";
 
@@ -85,3 +86,10 @@ export default function AuthenticationGuard({ header }) {
     </React.Fragment>
   );
 }
+
+AuthenticationGuard.propTypes = {
+  header: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired
+  }).isRequired
+};
