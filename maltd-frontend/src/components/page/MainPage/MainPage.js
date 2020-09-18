@@ -32,7 +32,7 @@ export default class MainPage extends Component {
       duplicateErrorMessage: null,
       addProjectButtonShowLoader: false,
       errorMessage:
-        "This user does not exist, please try again with a different IDIR username."
+        "There is an issue with your request. Please check the IDIR and try again."
     };
 
     const baseURL = window.REACT_APP_MALTD_API
@@ -85,6 +85,7 @@ export default class MainPage extends Component {
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         });
       } catch (e) {
+        console.log("Error with getting user: ", e);
         const { status } = e.response;
         let errMessage = "";
         if (status === 500)
@@ -92,9 +93,9 @@ export default class MainPage extends Component {
             "An error occurred while processing your request. Please try again.";
         if (status === 504)
           errMessage = "Your request took too long. Please try again.";
-        if (status === 400)
+        if (status === 404)
           errMessage =
-            "There is an issue with your request. Please check the IDIR and try again.";
+            "This user does not exist, please try again with a different IDIR username.";
         if (errMessage) this.setState({ errorMessage: errMessage });
       }
 

@@ -22,7 +22,7 @@ export default function ListElement({
     });
   }
 
-  if (title) {
+  if (title || memberOfResources) {
     return (
       <React.Fragment>
         <div className="project-div">
