@@ -48,6 +48,7 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx}",
+      "!src/components/hoc/**",
       "!**/node_modules/**",
       "!**/vendor/**"
     ],

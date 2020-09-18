@@ -1,4 +1,5 @@
 import React from "react";
+import { createMemoryHistory } from "history";
 import renderer from "react-test-renderer";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
@@ -8,10 +9,15 @@ import MainPage from "./MainPage";
 
 Enzyme.configure({ adapter: new Adapter() });
 
+const header = {
+  name: "MALTD",
+  history: createMemoryHistory()
+};
+
 describe("Main page", () => {
   test("Component renders as expected", () => {
     const component = renderer.create(
-      <MainPage onLogoutClick={() => jest.fn()} />
+      <MainPage header={header} onLogoutClick={() => jest.fn()} />
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
@@ -22,7 +28,9 @@ describe("Main page", () => {
   let mock;
 
   beforeEach(() => {
-    wrapper = shallow(<MainPage onLogoutClick={() => jest.fn()} />);
+    wrapper = shallow(
+      <MainPage header={header} onLogoutClick={() => jest.fn()} />
+    );
     instance = wrapper.instance();
     mock = new MockAdapter(instance.axios);
   });
@@ -73,7 +81,6 @@ describe("Main page", () => {
       expect(instance.state.invalidInput).toBe(false);
       expect(instance.state.validInput).toBe(false);
       expect(instance.state.disabledButton).toBe(true);
-      expect(instance.state.color).toBe("primary");
       expect(instance.state.value).toBe(event.target.value);
     });
 
@@ -87,7 +94,6 @@ describe("Main page", () => {
 
       expect(instance.state.userExists).toBe(null);
       expect(instance.state.invalidInput).toBe(true);
-      expect(instance.state.color).toBe("danger");
       expect(instance.state.value).toBe(event.target.value);
     });
 
@@ -103,7 +109,6 @@ describe("Main page", () => {
       expect(instance.state.invalidInput).toBe(false);
       expect(instance.state.validInput).toBe(true);
       expect(instance.state.disabledButton).toBe(false);
-      expect(instance.state.color).toBe("primary");
       expect(instance.state.value).toBe(event.target.value);
     });
   });
