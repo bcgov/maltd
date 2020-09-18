@@ -1,8 +1,0 @@
-.icon {
-  display: flex;
-  justify-content: stretch;
-}
-
-.icon:hover {
-  cursor: pointer;
-}

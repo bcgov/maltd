@@ -16,9 +16,13 @@ body {
   top: -10px;
   width: 50%;
   margin: auto;
-  display: flex;
   flex-direction: column;
   background-color: #f2f2f2;
+}
+
+.navbar-styling {
+  display: flex;
+  justify-content: space-between;
 }
 
 @media only screen and (max-width: 700px) {
@@ -45,12 +49,5 @@ body {
 @media only screen and (min-width: 701px) and (max-width: 850px) {
   .less-spacing-top {
     width: 55%;
-  }
-}
-
-/* Stop box stretch on wider screens */
-@media only screen and (min-width: 1200px) {
-  .less-spacing-top {
-    max-width: 600px;
   }
 }

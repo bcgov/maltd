@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import XIcon from "../XIcon/XIcon";
+import { MdDeleteForever } from "react-icons/md";
 import "./ListElement.css";
 
 export default function ListElement({
@@ -12,19 +12,17 @@ export default function ListElement({
   let message;
 
   if (resources && resources.length > 0) {
-    resources.forEach((resource, index) => {
+    resources.forEach(resource => {
       if (resource.message) {
-        notMemberOfResources += `${resource.type}`;
+        notMemberOfResources += resource.type;
         message = resource.message;
-      } else if (index !== resources.length - 1) {
-        memberOfResources += `${resource.type}, `;
-      } else {
-        memberOfResources += resource.type;
+      } else if (resource.status !== "not-member") {
+        memberOfResources += `${resource.type} `;
       }
     });
   }
 
-  if (title && (memberOfResources || description)) {
+  if (title) {
     return (
       <React.Fragment>
         <div className="project-div">
@@ -53,19 +51,23 @@ export default function ListElement({
           </div>
           <div>
             {typeof onXClick === "function" && (
-              <XIcon id={id} onClick={onXClick} />
+              <MdDeleteForever
+                className="pointer"
+                size={32}
+                onClick={() => onXClick(id)}
+              />
             )}
           </div>
         </div>
       </React.Fragment>
     );
+  } else {
+    return (
+      <div>
+        <p>No projects</p>
+      </div>
+    );
   }
-
-  return (
-    <div>
-      <p>No projects</p>
-    </div>
-  );
 }
 
 ListElement.propTypes = {

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { Header, Footer, Button } from "shared-components";
 import "./MainPage.css";
+import "../page.css";
 import UserSearch from "../../composite/UserSearch/UserSearch";
-import NavBar from "../../base/NavBar/NavBar";
 import BackIcon from "../../base/BackIcon/BackIcon";
 import UserAccess from "../../composite/UserAccess/UserAccess";
 import checkArrayEquality from "../../../modules/HelperFunctions";
@@ -28,7 +29,10 @@ export default class MainPage extends Component {
       userExists: null,
       items: [],
       selectedDropdownItem: null,
-      duplicateErrorMessage: null
+      duplicateErrorMessage: null,
+      addProjectButtonShowLoader: false,
+      errorMessage:
+        "This user does not exist, please try again with a different IDIR username."
     };
 
     const baseURL = window.REACT_APP_MALTD_API
@@ -76,9 +80,24 @@ export default class MainPage extends Component {
         disabledButton: true,
         disabledInput: true
       });
-      await this.axios.get(`${this.apiBasePath}/users?q=${value}`, {
-        headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
-      });
+      try {
+        await this.axios.get(`${this.apiBasePath}/users?q=${value}`, {
+          headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
+        });
+      } catch (e) {
+        const { status } = e.response;
+        let errMessage = "";
+        if (status === 500)
+          errMessage =
+            "An error occurred while processing your request. Please try again.";
+        if (status === 504)
+          errMessage = "Your request took too long. Please try again.";
+        if (status === 400)
+          errMessage =
+            "There is an issue with your request. Please check the IDIR and try again.";
+        if (errMessage) this.setState({ errorMessage: errMessage });
+      }
+
       const result = await this.axios.get(
         `${this.apiBasePath}/users/${value}`,
         {
@@ -194,7 +213,7 @@ export default class MainPage extends Component {
       });
       const updatedProjects = [];
       projects.forEach(proj => {
-        if (!isNonMemberForAllResources) {
+        if (!isNonMemberForAllResources && proj.id === projectId) {
           updatedProjects.push({
             id: proj.id,
             name: proj.name,
@@ -216,6 +235,7 @@ export default class MainPage extends Component {
   }
 
   async addUserToProject() {
+    this.setState({ addProjectButtonShowLoader: true });
     const { selectedDropdownItem, value, projects } = this.state;
 
     // get resources currently existing for added project if any
@@ -248,7 +268,8 @@ export default class MainPage extends Component {
             ...projects,
             { id: res.data.id, name: res.data.name, resources: userResources }
           ],
-          selectedDropdownItem: null
+          selectedDropdownItem: null,
+          addProjectButtonShowLoader: false
         });
         return true;
       }
@@ -267,13 +288,15 @@ export default class MainPage extends Component {
         });
         this.setState({
           projects: updatedProjects,
-          selectedDropdownItem: null
+          selectedDropdownItem: null,
+          addProjectButtonShowLoader: false
         });
         return true;
       }
       this.setState({
         duplicateErrorMessage:
-          "This project has already been added. Please try again with a different project."
+          "This project has already been added. Please try again with a different project.",
+        addProjectButtonShowLoader: false
       });
       setTimeout(() => {
         this.setState({
@@ -320,11 +343,12 @@ export default class MainPage extends Component {
       projects,
       userEmail,
       userName,
-      color,
       userExists,
       items,
       selectedDropdownItem,
-      duplicateErrorMessage
+      duplicateErrorMessage,
+      addProjectButtonShowLoader,
+      errorMessage
     } = this.state;
 
     const { onLogoutClick } = this.props;
@@ -339,17 +363,11 @@ export default class MainPage extends Component {
       disabled: disabledInput
     };
 
-    const generalButton = {
-      type: "submit",
-      color,
-      disabled: disabledButton,
-      label: "Find"
-    };
-
     const userSearch = {
       state: {
         isLoading,
-        userExists
+        userExists,
+        errorMessage
       }
     };
 
@@ -360,7 +378,7 @@ export default class MainPage extends Component {
     };
 
     const backIcon = {
-      message: "Find a user"
+      message: "Find another user"
     };
 
     const dropdown = {
@@ -369,9 +387,9 @@ export default class MainPage extends Component {
     };
 
     return (
-      <React.Fragment>
-        <NavBar onClick={() => onLogoutClick()} />
-        <div className="top-spacing" id="wrapper">
+      <main>
+        <Header header={this.props.header} />
+        <div className="navbar-styling">
           {!isUserSearch && (
             <div className="backicon-spacing">
               <BackIcon
@@ -380,32 +398,45 @@ export default class MainPage extends Component {
               />
             </div>
           )}
-          <div className="my-3 p-3 rounded shadow less-spacing-top">
-            <h4 className="add-remove-text">Add or Remove User</h4>
-            {isUserSearch && (
-              <UserSearch
-                userSearch={userSearch}
-                inputField={inputField}
-                onChange={e => this.onInputChange(e)}
-                generalButton={generalButton}
-                onClick={() => this.onButtonClick()}
-                onKeyEnter={e => this.onKeyEnter(e)}
-              />
-            )}
-
-            {!isUserSearch && (
-              <UserAccess
-                userAccess={userAccess}
-                onXClick={id => this.removeUserFromProject(id)}
-                onPlusClick={() => this.addUserToProject()}
-                onDropdownClick={item => this.updateSelectedDropdownItem(item)}
-                dropdown={dropdown}
-                duplicateErrorMessage={duplicateErrorMessage}
-              />
-            )}
+          {userSearch && <div />}
+          <Button
+            onClick={onLogoutClick}
+            label="Logout"
+            styling="logout-btn btn"
+          />
+        </div>
+        <div className="page">
+          <div className="content col-md-12">
+            <div className="my-3 p-3 rounded shadow less-spacing-top">
+              <h2>Add or Remove User</h2>
+              {isUserSearch && (
+                <UserSearch
+                  userSearch={userSearch}
+                  inputField={inputField}
+                  isButtonDisabled={disabledButton}
+                  onChange={e => this.onInputChange(e)}
+                  onClick={() => this.onButtonClick()}
+                  onKeyEnter={e => this.onKeyEnter(e)}
+                />
+              )}
+              {!isUserSearch && (
+                <UserAccess
+                  userAccess={userAccess}
+                  isButtonDisabled={addProjectButtonShowLoader}
+                  onXClick={id => this.removeUserFromProject(id)}
+                  onPlusClick={() => this.addUserToProject()}
+                  onDropdownClick={item =>
+                    this.updateSelectedDropdownItem(item)
+                  }
+                  dropdown={dropdown}
+                  duplicateErrorMessage={duplicateErrorMessage}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </React.Fragment>
+        <Footer />
+      </main>
     );
   }
 }

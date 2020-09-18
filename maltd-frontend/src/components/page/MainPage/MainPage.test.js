@@ -1,6 +1,5 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import axios from "axios";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
 import MockAdapter from "axios-mock-adapter";
