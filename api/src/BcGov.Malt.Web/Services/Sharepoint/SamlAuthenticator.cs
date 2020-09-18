@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using BcGov.Malt.Web.Infrastructure;
 using Microsoft.Extensions.Logging;
 
 namespace BcGov.Malt.Web.Services.Sharepoint
@@ -161,24 +162,24 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             }
         }
 
-        public async Task GetSharepointFedAuthCookieAsync(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer)
+        public async Task GetSharepointFedAuthCookieAsync(Uri sharePointServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer, string apiGatewayHost, string apiGatewayPolicy)
         {
-            // Single Sign On endpoint to post SAML token too
-            var trustUri = new Uri(samlServerUri, "_trust/");
-
-            _logger.LogTrace("Posting request to URI {TrustUri} to obtain FedAuth HTTP Cookie", trustUri);
-
             // create the body of the POST
             var data = new Dictionary<string, string>
             {
-                { "wa", "wsignin1.0" },
-                { "wctx", new Uri(samlServerUri, "_layouts/Authenticate.aspx?Source=%2F").ToString() },
-                { "wresult", samlToken }
+                {"wa", "wsignin1.0"},
+                {"wctx", new Uri(sharePointServerUri, "_layouts/Authenticate.aspx?Source=%2F").ToString()},
+                {"wresult", samlToken}
             };
 
             using var content = new FormUrlEncodedContent(data);
 
-            var httpPostResponse = await client.PostAsync("/_trust/", content);
+            // Single Sign On endpoint to post SAML token too
+            var trustUri = new Uri(ApiGatewayUriBuilder.Build(sharePointServerUri, apiGatewayHost, apiGatewayPolicy) + "_trust/");
+            
+            _logger.LogTrace("Posting request to URI {TrustUri} to obtain FedAuth HTTP Cookie", trustUri);
+
+            var httpPostResponse = await client.PostAsync("_trust/", content);
 
             // the response could be 302 as well
             if (!httpPostResponse.IsSuccessStatusCode && httpPostResponse.StatusCode != HttpStatusCode.Found)
@@ -189,7 +190,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
             }
 
             // get the schema and authority of the SAML server (ie Sharepoint)
-            var wreplyUri = new Uri(samlServerUri.GetLeftPart(UriPartial.Authority));
+            var wreplyUri = new Uri(sharePointServerUri.GetLeftPart(UriPartial.Authority));
 
             // if we are using an API gateway we need to copy the fedAuth
             // cookie to the wreply host.
@@ -200,7 +201,8 @@ namespace BcGov.Malt.Web.Services.Sharepoint
 
                 if (!string.IsNullOrEmpty(fedAuthCookieValue))
                 {
-                    cookieContainer.Add(wreplyUri, new Cookie("FedAuth", fedAuthCookieValue, "/"));
+                    var cookieRoot = new Uri(trustUri.GetLeftPart(UriPartial.Authority));
+                    cookieContainer.Add(cookieRoot, new Cookie("FedAuth", fedAuthCookieValue, "/"));
                 }
                 else
                 {

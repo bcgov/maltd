@@ -294,9 +294,7 @@ namespace BcGov.Malt.Web.Services
                 _logger.LogDebug("Using {@ApiGateway} for {Resource}", 
                     new { Host = ProjectResource.ApiGatewayHost, Policy = ProjectResource.ApiGatewayPolicy }, 
                     ProjectResource.Resource);
-
-
-
+                
                 handler = new ApiGatewayHandler(handler, ProjectResource.ApiGatewayHost, ProjectResource.ApiGatewayPolicy);
             }
 #pragma warning restore CA2000 // Dispose objects before losing scope
@@ -314,7 +312,10 @@ namespace BcGov.Malt.Web.Services
 
             string samlToken = await _samlAuthenticator.GetStsSamlTokenAsync(relyingPartyIdentifier, username, password, authorizationUrl);
 
-            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, cookieContainer);
+            string apiGatewayHost = ProjectResource.ApiGatewayHost;
+            string apiGatewayPolicy = ProjectResource.ApiGatewayPolicy;
+
+            await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, cookieContainer, apiGatewayHost, apiGatewayPolicy);
 
             return httpClient;
         }

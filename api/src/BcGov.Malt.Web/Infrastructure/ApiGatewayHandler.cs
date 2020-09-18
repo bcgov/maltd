@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,17 +36,7 @@ namespace BcGov.Malt.Web.Infrastructure
         {
             // save the original host in header
             request.Headers.Add("RouteToHost", request.RequestUri.Host);
-
-            // https://<host>/policy
-            UriBuilder builder = new UriBuilder(request.RequestUri);
-            builder.Host = _apiGatewayHost;
-
-            // inject the policy name as the first uri segment
-            builder.Path = builder.Path.StartsWith("/", StringComparison.InvariantCulture)
-                ? "/" + _apiGatewayPolicy + builder.Path
-                : "/" + _apiGatewayPolicy + "/" + builder.Path;
-
-            request.RequestUri = builder.Uri;
+            request.RequestUri = ApiGatewayUriBuilder.Build(request.RequestUri, _apiGatewayHost, _apiGatewayPolicy);
         }
     }
 }
