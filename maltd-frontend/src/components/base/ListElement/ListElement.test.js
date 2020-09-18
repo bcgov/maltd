@@ -1,5 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
+import { MdDeleteForever } from "react-icons/md";
 import Adapter from "enzyme-adapter-react-16";
 import Enzyme, { shallow } from "enzyme";
 import ListElement from "./ListElement";
@@ -38,7 +39,7 @@ describe("List Element", () => {
       />
     );
 
-    expect(wrapper.contains(<XIcon id="12" onClick={onClick} />)).toBe(true);
+    expect(wrapper.contains(<MdDeleteForever onClick={onClick} />)).toBe(true);
   });
 
   test("Component does not display XIcon when it should not", () => {
@@ -58,7 +59,7 @@ describe("List Element", () => {
       />
     );
 
-    expect(wrapper.contains(<XIcon id="12" onClick={onClick} />)).toBe(false);
+    expect(wrapper.contains(<MdDeleteForever onClick={onClick} />)).toBe(false);
   });
 
   test("Component generates the member of resources string appropriately", () => {

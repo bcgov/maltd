@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -347,7 +348,7 @@ export default class MainPage extends Component {
       errorMessage
     } = this.state;
 
-    const { onLogoutClick } = this.props;
+    const { onLogoutClick, header } = this.props;
 
     const inputField = {
       type: "text",
@@ -384,7 +385,7 @@ export default class MainPage extends Component {
 
     return (
       <main>
-        <Header header={this.props.header} />
+        <Header header={header} />
         <div className="navbar-styling">
           {!isUserSearch && (
             <div className="backicon-spacing">
