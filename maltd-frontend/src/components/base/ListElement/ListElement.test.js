@@ -22,27 +22,7 @@ describe("List Element", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test("Component displays XIcon when it should", () => {
-    const testState = { isClicked: false };
-    const onClick = () => {
-      testState.isClicked = true;
-    };
-
-    const wrapper = shallow(
-      <ListElement
-        listElement={{
-          title: "title",
-          description: "description",
-          id: "12"
-        }}
-        onXClick={onClick}
-      />
-    );
-
-    expect(wrapper.contains(<MdDeleteForever onClick={onClick} />)).toBe(true);
-  });
-
-  test("Component does not display XIcon when it should not", () => {
+  test("Component does not display Delete icon when it should not", () => {
     const testState = { isClicked: false };
     const onClick = () => {
       testState.isClicked = true;
@@ -76,6 +56,6 @@ describe("List Element", () => {
     const rows = wrapper.find("#member-resources");
 
     expect(rows.length).toEqual(1);
-    expect(rows.text()).toEqual("Member: Dyn, Share");
+    expect(rows.text()).toEqual("Member: Dyn Share ");
   });
 });

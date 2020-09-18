@@ -31,9 +31,6 @@ exports[`Back Icon Component renders as expected 1`] = `
     className="limit-width"
     data-cy="back-nav"
   >
-    <h5>
-      Back
-    </h5>
     <p>
       Find another user
     </p>

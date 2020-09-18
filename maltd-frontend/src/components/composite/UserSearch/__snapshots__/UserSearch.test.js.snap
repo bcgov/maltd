@@ -31,11 +31,11 @@ exports[`User Search Component renders as expected 1`] = `
         className="d-flex justify-content-end"
       >
         <button
-          aria-label={null}
-          className="general-button my-2 btn btn-primary disabled"
-          disabled={true}
+          className="bcgov-button normal-blue btn"
+          data-test-id=""
+          disabled={false}
           onClick={[Function]}
-          type="submit"
+          type="button"
         >
           Find
         </button>
