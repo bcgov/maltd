@@ -1,9 +1,0 @@
-.nav-div {
-  background-color: #cccccc;
-}
-
-@media only screen and (max-width: 768px) {
-  .nav-div {
-    padding-left: 3em;
-  }
-}

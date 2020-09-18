@@ -31,9 +31,6 @@ exports[`Storyshots BackIcon default 1`] = `
     className="limit-width"
     data-cy="back-nav"
   >
-    <h5>
-      Back
-    </h5>
     <p>
       Find another user
     </p>
@@ -110,42 +107,6 @@ exports[`Storyshots Dropdown default 1`] = `
     </button>
   </div>
 </div>
-`;
-
-exports[`Storyshots GeneralButton default 1`] = `
-<button
-  aria-label={null}
-  className="general-button my-2 btn btn-primary disabled"
-  disabled={true}
-  onClick={[Function]}
-  type="submit"
->
-  Find
-</button>
-`;
-
-exports[`Storyshots GeneralButton invalid 1`] = `
-<button
-  aria-label={null}
-  className="general-button my-2 btn btn-danger disabled"
-  disabled={true}
-  onClick={[Function]}
-  type="submit"
->
-  Find
-</button>
-`;
-
-exports[`Storyshots GeneralButton valid 1`] = `
-<button
-  aria-label={null}
-  className="general-button my-2 btn btn-primary"
-  disabled={false}
-  onClick={[Function]}
-  type="submit"
->
-  Find
-</button>
 `;
 
 exports[`Storyshots InputField default 1`] = `
@@ -230,7 +191,7 @@ exports[`Storyshots List Element not properly added resources 1`] = `
       id="member-resources"
     >
       Member: 
-      Share
+      Share 
     </p>
     <p
       className="project-list-item"
@@ -272,7 +233,7 @@ exports[`Storyshots List Element properly added resources 1`] = `
       id="member-resources"
     >
       Member: 
-      Dyn, Share
+      Dyn Share 
     </p>
     
   </div>
@@ -306,68 +267,12 @@ exports[`Storyshots List Element user 1`] = `
 </div>
 `;
 
-exports[`Storyshots NavBar default 1`] = `
-<div
-  className="nav-div"
->
-  <nav
-    className="navbar navbar-expand-md"
-  >
-    <div
-      className="collapse show navbar-collapse"
-      style={Object {}}
-    >
-      <ul
-        className="mr-auto navbar-nav"
-      >
-        <span
-          className="navbar-text"
-        >
-          Account and License Management Tool
-        </span>
-      </ul>
-      <button
-        aria-label={null}
-        className="general-button my-2 btn btn-danger"
-        disabled={false}
-        onClick={[Function]}
-        type="submit"
-      >
-        Logout
-      </button>
-    </div>
-  </nav>
-</div>
-`;
-
-exports[`Storyshots PlusIcon default 1`] = `
-<div
-  className="icon"
-  data-cy="plus-icon"
-  onClick={[Function]}
-  onKeyDown={[Function]}
-  role="button"
-  tabIndex="0"
->
-  <img
-    alt="plus icon"
-    height="25px"
-    src={
-      Object {
-        "process": [Function],
-      }
-    }
-    width="25px"
-  />
-</div>
-`;
-
 exports[`Storyshots UserAccess default 1`] = `
 <div
   className="move-down container"
 >
   <div
-    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    className="row"
     id="user-access-row"
   >
     <div
@@ -440,30 +345,32 @@ exports[`Storyshots UserAccess default 1`] = `
                 id="member-resources"
               >
                 Member: 
-                Dyn
+                Dyn 
               </p>
               
             </div>
             <div>
-              <div
-                className="icon"
-                data-cy="close-icon"
+              <svg
+                className="pointer"
+                fill="currentColor"
+                height={32}
                 onClick={[Function]}
-                onKeyDown={[Function]}
-                role="button"
-                tabIndex="0"
-              >
-                <img
-                  alt="x icon"
-                  height="25px"
-                  src={
-                    Object {
-                      "process": [Function],
-                    }
+                size={32}
+                stroke="currentColor"
+                strokeWidth="0"
+                style={
+                  Object {
+                    "color": undefined,
                   }
-                  width="25px"
+                }
+                viewBox="0 0 24 24"
+                width={32}
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
                 />
-              </div>
+              </svg>
             </div>
           </div>
         </div>
@@ -485,72 +392,17 @@ exports[`Storyshots UserAccess default 1`] = `
                 id="member-resources"
               >
                 Member: 
-                Dyn
+                Dyn 
               </p>
               
             </div>
             <div>
-              <div
-                className="icon"
-                data-cy="close-icon"
-                onClick={[Function]}
-                onKeyDown={[Function]}
-                role="button"
-                tabIndex="0"
-              >
-                <img
-                  alt="x icon"
-                  height="25px"
-                  src={
-                    Object {
-                      "process": [Function],
-                    }
-                  }
-                  width="25px"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    className="outer row row-cols-1 row-cols-sm-1 row-cols-md-2"
-  >
-    <div
-      className="col"
-    />
-    <div
-      className="col"
-    >
-      <div
-        className="drop-plus"
-      >
-        <div
-          className="dropdown"
-          onKeyDown={[Function]}
-        >
-          <button
-            aria-expanded={false}
-            aria-haspopup={true}
-            aria-label={null}
-            className="btn btn-secondary"
-            id="dropdown"
-            onClick={[Function]}
-            type="button"
-          >
-            <div
-              id="title"
-            >
-              Select a project
-            </div>
-            <div
-              className="img"
-            >
               <svg
+                className="pointer"
                 fill="currentColor"
-                height="1em"
+                height={32}
+                onClick={[Function]}
+                size={32}
                 stroke="currentColor"
                 strokeWidth="0"
                 style={
@@ -558,41 +410,79 @@ exports[`Storyshots UserAccess default 1`] = `
                     "color": undefined,
                   }
                 }
-                viewBox="0 0 320 512"
-                width="1em"
+                viewBox="0 0 24 24"
+                width={32}
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
                 />
               </svg>
             </div>
-          </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div
+    className="outer row"
+  >
+    <div
+      className="col"
+    >
+      <div
+        className="drop-plus"
+      >
+        <div
+          className="bcgov-form"
+        >
+          
           <div
-            aria-hidden={true}
-            className="dropdown-menu"
-            data-cy="drop-down-menu"
-            role="menu"
-            tabIndex="-1"
+            className="bcgov-dropdown-wrapper"
           >
-            <button
-              className="dropdown-item"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="0"
-              type="button"
+            <svg
+              className="fa-chevron-down"
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              strokeWidth="0"
+              style={
+                Object {
+                  "color": undefined,
+                }
+              }
+              viewBox="0 0 448 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              System 1
-            </button>
-            <button
-              className="dropdown-item"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="0"
-              type="button"
+              <path
+                d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+              />
+            </svg>
+            <select
+              className="bcgov-dropdown"
+              data-testid="dropdown"
+              id="dropdown"
+              name="options"
+              onChange={[Function]}
             >
-              System 2
-            </button>
+              <option
+                value="Select Project"
+              >
+                Select Project
+              </option>
+              <option
+                value="System 1"
+              >
+                System 1
+              </option>
+              <option
+                value="System 2"
+              >
+                System 2
+              </option>
+            </select>
           </div>
         </div>
       </div>
@@ -611,7 +501,7 @@ exports[`Storyshots UserAccess no projects 1`] = `
   className="move-down container"
 >
   <div
-    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    className="row"
     id="user-access-row"
   >
     <div
@@ -674,12 +564,10 @@ exports[`Storyshots UserAccess no projects 1`] = `
       </div>
     </div>
   </div>
+  <br />
   <div
-    className="outer row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    className="outer row"
   >
-    <div
-      className="col"
-    />
     <div
       className="col"
     >
@@ -687,73 +575,57 @@ exports[`Storyshots UserAccess no projects 1`] = `
         className="drop-plus"
       >
         <div
-          className="dropdown"
-          onKeyDown={[Function]}
+          className="bcgov-form"
         >
-          <button
-            aria-expanded={false}
-            aria-haspopup={true}
-            aria-label={null}
-            className="btn btn-secondary"
-            id="dropdown"
-            onClick={[Function]}
-            type="button"
-          >
-            <div
-              id="title"
-            >
-              Select a project
-            </div>
-            <div
-              className="img"
-            >
-              <svg
-                fill="currentColor"
-                height="1em"
-                stroke="currentColor"
-                strokeWidth="0"
-                style={
-                  Object {
-                    "color": undefined,
-                  }
-                }
-                viewBox="0 0 320 512"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                />
-              </svg>
-            </div>
-          </button>
+          
           <div
-            aria-hidden={true}
-            className="dropdown-menu"
-            data-cy="drop-down-menu"
-            role="menu"
-            tabIndex="-1"
+            className="bcgov-dropdown-wrapper"
           >
-            <button
-              className="dropdown-item"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="0"
-              type="button"
+            <svg
+              className="fa-chevron-down"
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              strokeWidth="0"
+              style={
+                Object {
+                  "color": undefined,
+                }
+              }
+              viewBox="0 0 448 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              System 1
-            </button>
-            <button
-              className="dropdown-item"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="0"
-              type="button"
+              <path
+                d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+              />
+            </svg>
+            <select
+              className="bcgov-dropdown"
+              data-testid="dropdown"
+              id="dropdown"
+              name="options"
+              onChange={[Function]}
             >
-              System 2
-            </button>
+              <option
+                value="Select Project"
+              >
+                Select Project
+              </option>
+              <option
+                value="System 1"
+              >
+                System 1
+              </option>
+              <option
+                value="System 2"
+              >
+                System 2
+              </option>
+            </select>
           </div>
         </div>
+        <div />
       </div>
     </div>
     <div
@@ -796,11 +668,11 @@ exports[`Storyshots UserSearch default 1`] = `
         className="d-flex justify-content-end"
       >
         <button
-          aria-label={null}
-          className="general-button my-2 btn btn-primary disabled"
-          disabled={true}
+          className="bcgov-button normal-blue btn"
+          data-test-id=""
+          disabled={false}
           onClick={[Function]}
-          type="submit"
+          type="button"
         >
           Find
         </button>
@@ -841,11 +713,11 @@ exports[`Storyshots UserSearch invalid 1`] = `
         className="d-flex justify-content-end"
       >
         <button
-          aria-label={null}
-          className="general-button my-2 btn btn-danger disabled"
-          disabled={true}
+          className="bcgov-button normal-blue btn"
+          data-test-id=""
+          disabled={false}
           onClick={[Function]}
-          type="submit"
+          type="button"
         >
           Find
         </button>
@@ -881,29 +753,27 @@ exports[`Storyshots UserSearch loading 1`] = `
       <p />
       <div>
         <div
-          className="float-left"
-        >
-          <p
-            className="float-left"
-          >
-            <small
-              id="loading"
-            >
-              Loading...
-            </small>
-          </p>
-        </div>
-        <div
           className="d-flex justify-content-end"
         >
           <button
-            aria-label={null}
-            className="general-button my-2 btn btn-primary disabled"
+            className="bcgov-button normal-blue btn"
+            data-test-id=""
             disabled={true}
             onClick={[Function]}
-            type="submit"
+            type="button"
           >
             Find
+            <div
+              className="bcgov-loader-show"
+            >
+              <div
+                className="loader-align"
+              >
+                <div
+                  className="btn-loader"
+                />
+              </div>
+            </div>
           </button>
         </div>
       </div>
@@ -945,19 +815,17 @@ exports[`Storyshots UserSearch user does not exist 1`] = `
           <small
             className="error-message"
             data-cy="error-text"
-          >
-            This user does not exist, please try again with a different IDIR username.
-          </small>
+          />
         </div>
         <div
           className="d-flex justify-content-end"
         >
           <button
-            aria-label={null}
-            className="general-button my-2 btn btn-primary disabled"
-            disabled={true}
+            className="bcgov-button normal-blue btn"
+            data-test-id=""
+            disabled={false}
             onClick={[Function]}
-            type="submit"
+            type="button"
           >
             Find
           </button>
@@ -999,38 +867,16 @@ exports[`Storyshots UserSearch valid 1`] = `
         className="d-flex justify-content-end"
       >
         <button
-          aria-label={null}
-          className="general-button my-2 btn btn-primary"
+          className="bcgov-button normal-blue btn"
+          data-test-id=""
           disabled={false}
           onClick={[Function]}
-          type="submit"
+          type="button"
         >
           Find
         </button>
       </div>
     </div>
   </div>
-</div>
-`;
-
-exports[`Storyshots XIcon default 1`] = `
-<div
-  className="icon"
-  data-cy="close-icon"
-  onClick={[Function]}
-  onKeyDown={[Function]}
-  role="button"
-  tabIndex="0"
->
-  <img
-    alt="x icon"
-    height="25px"
-    src={
-      Object {
-        "process": [Function],
-      }
-    }
-    width="25px"
-  />
 </div>
 `;

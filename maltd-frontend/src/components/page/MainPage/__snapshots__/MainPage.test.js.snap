@@ -1,93 +1,204 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Main page Component renders as expected 1`] = `
-Array [
-  <div
-    className="nav-div"
-  >
+<main>
+  <header>
     <nav
-      className="navbar navbar-expand-md"
+      className="container-fluid navbar navbar-expand-lg navbar-dark"
     >
       <div
-        className="collapse show navbar-collapse"
-        style={Object {}}
+        aria-labelledby="title"
+        className="navbar-brand pointer"
+      />
+      <img
+        alt="B.C. Government Logo"
+        className="img-fluid d-none d-md-block pointer"
+        height="44"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        role="presentation"
+        src="undefined/images/bcid-logo-rev-en.svg"
+        width={181}
+      />
+      <img
+        alt="B.C. Government Logo"
+        className="img-fluid d-md-none pointer"
+        height="44"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        role="presentation"
+        src="undefined/images/bcid-symbol-rev.svg"
+        width={64}
+      />
+      <div
+        aria-labelledby="title"
+        className="pointer navbar-brand nav-item nav-link"
+      />
+      <div
+        className="navbar-brand"
+        id="title"
       >
-        <ul
-          className="mr-auto navbar-nav"
-        >
-          <span
-            className="navbar-text"
-          >
-            Account and License Management Tool
-          </span>
-        </ul>
-        <button
-          aria-label={null}
-          className="general-button my-2 btn btn-danger"
-          disabled={false}
-          onClick={[Function]}
-          type="submit"
-        >
-          Logout
-        </button>
+        MALTD
       </div>
     </nav>
-  </div>,
+  </header>
   <div
-    className="top-spacing"
-    id="wrapper"
+    className="navbar-styling"
+  >
+    <div />
+    <button
+      className="bcgov-button logout-btn btn"
+      data-test-id=""
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Logout
+    </button>
+  </div>
+  <div
+    className="page"
   >
     <div
-      className="my-3 p-3 rounded shadow less-spacing-top"
+      className="content col-md-12"
     >
-      <h4
-        className="add-remove-text"
-      >
-        Add or Remove User
-      </h4>
       <div
-        className="move-down"
+        className="my-3 p-3 rounded shadow less-spacing-top"
       >
-        <p>
-          Find a user by IDIR username and add them to or remove them from projects.
-        </p>
-        <p />
+        <h2>
+          Add or Remove User
+        </h2>
         <div
-          className="inner"
+          className="move-down"
         >
-          <input
-            autoFocus={true}
-            className="input-field my-2 form-control"
-            disabled={false}
-            name="idir"
-            onChange={[Function]}
-            onKeyPress={[Function]}
-            placeholder="Enter IDIR username to find"
-            type="text"
-            value=""
-          />
+          <p>
+            Find a user by IDIR username and add them to or remove them from projects.
+          </p>
           <p />
           <div
-            className="error-btn-div"
+            className="inner"
           >
-            <div />
+            <input
+              autoFocus={true}
+              className="input-field my-2 form-control"
+              disabled={false}
+              name="idir"
+              onChange={[Function]}
+              onKeyPress={[Function]}
+              placeholder="Enter IDIR username to find"
+              type="text"
+              value=""
+            />
+            <p />
             <div
-              className="d-flex justify-content-end"
+              className="error-btn-div"
             >
-              <button
-                aria-label={null}
-                className="general-button my-2 btn btn-primary disabled"
-                disabled={true}
-                onClick={[Function]}
-                type="submit"
+              <div />
+              <div
+                className="d-flex justify-content-end"
               >
-                Find
-              </button>
+                <button
+                  className="bcgov-button normal-blue btn"
+                  data-test-id=""
+                  disabled={true}
+                  onClick={[Function]}
+                  type="button"
+                >
+                  Find
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>,
-]
+  </div>
+  <footer
+    className="footer"
+  >
+    <nav
+      className="navbar navbar-expand-sm navbar-dark justify-content-end"
+    >
+      <button
+        className="navbar-toggler"
+        data-target="#footerBar"
+        data-toggle="collapse"
+        type="button"
+      >
+        <span
+          className="navbar-toggler-icon"
+        />
+      </button>
+      <div
+        className="collapse navbar-collapse flex-grow-0"
+        id="footerBar"
+      >
+        <ul
+          className="navbar-nav text-right"
+        >
+          <li
+            className="nav-item m-1"
+          >
+            <a
+              className="nav-link"
+              href="https://www2.gov.bc.ca"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              BC Government
+            </a>
+          </li>
+          <li
+            className="nav-item m-1"
+          >
+            <a
+              className="nav-link"
+              href="https://www2.gov.bc.ca/gov/content/home/disclaimer"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Disclaimer
+            </a>
+          </li>
+          <li
+            className="nav-item m-1"
+          >
+            <a
+              className="nav-link"
+              href="https://www2.gov.bc.ca/gov/content/home/privacy"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Privacy
+            </a>
+          </li>
+          <li
+            className="nav-item m-1"
+          >
+            <a
+              className="nav-link"
+              href="https://www2.gov.bc.ca/gov/content/home/accessibility"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Accessibility
+            </a>
+          </li>
+          <li
+            className="nav-item m-1"
+          >
+            <a
+              className="nav-link"
+              href="https://www2.gov.bc.ca/gov/content/home/copyright"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Copyright
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </footer>
+</main>
 `;

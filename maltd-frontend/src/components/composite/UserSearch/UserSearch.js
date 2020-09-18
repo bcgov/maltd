@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Button } from "shared-components";
 import InputField from "../../base/InputField/InputField";
-import GeneralButton from "../../base/GeneralButton/GeneralButton";
 import "./UserSearch.css";
 
 export default function UserSearch({
   userSearch: { state },
   inputField,
-  generalButton,
+  isButtonDisabled,
   onClick,
   onChange,
   onKeyEnter
@@ -30,7 +30,12 @@ export default function UserSearch({
           <div className="error-btn-div">
             <div />
             <div className="d-flex justify-content-end">
-              <GeneralButton generalButton={generalButton} onClick={onClick} />
+              <Button
+                disabled={isButtonDisabled}
+                onClick={onClick}
+                label="Find"
+                styling="normal-blue btn"
+              />
             </div>
           </div>
         </div>
@@ -41,13 +46,14 @@ export default function UserSearch({
             <InputField inputField={inputField} />
             <p />
             <div>
-              <div className="float-left">
-                <p className="float-left">
-                  <small id="loading">Loading...</small>
-                </p>
-              </div>
               <div className="d-flex justify-content-end">
-                <GeneralButton generalButton={generalButton} />
+                <Button
+                  onClick={onClick}
+                  disabled
+                  hasLoader
+                  label="Find"
+                  styling="normal-blue btn"
+                />
               </div>
             </div>
           </div>
@@ -61,12 +67,16 @@ export default function UserSearch({
             <div className="error-btn-div">
               <div className="float-left">
                 <small className="error-message" data-cy="error-text">
-                  This user does not exist, please try again with a different
-                  IDIR username.
+                  {state.errorMessage}
                 </small>
               </div>
               <div className="d-flex justify-content-end">
-                <GeneralButton generalButton={generalButton} />
+                <Button
+                  onClick={onClick}
+                  disabled={isButtonDisabled}
+                  label="Find"
+                  styling="normal-blue btn"
+                />
               </div>
             </div>
           </div>
@@ -88,19 +98,15 @@ UserSearch.propTypes = {
     invalid: PropTypes.bool.isRequired,
     value: PropTypes.string.isRequired
   }).isRequired,
-  generalButton: PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    disabled: PropTypes.bool.isRequired,
-    label: PropTypes.any.isRequired
-  }).isRequired,
   onClick: PropTypes.func,
   onChange: PropTypes.func,
-  onKeyEnter: PropTypes.func
+  onKeyEnter: PropTypes.func,
+  isButtonDisabled: PropTypes.bool
 };
 
 UserSearch.defaultProps = {
   onClick: () => {},
   onChange: () => {},
-  onKeyEnter: () => {}
+  onKeyEnter: () => {},
+  isButtonDisabled: false
 };

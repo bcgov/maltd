@@ -5,7 +5,7 @@ exports[`User Access Component renders as expected 1`] = `
   className="move-down container"
 >
   <div
-    className="row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    className="row"
     id="user-access-row"
   >
     <div
@@ -68,12 +68,10 @@ exports[`User Access Component renders as expected 1`] = `
       </div>
     </div>
   </div>
+  <br />
   <div
-    className="outer row row-cols-1 row-cols-sm-1 row-cols-md-2"
+    className="outer row"
   >
-    <div
-      className="col"
-    />
     <div
       className="col"
     >
@@ -81,64 +79,52 @@ exports[`User Access Component renders as expected 1`] = `
         className="drop-plus"
       >
         <div
-          className="dropdown"
-          onKeyDown={[Function]}
+          className="bcgov-form"
         >
-          <button
-            aria-expanded={false}
-            aria-haspopup={true}
-            aria-label={null}
-            className="btn btn-secondary"
-            id="dropdown"
-            onClick={[Function]}
-            type="button"
-          >
-            <div
-              id="title"
-            >
-              Select a project
-            </div>
-            <div
-              className="img"
-            >
-              <svg
-                fill="currentColor"
-                height="1em"
-                stroke="currentColor"
-                strokeWidth="0"
-                style={
-                  Object {
-                    "color": undefined,
-                  }
-                }
-                viewBox="0 0 320 512"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                />
-              </svg>
-            </div>
-          </button>
+          
           <div
-            aria-hidden={true}
-            className="dropdown-menu"
-            data-cy="drop-down-menu"
-            role="menu"
-            tabIndex="-1"
+            className="bcgov-dropdown-wrapper"
           >
-            <button
-              className="dropdown-item"
-              onClick={[Function]}
-              role="menuitem"
-              tabIndex="0"
-              type="button"
+            <svg
+              className="fa-chevron-down"
+              fill="currentColor"
+              height="1em"
+              stroke="currentColor"
+              strokeWidth="0"
+              style={
+                Object {
+                  "color": undefined,
+                }
+              }
+              viewBox="0 0 448 512"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              name
-            </button>
+              <path
+                d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+              />
+            </svg>
+            <select
+              className="bcgov-dropdown"
+              data-testid="dropdown"
+              id="dropdown"
+              name="options"
+              onChange={[Function]}
+            >
+              <option
+                value="Select Project"
+              >
+                Select Project
+              </option>
+              <option
+                value="name"
+              >
+                name
+              </option>
+            </select>
           </div>
         </div>
+        <div />
       </div>
     </div>
     <div

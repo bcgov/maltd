@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Container, Row, Col } from "reactstrap";
+import { Dropdown, Button } from "shared-components";
 import ListElement from "../../base/ListElement/ListElement";
-import PlusIcon from "../../base/PlusIcon/PlusIcon";
-import Dropdown from "../../base/Dropdown/Dropdown";
 import "./UserAccess.css";
 
 export default function UserAccess({
   userAccess: { projects, userName, userEmail },
+  isButtonDisabled,
   onXClick,
   onPlusClick,
   onDropdownClick,
@@ -22,9 +22,23 @@ export default function UserAccess({
     projects && projects.length > 0 ? "projects" : "noProjects";
   let key = null;
 
+  const projectNames = ["Select Project"];
+  dropdown.items.forEach(item => {
+    projectNames.push(item.name);
+  });
+
+  const onDropdownSelect = item => {
+    let selectedItem;
+    dropdown.items.forEach(i => {
+      if (i.name === item) selectedItem = i;
+    });
+
+    onDropdownClick(selectedItem);
+  };
+
   return (
     <Container className="move-down">
-      <Row xs="1" sm="1" md="2" id="user-access-row">
+      <Row id="user-access-row">
         <Col className="cols">
           <Row className="inner-row">
             <Col className="big-font">USER</Col>
@@ -62,14 +76,23 @@ export default function UserAccess({
           </div>
         </Col>
       </Row>
-      <Row xs="1" sm="1" md="2" className="outer">
-        <Col />
+      <br />
+      <Row className="outer">
         <Col>
           {projects && projects.length > 0 && (
             <div className="drop-plus" key={key}>
-              <Dropdown dropdown={dropdown} onDropdownClick={onDropdownClick} />
+              <Dropdown
+                items={projectNames}
+                onSelect={item => onDropdownSelect(item)}
+              />
               {dropdown.selectedDropdownItem && (
-                <PlusIcon onClick={onPlusClick} />
+                <Button
+                  label="Add"
+                  disabled={isButtonDisabled}
+                  hasLoader={isButtonDisabled}
+                  styling="normal-blue btn add-project"
+                  onClick={onPlusClick}
+                />
               )}
             </div>
           )}
@@ -77,12 +100,20 @@ export default function UserAccess({
             <React.Fragment>
               <div className="drop-plus">
                 <Dropdown
-                  dropdown={dropdown}
-                  onDropdownClick={onDropdownClick}
+                  items={projectNames}
+                  onSelect={item => onDropdownSelect(item)}
                 />
-                {dropdown.selectedDropdownItem && (
-                  <PlusIcon onClick={onPlusClick} />
-                )}
+                <div>
+                  {dropdown.selectedDropdownItem && (
+                    <Button
+                      label="Add"
+                      disabled={isButtonDisabled}
+                      hasLoader={isButtonDisabled}
+                      styling="normal-blue btn add-project"
+                      onClick={onPlusClick}
+                    />
+                  )}
+                </div>
               </div>
             </React.Fragment>
           )}
@@ -103,6 +134,7 @@ UserAccess.propTypes = {
     userName: PropTypes.string.isRequired,
     userEmail: PropTypes.string
   }).isRequired,
+  isButtonDisabled: PropTypes.bool,
   onXClick: PropTypes.func.isRequired,
   onPlusClick: PropTypes.func.isRequired,
   onDropdownClick: PropTypes.func.isRequired,
@@ -114,5 +146,6 @@ UserAccess.propTypes = {
 };
 
 UserAccess.defaultProps = {
-  duplicateErrorMessage: ""
+  duplicateErrorMessage: "",
+  isButtonDisabled: false
 };

@@ -14,7 +14,6 @@ export default function BackIcon({ backIcon: { message }, onClick }) {
     >
       <FaAngleLeft className="size-large" />
       <div className="limit-width" data-cy="back-nav">
-        <h5>Back</h5>
         <p>{message}</p>
       </div>
     </div>

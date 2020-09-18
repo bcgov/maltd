@@ -41,22 +41,6 @@ describe("User Search", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test("Component renders a loading message when search results are loading", () => {
-    const component = shallow(
-      <UserSearch
-        userSearch={{
-          state: { isLoading: true, userExists: null }
-        }}
-        inputField={inputField}
-        onClick={() => jest.fn()}
-        onChange={() => jest.fn()}
-        generalButton={generalButton}
-      />
-    );
-
-    expect(component.exists("#loading")).toEqual(true);
-  });
-
   test("Component does not render a loading message when no results are loading", () => {
     const component = shallow(
       <UserSearch

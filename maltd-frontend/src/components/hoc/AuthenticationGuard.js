@@ -1,5 +1,6 @@
 /* eslint-disable no-alert,no-console */
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import Keycloak from "keycloak-js";
 import MainPage from "../page/MainPage/MainPage";
 
@@ -7,7 +8,7 @@ import MainPage from "../page/MainPage/MainPage";
  * @constant authenticationGuard - a higher order component that checks for user authorization and returns the wrapped component if the user is authenticated
  */
 
-export default function AuthenticationGuard() {
+export default function AuthenticationGuard({ header }) {
   const [authedKeycloak, setAuthedKeycloak] = useState(null);
 
   function geKeycloakConfig() {
@@ -38,21 +39,10 @@ export default function AuthenticationGuard() {
     ? window.REACT_APP_KEYCLOAK_ACCESS_ROLE
     : process.env.REACT_APP_KEYCLOAK_ACCESS_ROLE;
 
-  if (!accessRole) {
-    console.log(
-      "warning: accessRole is not defined, users will not have access to the app, check the configuration"
-    );
-  }
-
   const keycloakConfig = geKeycloakConfig();
 
   // Initialize client
   // if the keycloakConfig.url is not set, the allow keycloak to load configuration from keycloak.json
-  console.log(
-    keycloakConfig
-      ? "Using internal keycloak config"
-      : "Using keycloak.json keycloak config"
-  );
   const keycloak = keycloakConfig ? Keycloak(keycloakConfig) : Keycloak();
 
   function onLogoutClick() {
@@ -89,8 +79,17 @@ export default function AuthenticationGuard() {
 
   return (
     <React.Fragment>
-      {authedKeycloak && <MainPage onLogoutClick={onLogoutClick} />}
+      {authedKeycloak && (
+        <MainPage header={header} onLogoutClick={onLogoutClick} />
+      )}
       {!authedKeycloak && null}
     </React.Fragment>
   );
 }
+
+AuthenticationGuard.propTypes = {
+  header: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    history: PropTypes.object.isRequired
+  }).isRequired
+};

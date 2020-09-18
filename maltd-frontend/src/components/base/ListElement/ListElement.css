@@ -18,3 +18,7 @@
 .project-list-item p {
   margin-bottom: 5px;
 }
+
+.pointer {
+  cursor: pointer;
+}
