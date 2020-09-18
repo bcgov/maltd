@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { MdDeleteForever } from "react-icons/md";
 import "./ListElement.css";
@@ -7,6 +7,7 @@ export default function ListElement({
   listElement: { title, description, resources, id },
   onXClick
 }) {
+  const [disabledDeleteIcon, setDisabledDeleteIcon] = useState("");
   let memberOfResources = "";
   let notMemberOfResources = "";
   let message;
@@ -52,9 +53,12 @@ export default function ListElement({
           <div>
             {typeof onXClick === "function" && (
               <MdDeleteForever
-                className="pointer"
+                className={`pointer ${disabledDeleteIcon}`}
                 size={32}
-                onClick={() => onXClick(id)}
+                onClick={() => {
+                  setDisabledDeleteIcon("hide-delete-icon");
+                  onXClick(id);
+                }}
               />
             )}
           </div>

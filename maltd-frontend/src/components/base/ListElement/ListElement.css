@@ -22,3 +22,7 @@
 .pointer {
   cursor: pointer;
 }
+
+.hide-delete-icon {
+  color: lightgray;
+}
