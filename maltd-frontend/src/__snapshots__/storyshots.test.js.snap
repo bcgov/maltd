@@ -351,7 +351,7 @@ exports[`Storyshots UserAccess default 1`] = `
             </div>
             <div>
               <svg
-                className="pointer"
+                className="pointer "
                 fill="currentColor"
                 height={32}
                 onClick={[Function]}
@@ -398,7 +398,7 @@ exports[`Storyshots UserAccess default 1`] = `
             </div>
             <div>
               <svg
-                className="pointer"
+                className="pointer "
                 fill="currentColor"
                 height={32}
                 onClick={[Function]}
