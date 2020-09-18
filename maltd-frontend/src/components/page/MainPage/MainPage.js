@@ -85,6 +85,7 @@ export default class MainPage extends Component {
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         });
       } catch (e) {
+        console.log("Error with getting user: ", e);
         const { status } = e.response;
         let errMessage = "";
         if (status === 500)
