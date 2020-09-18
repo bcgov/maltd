@@ -12,15 +12,15 @@ The Account Management and Licensing tool can be used to help manage the access 
 
 ### Figure 1.0 - Login landing page for application
 
-<img src="./img/idir1.png" height="300" width="400"></img>
+<img src="./img/idir1.png" height="300" width="500"></img>
 
 ### Figure 2.0 - Federated IDIR login
 
-<img src="./img/idir2.png" height="300" width="400"></img>
+<img src="./img/idir2.png" height="300" width="500"></img>
 
 ### Figure 3.0 - Application frontend
 
-<img src="./img/appfe.png" height="300" width="400"></img>
+<img src="./img/appfe.png" height="300" width="500"></img>
 
 ## Frontend Folder Structure
 
