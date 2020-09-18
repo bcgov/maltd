@@ -26,6 +26,7 @@ namespace BcGov.Malt.Web.Services.Sharepoint
         /// <param name="client">The <see cref="HttpClient"/> to make the request on.</param>
         /// <param name="cookieContainer">The target cookie container.</param>
         /// <returns></returns>
-        Task GetSharepointFedAuthCookieAsync(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer);
+        Task GetSharepointFedAuthCookieAsync(Uri samlServerUri, string samlToken, HttpClient client, CookieContainer cookieContainer, string apiGatewayHost, string apiGatewayPolicy);
     }
 }
+

@@ -49,7 +49,7 @@ namespace BcGov.Malt.Web.Features.Projects
                     throw new ProjectNotFoundException(request.ProjectId);
                 }
 
-                var user = await _userSearchService.SearchAsync(request.Username).ConfigureAwait(false);
+                var user = await _userSearchService.SearchAsync(request.Username);
 
                 if (user == null)
                 {
@@ -59,7 +59,7 @@ namespace BcGov.Malt.Web.Features.Projects
 
                 using CancellationTokenSource cts = CreateCancellationTokenSource(cancellationToken);
 
-                var access = await _userManagementService.RemoveUserFromProjectAsync(user, project, cts.Token).ConfigureAwait(false);
+                var access = await _userManagementService.RemoveUserFromProjectAsync(user, project, cts.Token);
                 
                 return new ProjectAccess
                 {

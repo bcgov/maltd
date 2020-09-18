@@ -51,7 +51,7 @@ namespace BcGov.Malt.Web.Features.Users
 
                     Logger.LogDebug("Searching for user {Username}", request.Username);
 
-                    var user = await _userSearchService.SearchAsync(request.Username).ConfigureAwait(false);
+                    var user = await _userSearchService.SearchAsync(request.Username);
 
                     if (user == null)
                     {
@@ -60,7 +60,7 @@ namespace BcGov.Malt.Web.Features.Users
                     }
 
                     Logger.LogDebug("Looking for project membership for user {Username}", user.UserName);
-                    var projects = await _userManagementService.GetProjectsForUserAsync(user, cts.Token).ConfigureAwait(false);
+                    var projects = await _userManagementService.GetProjectsForUserAsync(user, cts.Token);
 
                     DetailedUser result = new DetailedUser(user, projects);
 

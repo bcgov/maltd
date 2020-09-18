@@ -23,6 +23,8 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentNullException(nameof(name));
             }
 
+            //_odataClientLogger.LogDebug("Creating IODataClient");
+
             HttpClient httpClient = _httpClientFactory.CreateClient(name);
 
             ODataClientSettings settings = new ODataClientSettings(httpClient);
@@ -32,6 +34,7 @@ namespace BcGov.Malt.Web.Services
 
             ODataClient oDataClient = new ODataClient(settings);
 
+            //_odataClientLogger.LogDebug("Created IODataClient");
             return oDataClient;
         }
     }

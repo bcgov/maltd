@@ -46,7 +46,7 @@ namespace BcGov.Malt.Web.Features.Users
 
                 _logger.LogDebug("Searching for user {Username}", request.Username);
 
-                var user = await _userSearchService.SearchAsync(request.Username).ConfigureAwait(false);
+                var user = await _userSearchService.SearchAsync(request.Username);
 
                 return user;
             }

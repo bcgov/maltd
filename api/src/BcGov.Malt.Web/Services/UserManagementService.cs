@@ -48,11 +48,11 @@ namespace BcGov.Malt.Web.Services
             var requests = CreateAddUserRequests(user, project, cancellationToken);
 
             // wait for all tasks to complete
-            Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
+            Task aggregateTask = Task.WhenAll(requests.Select(_ => Task.Run(() => _.Task, cancellationToken)));
 
             try
             {
-                await aggregateTask.ConfigureAwait(false);
+                await aggregateTask;
             }
             catch (Exception exception)
             {
@@ -82,27 +82,27 @@ namespace BcGov.Malt.Web.Services
                 }
                 else if (task.IsFaulted)
                 {
-                    Guid requestId = Guid.NewGuid();
-                    string message = $"Unknown error executing request id {requestId}";
+                    Guid errorId = Guid.NewGuid();
+                    string message = $"Unknown error executing request, error id: {errorId}";
 
                     if (task.Exception != null)
                     {
                         // log with exception
                         _logger.LogError(task.Exception,
-                            "Request add user {@User} to project {Project} for resource {Resource} failed ({RequestId}",
+                            "Request add user {@User} to project {Project} for resource {Resource} failed (Error Id: {ErrorId})",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
-                            requestId);
+                            errorId);
                     }
                     else
                     {
                         // log without exception
-                        _logger.LogError("Request add user {@User} to project {Project} for resource {Resource} failed ({RequestId}",
+                        _logger.LogError("Request add user {@User} to project {Project} for resource {Resource} failed (Error Id: {ErrorId})",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
-                            requestId);
+                            errorId);
                     }
 
                     statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
@@ -114,20 +114,25 @@ namespace BcGov.Malt.Web.Services
 
         public async Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken)
         {
-            var requests = CreateUserHasAccessRequests(user, cancellationToken);
+            _logger.LogDebug("Before CreateUserHasAccessRequests");
+            List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> requests = CreateUserHasAccessRequests(user, cancellationToken);
+            _logger.LogDebug("After CreateUserHasAccessRequests");
 
             // wait for all tasks to complete
             Task<bool[]> aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
 
             try
             {
-                await aggregateTask.ConfigureAwait(false);
+                _logger.LogDebug("Before await aggregateTask");
+                await aggregateTask;
+                _logger.LogDebug("After await aggregateTask");
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 // if any of the tasks throws an error, that first exception will be thrown
                 // we can safely ignore this exception because we are going to iterate over
                 // all of the requests and if faulted, log them out too
+                _logger.LogDebug(exception, "After await aggregateTask - Exception");
             }
 
             List<Project> projects = new List<Project>();
@@ -151,7 +156,7 @@ namespace BcGov.Malt.Web.Services
 
                 if (task.IsCompletedSuccessfully)
                 {
-                    _logger.LogDebug("Request to {Project} for {Resource} completed successfully",
+                    _logger.LogDebug("Request to check user access to {Project} for {Resource} completed successfully",
                         new { request.Configuration.Name, request.Configuration.Id },
                         new { request.Resource.Type, request.Resource.Resource });
 
@@ -168,27 +173,27 @@ namespace BcGov.Malt.Web.Services
                 else if (task.IsFaulted)
                 {
                     Exception exception = task.Exception?.InnerException;
-                    Guid requestId = Guid.NewGuid();
+                    Guid errorId = Guid.NewGuid();
 
-                    string message = GetUserErrorMessageFor(exception, requestId);
+                    string message = GetUserErrorMessageFor(exception, errorId);
                     
                     if (exception != null)
                     {
                         // log with exception
-                        _logger.LogError(exception, "Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
+                        _logger.LogError(exception, "Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
-                            requestId);
+                            errorId);
                     }
                     else
                     {
                         // log without exception
-                        _logger.LogError("Request to get user {User} access status on project {Project} for resource {Resource} failed ({RequestId}",
+                        _logger.LogError("Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
                             new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
-                            requestId);
+                            errorId);
                     }
 
                     project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
@@ -198,26 +203,26 @@ namespace BcGov.Malt.Web.Services
             return projects;
         }
 
-        private string GetUserErrorMessageFor(Exception exception, Guid requestId)
+        private string GetUserErrorMessageFor(Exception exception, Guid errorId)
         {
             if (exception is ApiException apiException)
             {
                 switch (apiException.StatusCode)
                 {
                     case HttpStatusCode.Forbidden:
-                        return $"Application does not have permissions to check user's membership (Error Id: {requestId})";
+                        return $"Application does not have permissions to check user's membership (Error Id: {errorId})";
                     default:
-                        return $"Remote project returned {apiException.StatusCode} when checking user's membership (Error Id: {requestId})";
+                        return $"Remote project returned {apiException.StatusCode} when checking user's membership (Error Id: {errorId})";
                 }
             }
 
 
             if (exception is TaskCanceledException taskCancelledException)
             {
-                return $"Timeout checking user's membership (Error Id: {requestId})";
+                return $"Timeout checking user's membership (Error Id: {errorId})";
             }
 
-            return $"Unknown error executing request id {requestId}";
+            return $"Unknown error executing request id (Error Id: {errorId})";
         }
 
         public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)
@@ -225,11 +230,11 @@ namespace BcGov.Malt.Web.Services
             var requests = CreateRemoveUserRequests(user, project, cancellationToken);
 
             // wait for all tasks to complete
-            Task aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
+            Task aggregateTask = Task.WhenAll(requests.Select(_ => Task.Run(() => _.Task, cancellationToken)));
 
             try
             {
-                await aggregateTask.ConfigureAwait(false);
+                await aggregateTask;
             }
             catch (Exception exception)
             {
@@ -259,27 +264,27 @@ namespace BcGov.Malt.Web.Services
                 }
                 else if (task.IsFaulted)
                 {
-                    Guid requestId = Guid.NewGuid();
-                    string message = $"Unknown error executing request id {requestId}";
+                    Guid errorId = Guid.NewGuid();
+                    string message = $"Unknown error executing request id {errorId}";
 
                     if (task.Exception != null)
                     {
                         // log with exception
                         _logger.LogError(task.Exception,
-                            "Request to remove user {@User} from project {Project} for resource {Resource} failed ({RequestId}",
-                            new { user.Id, user.UserName, user.UserPrincipalName },
+                            "Request to remove user {@User} from project {Project} for resource {Resource} failed (Error Id: {errorId})",
+                        new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
-                            requestId);
+                            errorId);
                     }
                     else
                     {
                         // log without exception
-                        _logger.LogError("Request to remove user {@User} fromproject {Project} for resource {Resource} failed ({RequestId}",
-                            new { user.Id, user.UserName, user.UserPrincipalName },
+                        _logger.LogError("Request to remove user {@User} from project {Project} for resource {Resource} failed (Error Id: {errorId})",
+                        new { user.Id, user.UserName, user.UserPrincipalName },
                             new { request.Configuration.Name, request.Configuration.Id },
                             new { request.Resource.Type, request.Resource.Resource },
-                            requestId);
+                            errorId);
                     }
 
                     statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
@@ -300,7 +305,11 @@ namespace BcGov.Malt.Web.Services
                     var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                     if (resourceUserManagementService != null)
                     {
-                        var task = resourceUserManagementService.UserHasAccessAsync(user.UserName, cancellationToken);
+                        // user Task.Run? Return the task? 
+                        // when just returning the task, the logs indicate the individual resource resourceUserManagementService starts executing 
+                        // on the same thread running this code.  Use Task.Run() starts the requests on a thread pool thread.
+                        // however, it does not appear to resolve the performance issue of taking 35-40 seconds to complete in production with 70+ systems
+                        var task = Task.Run(() => resourceUserManagementService.UserHasAccessAsync(user.UserName, cancellationToken), cancellationToken);
                         requests.Add((projectConfiguration, resource, task));
                     }
                 }
@@ -321,7 +330,7 @@ namespace BcGov.Malt.Web.Services
                     var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                     if (resourceUserManagementService != null)
                     {
-                        var task = resourceUserManagementService.AddUserAsync(user.UserName, cancellationToken);
+                        var task = Task.Run(() => resourceUserManagementService.AddUserAsync(user.UserName, cancellationToken), cancellationToken);
                         requests.Add((projectConfiguration, resource, task));
                     }
                 }
@@ -341,7 +350,7 @@ namespace BcGov.Malt.Web.Services
                     var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                     if (resourceUserManagementService != null)
                     {
-                        var task = resourceUserManagementService.RemoveUserAsync(user.UserName, cancellationToken);
+                        var task = Task.Run(() => resourceUserManagementService.RemoveUserAsync(user.UserName, cancellationToken), cancellationToken);
                         requests.Add((projectConfiguration, resource, task));
                     }
                 }

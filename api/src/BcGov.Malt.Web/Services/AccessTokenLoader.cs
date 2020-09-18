@@ -59,7 +59,7 @@ namespace BcGov.Malt.Web.Services
                 }
             }
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks.Select(_ => Task.Run(() => _)));
 
             return tasks.Select(_ => _.Result).ToList();
         }
@@ -73,10 +73,10 @@ namespace BcGov.Malt.Web.Services
             switch (resource.Type)
             {
                 case ProjectType.Dynamics:
-                    return await GetOAuthAccessTokenAsync(project, resource).ConfigureAwait(false);
+                    return await GetOAuthAccessTokenAsync(project, resource);
 
                 case ProjectType.SharePoint:
-                    return await GetSamlAccessTokenAsync(resource).ConfigureAwait(false);
+                    return await GetSamlAccessTokenAsync(resource);
 
                 default:
                     Exception exception = new InvalidProjectTypeException(resource.Type);
@@ -108,7 +108,7 @@ namespace BcGov.Malt.Web.Services
                 ITokenService tokenService = new OAuthTokenService(oAuthClient, tokenCache);
 
                 // IOAuthClient does not cache tokens
-                var token = await tokenService.GetTokenAsync(options, CancellationToken.None).ConfigureAwait(false);
+                var token = await tokenService.GetTokenAsync(options, CancellationToken.None);
                 return Tuple.Create(resource, _noException);
             }
             catch (Exception e)
@@ -128,7 +128,7 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                var token = await _samlAuthenticator.GetStsSamlTokenAsync(relyingParty, username, password, stsUri, cached: true).ConfigureAwait(false);
+                var token = await _samlAuthenticator.GetStsSamlTokenAsync(relyingParty, username, password, stsUri, cached: true);
                 return Tuple.Create(resource, _noException);
             }
             catch (Exception e)

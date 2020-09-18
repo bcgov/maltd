@@ -23,7 +23,7 @@ namespace BcGov.Malt.Web.HealthChecks
 
         public override async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
         {
-            List<Tuple<ProjectResource, Exception>> results = await CheckAccessTokensAsync().ConfigureAwait(false);
+            List<Tuple<ProjectResource, Exception>> results = await CheckAccessTokensAsync();
             var failedCount = results.Count(_ => _.Item2 != null);
 
             // TODO: review how these message look in the health check endpoints
@@ -66,10 +66,10 @@ namespace BcGov.Malt.Web.HealthChecks
 
             foreach (ProjectResource resource in _project.Resources)
             {
-                tasks.Add(CheckAccessTokenAsync(_project, resource));
+                tasks.Add(Task.Run(() => CheckAccessTokenAsync(_project, resource)));
             }
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks);
 
             return tasks.Select(_ => _.Result).ToList();
         }
