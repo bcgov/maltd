@@ -11,9 +11,8 @@ using BcGov.Malt.Web.Infrastructure;
 using BcGov.Malt.Web.Models.Configuration;
 using BcGov.Malt.Web.Models.SharePoint;
 using BcGov.Malt.Web.Services.Sharepoint;
-using Microsoft.Extensions.Http;
-using Microsoft.Extensions.Logging;
 using Refit;
+using Serilog;
 
 namespace BcGov.Malt.Web.Services
 {
@@ -48,18 +47,17 @@ namespace BcGov.Malt.Web.Services
         public Task<GetContextWebInformationVerboseResponse> GetContextWebInformationAsync(CancellationToken cancellationToken);
 
         [Post("/_api/Web/SiteGroups({siteGroupId})/Users")]
-        public Task AddUserToGroupAsync(int siteGroupId, User user, CancellationToken cancellationToken);
+        public Task AddUserToGroupAsync(int siteGroupId, LoginUser user, CancellationToken cancellationToken);
     }
 
     public class SharePointResourceUserManagementService : ResourceUserManagementService
     {
         private static readonly StringComparer LoginNameComparer = StringComparer.OrdinalIgnoreCase;
 
-        private readonly ILogger<SharePointResourceUserManagementService> _logger;
-
         private readonly RefitSettings _refitSettings = new RefitSettings
         {
-            ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions())
+            // for SharePoint we dont want to send fields that are null
+            ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions() { IgnoreNullValues = true })
         };
 
         private readonly IUserSearchService _userSearchService;
@@ -70,12 +68,11 @@ namespace BcGov.Malt.Web.Services
             ProjectResource projectResource,
             IUserSearchService userSearchService,
             ISamlAuthenticator samlAuthenticator,
-            ILogger<SharePointResourceUserManagementService> logger)
+            ILogger logger)
             : base(project, projectResource, logger)
         {
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
             _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override async Task<string> AddUserAsync(string username, CancellationToken cancellationToken)
@@ -89,7 +86,7 @@ namespace BcGov.Malt.Web.Services
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
-                _logger.LogInformation("Cannot locate UPN for for {Username}, cannot add users access", username);
+                Logger.Information("Cannot locate UPN for for {Username}, cannot add users access", username);
                 return $"Unable to locate user's User Principal Name (UPN)";
             }
 
@@ -99,7 +96,7 @@ namespace BcGov.Malt.Web.Services
 
             if (string.IsNullOrEmpty(web?.Data?.Title))
             {
-                _logger.LogWarning("Cannot get site group name for {Project} on resource {ResourceType}", Project.Name, ProjectResource.Type);
+                Logger.Warning("Cannot get site group name for {Project} on resource {ResourceType}", Project.Name, ProjectResource.Type);
                 return $"Unable to get SharePoint site group name";
             }
 
@@ -111,13 +108,13 @@ namespace BcGov.Malt.Web.Services
 
             if (siteGroups.Data.Results.Count == 0)
             {
-                _logger.LogInformation("Cannot find site group {@SiteGroup}", new SiteGroup { Title = siteGroupTitle });
+                Logger.Information("Cannot find site group {@SiteGroup}", new SiteGroup { Title = siteGroupTitle });
                 return $"SharePoint site group '{siteGroupTitle}' not found";
             }
 
             var siteGroup = siteGroups.Data.Results[0];
 
-            _logger.LogInformation("Adding {Username} to site collection {@SiteGroup} for {Project} on resource {ResourceType}",
+            Logger.Information("Adding {Username} to site collection {@SiteGroup} for {Project} on resource {ResourceType}",
                 username,
                 siteGroup,
                 Project.Name,
@@ -128,13 +125,14 @@ namespace BcGov.Malt.Web.Services
 
             try
             {
-                await restClient.AddUserToGroupAsync(siteGroup.Id, new User {LoginName = logonName}, cancellationToken);
+                // be sure to use the LoginUser object to ensure we do not send null or default values when adding
+                await restClient.AddUserToGroupAsync(siteGroup.Id, new LoginUser { LoginName = logonName }, cancellationToken);
                 return string.Empty;
             }
             catch (ApiException e)
             {
                 var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
-                _logger.LogWarning(e, "Error adding user to SharePoint group {@Error}", errorResponse);
+                Logger.Warning(e, "Error adding user to SharePoint group {@Error}", errorResponse);
                 return $"Error occurred adding user to SharePoint site group '{siteGroupTitle}'";
             }
         }
@@ -146,13 +144,13 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
-            _logger.LogDebug("Removing access for {Username}", username);
+            Logger.Debug("Removing access for {Username}", username);
 
             var user = await _userSearchService.SearchAsync(username);
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
-                _logger.LogInformation("Cannot locate UPN for for {Username}, cannot remove users access", username);
+                Logger.Information("Cannot locate UPN for for {Username}, cannot remove users access", username);
                 return "User not found";
             }
             
@@ -176,7 +174,7 @@ namespace BcGov.Malt.Web.Services
 
                     foreach (var sharePointUser in users)
                     {
-                        _logger.LogInformation("Removing {@User} from site group {@SiteGroup}", sharePointUser, siteGroup);
+                        Logger.Information("Removing {@User} from site group {@SiteGroup}", sharePointUser, siteGroup);
 
                         try
                         {
@@ -185,7 +183,7 @@ namespace BcGov.Malt.Web.Services
                         catch (ApiException e)
                         {
                             var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
-                            _logger.LogWarning(e, "Error removing user from SharePoint group {@Error}", errorResponse);
+                            Logger.Warning(e, "Error removing user from SharePoint group {@Error}", errorResponse);
 
                             response.Append(response.Length != 0 ? ", " : "Error removing user from site group(s): ");
                             response.Append(siteGroup.Title);
@@ -195,7 +193,7 @@ namespace BcGov.Malt.Web.Services
                 catch (ApiException e) when (e.StatusCode == HttpStatusCode.Forbidden)
                 {
                     // we dont have access to all site groups
-                    _logger.LogDebug(e, "No access to {@SiteGroup}, unable to remove {Username} access", siteGroup, username);
+                    Logger.Debug(e, "No access to {@SiteGroup}, unable to remove {Username} access", siteGroup, username);
                 }
             }
 
@@ -209,14 +207,14 @@ namespace BcGov.Malt.Web.Services
                 throw new ArgumentException("Username cannot be null or empty", nameof(username));
             }
 
-            _logger.LogDebug("Checking {Username} has access to project", username);
+            Logger.Debug("Checking {Username} has access to project", username);
 
 
             var user = await _userSearchService.SearchAsync(username);
 
             if (string.IsNullOrEmpty(user?.UserPrincipalName))
             {
-                _logger.LogInformation("Cannot locate UPN for for {Username}, cannot check users access", username);
+                Logger.Information("Cannot locate UPN for for {Username}, cannot check users access", username);
                 return false;
             }
 
@@ -239,14 +237,14 @@ namespace BcGov.Malt.Web.Services
 
                     if (groupMember)
                     {
-                        _logger.LogDebug("{@User} has access because they are in site group {@SiteGroup}", user, siteGroup);
+                        Logger.Debug("{@User} has access because they are in site group {@SiteGroup}", user, siteGroup);
                         return true;
                     }
                 }
                 catch (ApiException e) when (e.StatusCode == HttpStatusCode.Forbidden)
                 {
                     // we dont have access to all site groups
-                    _logger.LogDebug(e, "No access to {@SiteGroup}, unable to check access", siteGroup);
+                    Logger.Debug(e, "No access to {@SiteGroup}, unable to check access", siteGroup);
                 }
             }
 
@@ -291,7 +289,7 @@ namespace BcGov.Malt.Web.Services
             if (!string.IsNullOrEmpty(ProjectResource.ApiGatewayHost) && !string.IsNullOrEmpty(ProjectResource.ApiGatewayPolicy))
             {
                 // since this is executed on every access to sharepoint, only log at debug level
-                _logger.LogDebug("Using {@ApiGateway} for {Resource}", 
+                Logger.Debug("Using {@ApiGateway} for {Resource}", 
                     new { Host = ProjectResource.ApiGatewayHost, Policy = ProjectResource.ApiGatewayPolicy }, 
                     ProjectResource.Resource);
                 

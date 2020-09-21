@@ -3,14 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace BcGov.Malt.Web.Models.SharePoint
 {
+    public class LoginUser
+    {
+        [JsonPropertyName("LoginName")]
+        public string LoginName { get; set; }
+
+    }
+
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public class User
+    public class User : LoginUser
     {
         [JsonPropertyName("Id")]
         public int Id { get; set; }
-
-        [JsonPropertyName("LoginName")]
-        public string LoginName { get; set; }
 
         [JsonPropertyName("Title")]
         public string Title { get; set; }
