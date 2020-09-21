@@ -38,7 +38,11 @@ namespace BcGov.Malt.Web.Services
 
             Logger.Debug("Adding {Username} to project", username);
 
-            SystemUser entry = await GetSystemUserByLogon(client, logon, cancellationToken);
+            SystemUser entry = await client
+                .For<SystemUser>()
+                .Filter(_ => _.DomainName == logon)
+                .Select(_ => _.SystemUserId)
+                .FindEntryAsync(cancellationToken);
 
             if (entry == null)
             {
@@ -63,15 +67,9 @@ namespace BcGov.Malt.Web.Services
                     .Set(entry)
                     .InsertEntryAsync(cancellationToken);
             }
-            else if (entry.IsDisabled != null && entry.IsDisabled.Value)
-            {
-                Logger.Information("{@SystemUser} exists but is disabled, enabling user", entry);
-                await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false, cancellationToken);
-            }
-            else
-            {
-                Logger.Information("{@SystemUser} exists and is already enabled user", entry);
-            }
+
+            Logger.Information("{@SystemUser} exists ensuring the user is enabled", entry);
+            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false, cancellationToken);
 
             return string.Empty;
         }
@@ -87,7 +85,12 @@ namespace BcGov.Malt.Web.Services
             string logon = IDIR.Logon(username);
 
             Logger.Debug("Removing {Username} from project", username);
-            SystemUser entry = await GetSystemUserByLogon(client, logon, cancellationToken);
+
+            SystemUser entry = await client
+                .For<SystemUser>()
+                .Filter(_ => _.DomainName == logon)
+                .Select(_ => _.SystemUserId)
+                .FindEntryAsync(cancellationToken);
 
             if (entry == null)
             {
@@ -95,12 +98,7 @@ namespace BcGov.Malt.Web.Services
                 return string.Empty;
             }
 
-            if (entry.IsDisabled.HasValue && entry.IsDisabled.Value)
-            {
-                Logger.Information("User {@SystemUser} is already disabled in Dynamics, will not perform update", new { entry.DomainName, entry.IsDisabled, entry.SystemUserId });
-                return string.Empty; // user does not exist, or is already disabled
-            }
-
+            Logger.Information("{@SystemUser} exists ensuring the user is disabled", entry);
             await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true, cancellationToken);
 
             return string.Empty;
@@ -118,9 +116,14 @@ namespace BcGov.Malt.Web.Services
             string logon = IDIR.Logon(username);
 
             Logger.Debug("Checking {Username} has access to project", username);
-            var entry = await GetSystemUserByLogon(client, logon, cancellationToken);
 
-            return entry?.IsDisabled != null && !entry.IsDisabled.Value;
+            SystemUser entry = await client
+                .For<SystemUser>()
+                .Filter(_ => _.DomainName == logon && _.IsDisabled == false)
+                .Select(_ => _.SystemUserId)
+                .FindEntryAsync(cancellationToken);
+
+            return entry != null;
         }
 
         private Task<IDictionary<string, object>> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, bool isDisabled, CancellationToken cancellationToken)
@@ -139,43 +142,6 @@ namespace BcGov.Malt.Web.Services
                 .UpdateEntryAsync(cancellationToken);
         }
 
-        private async Task<SystemUser> GetSystemUserByLogon(IODataClient client, string logon, CancellationToken cancellationToken)
-        {
-            Logger.Debug("Getting Dynamics SystemUser with {DomainName}", logon);
-
-            try
-            {
-                SystemUser systemUser = await client
-                    .For<SystemUser>()
-                    .Filter(_ => _.DomainName == logon)
-                    .FindEntryAsync(cancellationToken);
-
-                if (systemUser != null)
-                {
-                    Logger.Debug("Found Dynamics SystemUser {@SystemUser}",
-                        new {systemUser.DomainName, systemUser.IsDisabled, systemUser.SystemUserId});
-                }
-                else
-                {
-                    Logger.Debug("Dynamics SystemUser with {DomainName} not found", logon);
-                }
-
-                return systemUser;
-            }
-            catch (TaskCanceledException exception)
-            {
-                // timeout
-                Logger.Warning(exception, "Task was cancelled looking up dynamics SystemUser with {DomainName}", logon);
-                throw;
-            }
-            catch (Exception exception)
-            {
-                // we have seen TaskCanceledException being thrown in testing
-                Logger.Warning(exception, "An error was thrown looking up dynamics SystemUser with {DomainName}", logon);
-                throw; // return null?
-            }
-        }
-
         private async Task<BusinessUnit> GetRootBusinessUnit(IODataClient client, CancellationToken cancellationToken)
         {
             Logger.Debug("Getting root business unit from dynamics");
@@ -184,6 +150,7 @@ namespace BcGov.Malt.Web.Services
             IEnumerable<BusinessUnit> entries = await client
                 .For<BusinessUnit>()
                 .Filter(_ => _.ParentBusinessUnit == null)
+                .Select(_ => _.BusinessUnitId)
                 .FindEntriesAsync(cancellationToken);
 
             BusinessUnit businessUnit = null;
