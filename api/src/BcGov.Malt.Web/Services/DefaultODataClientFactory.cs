@@ -33,7 +33,7 @@ namespace BcGov.Malt.Web.Services
             HttpClient httpClient = _httpClientFactory.CreateClient(name);
 
             ODataClientSettings settings = new ODataClientSettings(httpClient);
-            settings.MetadataDocument = GetMetadataDocument();
+            //settings.MetadataDocument = GetMetadataDocument();
 
             ////settings.TraceFilter = ODataTrace.All;
             ////settings.OnTrace = (message, args) => _odataClientLogger.LogInformation(message, args);
