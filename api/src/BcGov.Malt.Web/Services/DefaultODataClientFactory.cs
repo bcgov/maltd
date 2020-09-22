@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
+using System.Reflection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Simple.OData.Client;
 
@@ -9,6 +12,8 @@ namespace BcGov.Malt.Web.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<ODataClient> _odataClientLogger;
+
+        private static string _dynamicsMetadata;
 
         public DefaultODataClientFactory(IHttpClientFactory httpClientFactory, ILogger<ODataClient> odataClientLogger)
         {
@@ -28,6 +33,8 @@ namespace BcGov.Malt.Web.Services
             HttpClient httpClient = _httpClientFactory.CreateClient(name);
 
             ODataClientSettings settings = new ODataClientSettings(httpClient);
+            settings.MetadataDocument = GetMetadataDocument();
+            settings.IgnoreUnmappedProperties = true;
 
             ////settings.TraceFilter = ODataTrace.All;
             ////settings.OnTrace = (message, args) => _odataClientLogger.LogInformation(message, args);
@@ -37,5 +44,21 @@ namespace BcGov.Malt.Web.Services
             //_odataClientLogger.LogDebug("Created IODataClient");
             return oDataClient;
         }
+
+        private string GetMetadataDocument()
+        {
+            if (_dynamicsMetadata == null)
+            {
+                var assembly = typeof(DefaultODataClientFactory).GetTypeInfo().Assembly;
+
+                var embeddedProvider = new EmbeddedFileProvider(assembly);
+                using Stream stream = embeddedProvider.GetFileInfo("Models.Dynamics.metadata.xml").CreateReadStream();
+                using StreamReader reader = new StreamReader(stream);
+
+                _dynamicsMetadata = reader.ReadToEnd();
+            }
+
+            return _dynamicsMetadata;
+        }     
     }
 }
