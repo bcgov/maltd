@@ -11,7 +11,7 @@ Run tests from maltd-frontend directory.
 ### Run E2E test on electron headless mode
 
 ```
-npm run cy:run -- --spec "cypress/integration/tests/end-to-end-flow.js"
+npm run cy:run -- --spec "cypress/integration/tests/end-to-end-functional-tests.js"
 ```
 
 ### Run tests on headed mode
