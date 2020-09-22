@@ -1,7 +1,7 @@
 /* global cy, Cypress */
 // / <reference types="Cypress" />
 
-describe("MALT Ui Functional Test Suite", () => {
+describe("MALTD UI Functional Test Suite", () => {
   it("Valid Login Test", () => {
     cy.clearCookies();
     cy.login(
