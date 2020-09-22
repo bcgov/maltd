@@ -31,11 +31,6 @@ Cypress.Commands.add("verifyEmailFormat", () => {
     .contains("@gov.bc.ca");
 });
 
-// Cypress.Commands.add('validateNoProjectsIsAdded', () => {
-//     cy.get(".cols > :nth-child(2) > p")
-//     .should('have.text', 'No projects')
-// })
-
 Cypress.Commands.add("addAndValidateProject", (projectName, memberResource) => {
   cy.get("select")
     .select(projectName)
@@ -60,7 +55,7 @@ Cypress.Commands.add(
       .should("exist")
       .click({ force: true })
       .should("not.exist");
-    for (let i = 0; i < resources.length; i++) {
+    for (let i = 0; i < resources.length; i += 1) {
       if (resources[i] === memberResource)
         console.info("Sharepoint resource is updated.");
       break;
