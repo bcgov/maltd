@@ -24,6 +24,7 @@ module.exports = {
   rules: {
     "react/jsx-filename-extension": "off",
     "react/jsx-one-expression-per-line": "off",
-    "react/jsx-fragments": "off"
+    "react/jsx-fragments": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 };
