@@ -111,6 +111,7 @@ exports[`Storyshots Dropdown default 1`] = `
 
 exports[`Storyshots InputField default 1`] = `
 <input
+  aria-invalid={false}
   autoFocus={true}
   className="input-field my-2 form-control"
   disabled={false}
@@ -125,6 +126,7 @@ exports[`Storyshots InputField default 1`] = `
 
 exports[`Storyshots InputField disabled 1`] = `
 <input
+  aria-invalid={false}
   autoFocus={true}
   className="input-field my-2 form-control"
   disabled={true}
@@ -139,6 +141,7 @@ exports[`Storyshots InputField disabled 1`] = `
 
 exports[`Storyshots InputField invalid 1`] = `
 <input
+  aria-invalid={true}
   autoFocus={true}
   className="input-field my-2 is-invalid form-control"
   disabled={false}
@@ -153,6 +156,7 @@ exports[`Storyshots InputField invalid 1`] = `
 
 exports[`Storyshots InputField valid 1`] = `
 <input
+  aria-invalid={false}
   autoFocus={true}
   className="input-field my-2 is-valid form-control"
   disabled={false}
@@ -649,6 +653,7 @@ exports[`Storyshots UserSearch default 1`] = `
     className="inner"
   >
     <input
+      aria-invalid={false}
       autoFocus={true}
       className="input-field my-2 form-control"
       disabled={false}
@@ -694,6 +699,7 @@ exports[`Storyshots UserSearch invalid 1`] = `
     className="inner"
   >
     <input
+      aria-invalid={true}
       autoFocus={true}
       className="input-field my-2 is-invalid form-control"
       disabled={false}
@@ -740,6 +746,7 @@ exports[`Storyshots UserSearch loading 1`] = `
   >
     <div>
       <input
+        aria-invalid={false}
         autoFocus={true}
         className="input-field my-2 is-valid form-control"
         disabled={true}
@@ -795,6 +802,7 @@ exports[`Storyshots UserSearch user does not exist 1`] = `
   >
     <div>
       <input
+        aria-invalid={false}
         autoFocus={true}
         className="input-field my-2 form-control"
         disabled={false}
@@ -848,6 +856,7 @@ exports[`Storyshots UserSearch valid 1`] = `
     className="inner"
   >
     <input
+      aria-invalid={false}
       autoFocus={true}
       className="input-field my-2 is-valid form-control"
       disabled={false}
