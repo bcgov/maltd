@@ -1,3 +1,6 @@
+/* global cy, Cypress */
+// / <reference types="Cypress" />
+
 Cypress.Commands.add("login", (baseUrl, email, password) => {
   cy.visit(baseUrl);
   cy.get('a[id="zocial-idir"]').click();
@@ -48,6 +51,7 @@ Cypress.Commands.add("addAndValidateProject", (projectName, memberResource) => {
 Cypress.Commands.add(
   "addAdditionalSharePointProject",
   (projectName, memberResource) => {
+    const resources = cy.get("#member-resources");
     cy.get("select")
       .select(projectName)
       .should("have.value", projectName);
@@ -56,9 +60,8 @@ Cypress.Commands.add(
       .should("exist")
       .click({ force: true })
       .should("not.exist");
-    const resources = cy.get("#member-resources");
-    for (var i = 0; i < resources.length; i++) {
-      if (resources[i] == memberResource)
+    for (let i = 0; i < resources.length; i++) {
+      if (resources[i] === memberResource)
         console.info("Sharepoint resource is updated.");
       break;
     }

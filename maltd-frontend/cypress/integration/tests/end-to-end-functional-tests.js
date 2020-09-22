@@ -55,7 +55,6 @@ describe("MALT Ui Functional Test Suite", () => {
     );
 
     cy.findUser(Cypress.env("userName"));
-    //cy.validateNoProjectsIsAdded()
     cy.get(".cols > :nth-child(2) > p").should("have.text", "No projects");
     cy.addAndValidateProject("Dev Org Sandbox", "Member: Dynamics ");
 
@@ -108,7 +107,6 @@ describe("MALT Ui Functional Test Suite", () => {
     cy.deleteProjects();
     cy.wait(1200);
     cy.deleteProjects();
-    //cy.validateNoProjectsIsAdded()
     cy.get(".cols > :nth-child(2) > p").should("have.text", "No projects");
     cy.logout();
   });
