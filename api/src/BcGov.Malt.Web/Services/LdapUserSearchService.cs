@@ -103,17 +103,29 @@ namespace BcGov.Malt.Web.Services
 
         private User MapSearchResult(LdapEntry entry)
         {
+            LdapAttributeSet attributeSet = entry.GetAttributeSet();
+
             var user = new User
             {
-                Id = entry.GetAttribute("bcgovGUID")?.StringValue ?? string.Empty,
-                UserName = entry.GetAttribute("sAMAccountName")?.StringValue ?? string.Empty,
-                FirstName = entry.GetAttribute("givenName")?.StringValue ?? string.Empty,
-                LastName = entry.GetAttribute("sn")?.StringValue ?? string.Empty,
-                Email = entry.GetAttribute("mail")?.StringValue ?? string.Empty,
-                UserPrincipalName = entry.GetAttribute("userPrincipalName")?.StringValue ?? string.Empty
+                Id = GetValueOrDefault(attributeSet, "bcgovGUID"),
+                UserName = GetValueOrDefault(attributeSet, "sAMAccountName"),
+                FirstName = GetValueOrDefault(attributeSet, "givenName"),
+                LastName = GetValueOrDefault(attributeSet, "sn"),
+                Email = GetValueOrDefault(attributeSet, "mail"),
+                UserPrincipalName = GetValueOrDefault(attributeSet, "userPrincipalName")
             };
 
             return user;
+        }
+
+        private string GetValueOrDefault(LdapAttributeSet attributeSet, string name)
+        {
+            if (attributeSet.TryGetValue(name, out var ldapAttributeValue))
+            {
+                return ldapAttributeValue.StringValue;
+            }
+
+            return string.Empty;
         }
     }
 
