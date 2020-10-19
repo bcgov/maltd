@@ -38,6 +38,8 @@ namespace BcGov.Malt.Web.Services
 
             Logger.Debug("Adding {Username} to project", username);
 
+            User user = await _userSearchService.SearchAsync(username);
+
             SystemUser entry = await client
                 .For<SystemUser>()
                 .Filter(_ => _.DomainName == logon)
@@ -48,7 +50,6 @@ namespace BcGov.Malt.Web.Services
             {
                 Logger.Information("{Username} does not exist, creating a new record", username);
 
-                User user = await _userSearchService.SearchAsync(username);
                 BusinessUnit rootBusinessUnit = await GetRootBusinessUnit(client, cancellationToken);
 
                 // populate the SystemUser with required attributes
@@ -59,7 +60,8 @@ namespace BcGov.Malt.Web.Services
                     DomainName = IDIR.Logon(username),
                     InternalEMailAddress = user.Email,
                     BusinessUnit = rootBusinessUnit,
-                    IsDisabled = false
+                    IsDisabled = false,
+                    SharePointEmailAddress = user.UserPrincipalName
                 };
 
                 await client
@@ -67,9 +69,11 @@ namespace BcGov.Malt.Web.Services
                     .Set(entry)
                     .InsertEntryAsync(cancellationToken);
             }
-
-            Logger.Information("{@SystemUser} exists ensuring the user is enabled", entry);
-            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, false, cancellationToken);
+            else
+            {
+                Logger.Information("{@SystemUser} exists ensuring the user is enabled", entry);
+                await UpdateSystemUserDisableFlag(client, entry.SystemUserId, user, false, cancellationToken);
+            }
 
             return string.Empty;
         }
@@ -99,7 +103,7 @@ namespace BcGov.Malt.Web.Services
             }
 
             Logger.Information("{@SystemUser} exists ensuring the user is disabled", entry);
-            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, true, cancellationToken);
+            await UpdateSystemUserDisableFlag(client, entry.SystemUserId, user: null, true, cancellationToken);
 
             return string.Empty;
         }
@@ -126,19 +130,37 @@ namespace BcGov.Malt.Web.Services
             return entry != null;
         }
 
-        private Task<IDictionary<string, object>> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, bool isDisabled, CancellationToken cancellationToken)
+        private Task<IDictionary<string, object>> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, User user, bool isDisabled, CancellationToken cancellationToken)
         {
             Logger.Debug("Updating  SystemUser with {SystemUserId} with isDisabled flag set to {UsDisabled} in Dynamics", systemUserId, isDisabled);
+
+            object value;
+
+            if (isDisabled || user == null)
+            {
+                value = new {isdisabled = isDisabled};
+            }
+            else
+            {
+                // on add, we want to update the attributes of the user (note the sharepointemailaddress may not have previously set)
+                value = new
+                {
+                    firstname = user.FirstName,
+                    lastname = user.LastName,
+                    isdisabled = isDisabled,
+                    sharepointemailaddress = user.UserPrincipalName
+                };
+            }
 
             // using the untyped version because the typed version was giving an error:
             //
             // Microsoft.OData.ODataException: The property 'isdisabled' does not exist on type 'Microsoft.Dynamics.CRM.systemuser'.
             // Make sure to only use property names that are defined by the type or mark the type as open type.
-            //
+
             return client
                 .For("systemuser")
                 .Key(systemUserId)
-                .Set(new { isdisabled = isDisabled })
+                .Set(value)
                 .UpdateEntryAsync(cancellationToken);
         }
 
