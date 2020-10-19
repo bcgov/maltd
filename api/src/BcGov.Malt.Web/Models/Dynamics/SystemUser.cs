@@ -33,6 +33,9 @@ namespace BcGov.Malt.Web.Models.Dynamics
         [JsonPropertyName("internalemailaddress")]
         public string InternalEMailAddress { get; set; }
 
+        [JsonPropertyName("sharepointemailaddress")]
+        public string SharePointEmailAddress { get; set; }
+
         [JsonIgnore]
         private string DebuggerDisplay
         {
