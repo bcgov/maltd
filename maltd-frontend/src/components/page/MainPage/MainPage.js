@@ -200,7 +200,7 @@ export default class MainPage extends Component {
       const { users } = res.data;
       let userResources;
       users.forEach(user => {
-        if (user.username.toLowerCase() === value) {
+        if (user.username.toLowerCase() === value.toLowerCase()) {
           userResources = user.access.slice(0);
         }
       });
@@ -258,7 +258,7 @@ export default class MainPage extends Component {
       const { users } = res.data;
       let userResources;
       users.forEach(user => {
-        if (user.username.toLowerCase() === value) {
+        if (user.username.toLowerCase() === value.toLowerCase()) {
           userResources = user.access.slice(0);
         }
       });
