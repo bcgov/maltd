@@ -22,7 +22,7 @@
     "shared-components": "https://github.com/bcgov/react-shared-components/releases/download/0.5.7/shared-components-0.5.7.tgz"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "SET PORT=3001 && react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
