@@ -85,7 +85,7 @@ export default class MainPage extends Component {
           headers: { Authorization: `Bearer ${MainPage.getAccessToken()}` }
         });
       } catch (e) {
-        console.log("Error with getting user: ", e);
+        console.error("Error with getting user: ", e);
         const { status } = e.response;
         let errMessage = "";
         if (status === 500)
@@ -132,6 +132,7 @@ export default class MainPage extends Component {
         });
       }
     } catch (err) {
+      console.error(err);
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
@@ -223,6 +224,7 @@ export default class MainPage extends Component {
       });
       this.setState({ projects: updatedProjects });
     } catch (err) {
+      console.error(err);
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
@@ -304,6 +306,7 @@ export default class MainPage extends Component {
       }, 5000);
       return true;
     } catch (err) {
+      console.error(err);
       if (err && err.response && err.response.status) {
         const { status } = err.response;
         if (status === Unauthorized) {
