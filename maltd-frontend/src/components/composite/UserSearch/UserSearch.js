@@ -34,7 +34,7 @@ export default function UserSearch({
                 disabled={isButtonDisabled}
                 onClick={onClick}
                 label="Find"
-                styling="normal-blue btn"
+                styling="bcgov-normal-blue btn"
               />
             </div>
           </div>
@@ -52,7 +52,7 @@ export default function UserSearch({
                   disabled
                   hasLoader
                   label="Find"
-                  styling="normal-blue btn"
+                  styling="bcgov-normal-blue btn"
                 />
               </div>
             </div>
@@ -75,7 +75,7 @@ export default function UserSearch({
                   onClick={onClick}
                   disabled={isButtonDisabled}
                   label="Find"
-                  styling="normal-blue btn"
+                  styling="bcgov-normal-blue btn"
                 />
               </div>
             </div>
