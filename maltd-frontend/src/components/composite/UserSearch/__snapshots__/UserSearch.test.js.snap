@@ -32,7 +32,7 @@ exports[`User Search Component renders as expected 1`] = `
         className="d-flex justify-content-end"
       >
         <button
-          className="bcgov-button normal-blue btn"
+          className="bcgov-button bcgov-normal-blue btn"
           data-test-id=""
           disabled={false}
           onClick={[Function]}
