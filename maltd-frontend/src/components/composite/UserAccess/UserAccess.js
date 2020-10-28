@@ -90,7 +90,7 @@ export default function UserAccess({
                   label="Add"
                   disabled={isButtonDisabled}
                   hasLoader={isButtonDisabled}
-                  styling="normal-blue btn add-project"
+                  styling="bcgov-normal-blue btn add-project"
                   onClick={onPlusClick}
                 />
               )}
@@ -109,7 +109,7 @@ export default function UserAccess({
                       label="Add"
                       disabled={isButtonDisabled}
                       hasLoader={isButtonDisabled}
-                      styling="normal-blue btn add-project"
+                      styling="bcgov-normal-blue btn add-project"
                       onClick={onPlusClick}
                     />
                   )}

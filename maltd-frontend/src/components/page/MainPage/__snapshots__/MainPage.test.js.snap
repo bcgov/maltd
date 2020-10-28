@@ -2,37 +2,38 @@
 
 exports[`Main page Component renders as expected 1`] = `
 <main>
-  <header>
+  <header
+    className="bcgov-header"
+  >
     <nav
+      aria-label="Header"
       className="container-fluid navbar navbar-expand-lg navbar-dark"
     >
       <div
         aria-labelledby="title"
-        className="navbar-brand pointer"
+        className="navbar-brand bcgov-pointer"
       />
       <img
         alt="B.C. Government Logo"
-        className="img-fluid d-none d-md-block pointer"
+        className="img-fluid d-none d-md-block bcgov-pointer"
         height="44"
         onClick={[Function]}
         onKeyDown={[Function]}
-        role="presentation"
         src="undefined/images/bcid-logo-rev-en.svg"
         width={181}
       />
       <img
         alt="B.C. Government Logo"
-        className="img-fluid d-md-none pointer"
+        className="img-fluid d-md-none bcgov-pointer"
         height="44"
         onClick={[Function]}
         onKeyDown={[Function]}
-        role="presentation"
         src="undefined/images/bcid-symbol-rev.svg"
         width={64}
       />
       <div
         aria-labelledby="title"
-        className="pointer navbar-brand nav-item nav-link"
+        className="bcgov-pointer navbar-brand nav-item nav-link"
       />
       <div
         className="navbar-brand"
@@ -99,7 +100,7 @@ exports[`Main page Component renders as expected 1`] = `
                 className="d-flex justify-content-end"
               >
                 <button
-                  className="bcgov-button normal-blue btn"
+                  className="bcgov-button bcgov-normal-blue btn"
                   data-test-id=""
                   disabled={true}
                   onClick={[Function]}
@@ -115,9 +116,10 @@ exports[`Main page Component renders as expected 1`] = `
     </div>
   </div>
   <footer
-    className="footer"
+    className="bcgov-footer"
   >
     <nav
+      aria-label="Footer"
       className="navbar navbar-expand-sm navbar-dark justify-content-end"
     >
       <button
