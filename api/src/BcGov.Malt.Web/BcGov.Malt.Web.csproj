@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>e50dd137-4459-4a4a-aed3-0e56f3723cff</UserSecretsId>
     <AssemblyName>BcGov.Malt.Web</AssemblyName>
     <RootNamespace>BcGov.Malt.Web</RootNamespace>
+	<!--<AnalysisMode>AllEnabledByDefault</AnalysisMode>-->
   </PropertyGroup>
 
   <PropertyGroup>
@@ -29,43 +30,39 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="3.1.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="3.1.1" />
-    <PackageReference Include="MediatR" Version="8.1.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="6.0.2" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.7" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.8" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.7" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.7" />
-    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="3.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.1" />
-    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.2.0" />
-    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.6.0" />
+    <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="Polly.Contrib.Simmy" Version="0.3.0" />
-    <PackageReference Include="refit" Version="5.1.67" />
-    <PackageReference Include="Serilog" Version="2.9.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
-    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.1" />
+    <PackageReference Include="refit" Version="6.3.2" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-    <PackageReference Include="Serilog.Exceptions" Version="5.6.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
-    <PackageReference Include="Serilog.Sinks.Splunk" Version="3.4.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
+    <PackageReference Include="Serilog.Sinks.Splunk" Version="3.7.0" />
     <PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
-    <PackageReference Include="Simple.OData.V4.Client" Version="5.12.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.5.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.5.1" />
-    <PackageReference Include="System.Runtime.Caching" Version="4.7.0" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Simple.OData.V4.Client" Version="5.26.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.3" />
+    <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="6.0.2" />
   </ItemGroup>
 
 
