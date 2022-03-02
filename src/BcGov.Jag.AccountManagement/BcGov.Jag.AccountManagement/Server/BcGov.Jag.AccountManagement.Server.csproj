@@ -24,15 +24,12 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
     <PackageReference Include="Serilog.Sinks.Splunk" Version="3.7.0" />
+    <PackageReference Include="Simple.OData.V4.Client" Version="5.26.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Client\BcGov.Jag.AccountManagement.Client.csproj" />
     <ProjectReference Include="..\Shared\BcGov.Jag.AccountManagement.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 

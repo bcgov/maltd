@@ -1,10 +1,7 @@
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
-using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Exceptions.Core;
-using Serilog.Exceptions.Destructurers;
 using BcGov.Jag.AccountManagement.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
