@@ -1,10 +1,20 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
+using Serilog.Events;
+using Serilog.Exceptions;
+using Serilog.Exceptions.Core;
+using Serilog.Exceptions.Destructurers;
 using BcGov.Jag.AccountManagement.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) => {
+    loggerConfiguration
+        .ReadFrom.Configuration(builder.Configuration)
+        .Enrich.WithExceptionDetails(new DestructuringOptionsBuilder().WithDefaultDestructurers());
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

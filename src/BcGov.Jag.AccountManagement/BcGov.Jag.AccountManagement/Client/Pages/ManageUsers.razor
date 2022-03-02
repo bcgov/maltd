@@ -1,6 +1,7 @@
 ﻿@page "/manageusers"
+@using BcGov.Jag.AccountManagement.Client.Data
 @using BcGov.Jag.AccountManagement.Shared
-@inject HttpClient Http
+@inject IRepository repository
 
 <PageTitle>Get User</PageTitle>
 
@@ -45,6 +46,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        user = await Http.GetFromJsonAsync<User>($"api/user?q={username}");
+        user = await repository.SearchAsync(username);
     }
 }
