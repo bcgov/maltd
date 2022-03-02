@@ -79,3 +79,9 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+@media (min-width: 641px) {
+.navbar-expand-lg .navbar-toggler {
+    display: none;
+    }
+}

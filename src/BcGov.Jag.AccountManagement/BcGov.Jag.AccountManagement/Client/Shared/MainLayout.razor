@@ -1,17 +1,56 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <LoginControl />
+<div class="page flex-column">
+    <main class="w-100">
+    <header class="d-flex justify-content-between navbar-dark navbar-expand-lg">
+            <div class="banner">
+                <a href="https://gov.bc.ca">
+                <img src="images/BC_Logo_Horizontal.svg" alt="Go to the Government of British Columbia website" style="width: 175px; height: 65px;"/>
+                </a>
+                <h1 class="ms-5 ">Account Management</h1>
+            </div>
+            <div class="d-flex text-end align-items-center">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarToggler01" 
+                        aria-controls="navbarToggler01" 
+                        aria-expanded="false" aria-label="Toggle navigation"
+                        @onclick="ToggleNavMenu"
+                        >
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+            <!--
+                This place is for anything that needs to be right aligned
+                beside the logo.
+            -->
+            </div>
+        </header>
+    
+        <div class="sidebar" style="margin-top:65px">
+            <NavMenu @bind-navMenuCssClass="navMenuCssClass"/>
         </div>
-
-        <article class="content px-4 h-75">
+        <article class="content px-4">
             @Body
         </article>
+        
+    
+   <footer class="footer">
+            <div class="container">
+            </div>
+    </footer>
     </main>
 </div>
+
+@code{
+    private static bool collapseNavMenu = true;
+
+    private string navMenuCssClass = "collapse";
+
+    private async void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+        navMenuCssClass = collapseNavMenu ? "collapse" : null;
+    }
+}
