@@ -1,8 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap;
 using BcGov.Jag.AccountManagement.Shared;
-using BcGov.Jag.AccountManagement.Server.Services;
 using Microsoft.Extensions.Options;
 
 namespace BcGov.Jag.AccountManagement.Server.Services;

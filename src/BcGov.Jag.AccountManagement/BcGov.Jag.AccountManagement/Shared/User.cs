@@ -34,4 +34,6 @@ public class User
     /// <summary>Gets or sets the pser principal name (upn).</summary>
     /// <value>The email.</value>
     public string? UserPrincipalName { get; set; }
+
+    public string LoginName { get; set; }
 }
