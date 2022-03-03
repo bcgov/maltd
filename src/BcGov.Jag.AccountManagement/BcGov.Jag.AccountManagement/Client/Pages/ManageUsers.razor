@@ -3,13 +3,21 @@
 @using BcGov.Jag.AccountManagement.Shared
 @inject IRepository repository
 
-<PageTitle>Get User</PageTitle>
+<PageTitle>Manage Users</PageTitle>
 
-<h1>User Info</h1>
+<h1>Manage Users</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-@if (String.IsNullOrEmpty(user.UserName))
+<EditForm Model="@searchModel" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText @bind-Value="searchModel.Username" />
+
+    <button type="submit">Search</button>
+</EditForm>
+
+@if (spinning)
 {
     <div class="d-flex justify-content-center align-items-center h-100">
         <div class="spinner-border" role="status">
@@ -17,8 +25,10 @@
         </div>
     </div>
 }
-else
+else if (!String.IsNullOrWhiteSpace(user.UserName))
 {
+    <h2>User Info</h2>
+
     <table class="table">
         <thead>
             <tr>
@@ -41,15 +51,65 @@ else
             </tr>
         </tbody>
     </table>
+
+    @if (user.Projects is not null && user.Projects.Length > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Dynamics</th>
+                    <th>Sharepoint</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in user.Projects)
+                {
+                    <tr>
+                        <td>@project.Name</td>
+                        <td>@GetProjectStatus(project, "Dynamics")</td>
+                        <td>@GetProjectStatus(project, "SharePoint")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 
 @code {
+    /// <summary>
+    /// If true we are searching for user.
+    /// </summary>
+    private bool spinning = false;
+
+    /// <summary>
+    /// Represents the data to search for.
+    /// </summary>
+    private UserSearchModel searchModel = new UserSearchModel();
+
+    /// <summary>
+    /// Represents the data found.
+    /// </summary>
     private DetailedUser user = new DetailedUser();
 
-    private string username = "philbold";
+    private async Task OnValidSubmit()
+    {   
+        spinning=true;
+        await Task.Delay(1);
 
-    protected override async Task OnInitializedAsync()
+        try
+        {
+            user = await repository.LookupAsync(searchModel.Username);
+        }
+        finally
+        {
+            spinning=false; // ensure we disable spinner even if there is an error
+            await Task.Delay(1);
+        }             
+    }
+
+    private string GetProjectStatus(Project project, string type)
     {
-        user = await repository.LookupAsync(username);
+        return project?.Resources?.FirstOrDefault(_ => _.Type == type)?.Status ?? "n/a";
     }
 }
