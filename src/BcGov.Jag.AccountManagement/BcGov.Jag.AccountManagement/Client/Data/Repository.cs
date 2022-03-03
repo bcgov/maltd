@@ -13,6 +13,12 @@ public class Repository : IRepository
         _userApi = userApi ?? throw new ArgumentNullException(nameof(userApi));
     }
 
+    public async Task<DetailedUser> LookupAsync(string username)
+    {
+        var user = await _userApi.LookupAsync(username);
+        return user;
+    }
+
     public async Task<User?> SearchAsync(string username)
     {
         try

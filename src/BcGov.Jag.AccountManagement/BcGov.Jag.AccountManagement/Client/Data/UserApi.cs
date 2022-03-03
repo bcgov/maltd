@@ -7,4 +7,7 @@ public interface IUserApi
 {
     [Get("/api/user?q={username}")]
     Task<User> SearchAsync(string username);
+
+    [Get("/api/user/{username}")]
+    Task<DetailedUser> LookupAsync(string username);
 }
