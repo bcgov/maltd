@@ -44,12 +44,12 @@ else
 }
 
 @code {
-    private User user = new User();
+    private DetailedUser user = new DetailedUser();
 
     private string username = "philbold";
 
     protected override async Task OnInitializedAsync()
     {
-        user = await repository.SearchAsync(username);
+        user = await repository.LookupAsync(username);
     }
 }

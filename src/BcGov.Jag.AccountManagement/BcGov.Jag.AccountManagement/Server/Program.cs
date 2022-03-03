@@ -3,6 +3,11 @@ using Serilog;
 using Serilog.Exceptions;
 using Serilog.Exceptions.Core;
 using BcGov.Jag.AccountManagement.Server.Services;
+using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
+using BcGov.Jag.AccountManagement.Server.Models.Configuration;
+using BcGov.Jag.AccountManagement.Server.Models.Authorization;
+using MediatR;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -24,7 +29,33 @@ builder.Services
         options.Audience = builder.Configuration["Jwt:Audience"];
     });
 
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+
 builder.Services.AddLdapUserSearch(builder.Configuration);
+builder.Services.AddMemoryCache();
+
+builder.Services.ConfigureProjectResources(builder.Configuration, Serilog.Log.Logger); // TODO: pass in a configured logger
+
+builder.Services.AddTransient<IUserManagementService, UserManagementService>();
+builder.Services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
+
+// Add HttpClient and IHttpClientFactory in case the project resources do not register it
+// The DefaultODataClientFactory has dependency on IHttpClientFactory.
+builder.Services.AddHttpClient();
+
+// SAML services
+// token caches are singleton because they maintain a per instance prefix
+// that can be changed to effectively clear the cache
+builder.Services.AddSingleton<ITokenCache<SamlTokenParameters, string>, SamlTokenTokenCache>();
+builder.Services.AddTransient<ISamlAuthenticator, SamlAuthenticator>();
+
+// OAuth services
+// token caches are singleton because they maintain a per instance prefix
+// that can be changed to effectively clear the cache
+builder.Services.AddSingleton<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>();
+builder.Services.AddTransient<IOAuthClientFactory, OAuthClientFactory>();
+
+builder.Services.AddTransient<IAccessTokenLoader, AccessTokenLoader>();
 
 var app = builder.Build();
 

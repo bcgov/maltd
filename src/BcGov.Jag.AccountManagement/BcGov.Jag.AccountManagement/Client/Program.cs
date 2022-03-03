@@ -1,4 +1,5 @@
 using BcGov.Jag.AccountManagement.Client;
+using BcGov.Jag.AccountManagement.Client.Authentication;
 using BcGov.Jag.AccountManagement.Client.Data;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -10,10 +11,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.UseData();
 
-builder.Services.AddOidcAuthentication(options =>
-{
-    builder.Configuration.Bind("oidc", options.ProviderOptions);
-});
+builder.Services
+    .AddOidcAuthentication(options => { builder.Configuration.Bind("oidc", options.ProviderOptions); })
+    .AddAccountClaimsPrincipalFactory<KeycloakAccountClaimsPrincipalFactory<RemoteUserAccount>>()
+    ;
 
 builder.Services.AddApiAuthorization();
 

@@ -8,4 +8,6 @@ namespace BcGov.Jag.AccountManagement.Client.Data;
 public interface IRepository
 {
     Task<User?> SearchAsync(string username);
+
+    Task<DetailedUser> LookupAsync(string username);
 }
