@@ -5,13 +5,15 @@
   
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">
-            Log out
-        </button>
+        @* Hello, @context.User.Identity.Name *@
+        <NavLink class="nav-link text-dark ps-2 w-100 text-align-start rounded-0" href="#" @onclick="BeginSignOut">
+           <i class="bi bi-person-circle pe-2"></i>Log out
+        </NavLink>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+         <NavLink class="nav-link text-dark ps-2" href="authentication/login">
+            <i class="bi bi-person-circle pe-2"></i>Log In
+        </NavLink>
     </NotAuthorized>
 </AuthorizeView>
   
