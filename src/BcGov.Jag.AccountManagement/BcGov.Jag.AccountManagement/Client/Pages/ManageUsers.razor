@@ -5,16 +5,19 @@
 
 <PageTitle>Manage Users</PageTitle>
 
-<h1>Manage Users</h1>
-
 
 <EditForm Model="@searchModel" OnValidSubmit="@OnValidSubmit">
+    <!-- BEGIN SEARCH INPUT -->
+    <div class="input-group mb-1">
+        <InputText class="form-control" @bind-Value="searchModel.Username" placeholder="Search User with IDIR"/>
+        <span class="input-group-btn">
+        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+        </span>
+        
+    </div>
     <DataAnnotationsValidator />
     <ValidationSummary />
-
-    <InputText @bind-Value="searchModel.Username" />
-
-    <button type="submit">Search</button>
+    
 </EditForm>
 
 @if (spinning)
@@ -27,36 +30,45 @@
 }
 else if (!String.IsNullOrWhiteSpace(user.UserName))
 {
-    <h2>User Info</h2>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>bcgov GUID</th>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>UPN</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@user.Id</td>
-                <td>@user.LastName</td>
-                <td>@user.FirstName</td>
-                <td>@user.UserName</td>
-                <td>@user.Email</td>
-                <td>@user.UserPrincipalName</td>
-            </tr>
-        </tbody>
-    </table>
-
+<div class="panel panel-default mt-3">
+    <div class="panel-heading fw-bold">User Info</div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>bcgov GUID</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>UPN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.LastName</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.UserPrincipalName</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
     @if (user.Projects is not null && user.Projects.Length > 0)
     {
+        <div class="panel panel-default mt-3">
+        <div class="panel-heading fw-bold">Project Info</div>
+        <div class="panel-body">
+        <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
+                    <th class="text-center"><input type="checkbox"></th>
                     <th>Project</th>
                     <th>Dynamics</th>
                     <th>Sharepoint</th>
@@ -66,13 +78,17 @@ else if (!String.IsNullOrWhiteSpace(user.UserName))
                 @foreach (var project in user.Projects)
                 {
                     <tr>
+                        <td class="text-center"><input type="checkbox"></td>
                         <td>@project.Name</td>
-                        <td>@GetProjectStatus(project, "Dynamics")</td>
-                        <td>@GetProjectStatus(project, "SharePoint")</td>
+                        <td class="text-left"><input type="checkbox" checked=@GetProjectStatus(project, "Dynamics")></td>
+                        <td class="text-left"><input type="checkbox" checked=@GetProjectStatus(project, "SharePoint")></td>
                     </tr>
                 }
             </tbody>
         </table>
+        </div>
+        </div>
+        </div>
     }
 }
 
