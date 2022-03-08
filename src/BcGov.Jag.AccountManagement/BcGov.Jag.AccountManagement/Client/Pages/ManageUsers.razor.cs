@@ -28,6 +28,8 @@ public partial class ManageUsers
 
     private IList<ProjectMembershipModel> projectMembershipRows = Array.Empty<ProjectMembershipModel>();
 
+    private IList<ProjectMembershipModel> projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
+
     private async Task OnValidSubmit()
     {
         spinning = true;
@@ -37,6 +39,7 @@ public partial class ManageUsers
         {
             user = await Repository.LookupAsync(searchModel.Username);
             projectMembershipRows = user.ToViewModel();
+            projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
         }
         finally
         {
@@ -45,4 +48,8 @@ public partial class ManageUsers
         }
     }
 
+    private async Task GetChanges()
+    {
+        projectMembershipChanges = user.GetChanges(projectMembershipRows).ToList();
+    }
 }

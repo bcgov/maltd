@@ -45,5 +45,12 @@ else if (!String.IsNullOrWhiteSpace(user.UserName))
                 </div>
             </div>
         </div>
+
+        <button class="btn btn-primary" @onclick="GetChanges">Get Changes</button>
+
+        if (projectMembershipChanges is not null && projectMembershipChanges.Count > 0)
+        {
+            <UserMembershipGrid RowsData="@projectMembershipChanges" />            
+        }
     }
 }
