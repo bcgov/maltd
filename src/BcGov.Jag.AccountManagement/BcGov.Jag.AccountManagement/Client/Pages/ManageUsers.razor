@@ -1,23 +1,19 @@
 ﻿@page "/manageusers"
-@using BcGov.Jag.AccountManagement.Client.Data
-@using BcGov.Jag.AccountManagement.Shared
-@inject IRepository repository
 
 <PageTitle>Manage Users</PageTitle>
-
 
 <EditForm Model="@searchModel" OnValidSubmit="@OnValidSubmit">
     <!-- BEGIN SEARCH INPUT -->
     <div class="input-group mb-1">
-        <InputText class="form-control" @bind-Value="searchModel.Username" placeholder="Search User with IDIR"/>
+        <InputText class="form-control" @bind-Value="searchModel.Username" placeholder="Search User with IDIR" />
         <span class="input-group-btn">
-        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
         </span>
-        
+
     </div>
     <DataAnnotationsValidator />
     <ValidationSummary />
-    
+
 </EditForm>
 
 @if (spinning)
@@ -30,102 +26,24 @@
 }
 else if (!String.IsNullOrWhiteSpace(user.UserName))
 {
-<div class="panel panel-default mt-3">
-    <div class="panel-heading fw-bold">User Info</div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>bcgov GUID</th>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>UPN</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>@user.Id</td>
-                        <td>@user.LastName</td>
-                        <td>@user.FirstName</td>
-                        <td>@user.UserName</td>
-                        <td>@user.Email</td>
-                        <td>@user.UserPrincipalName</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="panel panel-default mt-3">
+        <div class="panel-heading fw-bold">User Info</div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <UserDetails User=@user />
+            </div>
         </div>
     </div>
-</div>
-    @if (user.Projects is not null && user.Projects.Length > 0)
+
+    @if (projectMembershipRows is not null && projectMembershipRows.Count > 0)
     {
         <div class="panel panel-default mt-3">
-        <div class="panel-heading fw-bold">Project Info</div>
-        <div class="panel-body">
-        <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th class="text-center"><input type="checkbox"></th>
-                    <th>Project</th>
-                    <th>Dynamics</th>
-                    <th>Sharepoint</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var project in user.Projects)
-                {
-                    <tr>
-                        <td class="text-center"><input type="checkbox"></td>
-                        <td>@project.Name</td>
-                        <td class="text-left"><input type="checkbox" checked=@GetProjectStatus(project, "Dynamics")></td>
-                        <td class="text-left"><input type="checkbox" checked=@GetProjectStatus(project, "SharePoint")></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            <div class="panel-heading fw-bold">Project Info</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <UserMembershipGrid RowsData="@projectMembershipRows" />
+                </div>
+            </div>
         </div>
-        </div>
-        </div>
-    }
-}
-
-@code {
-    /// <summary>
-    /// If true we are searching for user.
-    /// </summary>
-    private bool spinning = false;
-
-    /// <summary>
-    /// Represents the data to search for.
-    /// </summary>
-    private UserSearchModel searchModel = new UserSearchModel();
-
-    /// <summary>
-    /// Represents the data found.
-    /// </summary>
-    private DetailedUser user = new DetailedUser();
-
-    private async Task OnValidSubmit()
-    {   
-        spinning=true;
-        await Task.Delay(1);
-
-        try
-        {
-            user = await repository.LookupAsync(searchModel.Username);
-        }
-        finally
-        {
-            spinning=false; // ensure we disable spinner even if there is an error
-            await Task.Delay(1);
-        }             
-    }
-
-    private string GetProjectStatus(Project project, string type)
-    {
-        return project?.Resources?.FirstOrDefault(_ => _.Type == type)?.Status ?? "n/a";
     }
 }

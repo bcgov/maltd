@@ -1,8 +1,8 @@
 ﻿<tr>
-    <td><input @ref=inputElement type="checkbox" checked="@ProjectChecked" @onchange="OnProjectChange" /></td>
+    <td class="text-center"><input @ref=inputElement type="checkbox" checked="@ProjectChecked" @onchange="OnProjectChange" /></td>
     <td>@RowData.ProjectName</td>
 
-    <td>
+    <td class="text-left">
         @if (RowData.Dynamics is not null)
         {
             <input type="checkbox" checked="@RowData.Dynamics" @onchange="OnDynamicsChange" />
@@ -13,7 +13,7 @@
         }
     </td>
 
-    <td>
+    <td class="text-left">
         @if (RowData.SharePoint is not null)
         {
             <input type="checkbox" checked="@RowData.SharePoint" @onchange="OnSharePointChange" />
@@ -24,4 +24,3 @@
         }
     </td>
 </tr>
-

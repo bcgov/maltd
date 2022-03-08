@@ -6,5 +6,5 @@ public partial class UserMembershipGrid
 {
     [EditorRequired]
     [Parameter]
-    public List<ProjectMembershipModel>? RowsData { get; set; }
+    public IList<ProjectMembershipModel>? RowsData { get; set; }
 }
