@@ -1,0 +1,21 @@
+@page "/settings"
+<div>Settings Page</div>
+
+<div class="m-4">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="nav-item">
+            <NavLink class="nav-link active" data-bs-toggle="tab" href="settings#home">Dynamics</NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link" data-bs-toggle="tab" href="settings#profile">Sharepoint</NavLink>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active m-3" id="home">
+            <h4 class="mt-2">Dynamics Configuration</h4>
+        </div>
+        <div class="tab-pane m-3" id="profile">
+            <h4 class="mt-2">Sharepoint Configuration</h4>
+        </div>
+    </div>
+</div>
