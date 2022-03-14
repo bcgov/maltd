@@ -31,6 +31,16 @@
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    
+<script>
+    function submitDynamics(event, formName) {
+        event.preventDefault();
+        const form = document.querySelector('#'+formName);
+        const data = Object.fromEntries(new FormData(form).entries());
+        console.log('Form data -- ', data);
+    }
+</script>
 </body>
 
 </html>
