@@ -48,8 +48,10 @@ public partial class ManageUsers
         }
     }
 
-    private async Task GetChanges()
+    private async Task SaveChanges()
     {
         projectMembershipChanges = user.GetChanges(projectMembershipRows).ToList();
+
+        await Repository.UpdateUserProjectsAsync(searchModel.Username, projectMembershipChanges);
     }
 }

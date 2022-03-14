@@ -7,7 +7,7 @@ namespace BcGov.Jag.AccountManagement.Server.Services;
 
 public class AccessTokenLoader : IAccessTokenLoader
 {
-    private static readonly Exception _noException = null;
+    private static readonly Exception? _noException = null;
 
     private readonly ProjectConfigurationCollection _projects;
     private readonly ISamlAuthenticator _samlAuthenticator;

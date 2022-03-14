@@ -30,7 +30,7 @@ public class InMemoryUserManagementService : IUserManagementService
             _database.Add(user, projects);
         }
 
-        if (projects.All(_ => _.Id != project.Id))
+        if (projects.All(_ => _.Name != project.Name))
         {
             projects.Add(project);
         }
@@ -84,6 +84,21 @@ public class InMemoryUserManagementService : IUserManagementService
             _database.Add(user, projects);
         }
 
-        return Task.FromResult(projects.Select(_ => new Project(_.Id, _.Name)).ToList());
+        return Task.FromResult(projects.Select(_ => new Project(_.Name)).ToList());
+    }
+
+    public Task ChangeUserProjectAccessAsync(string username, ProjectConfiguration project, ProjectMembershipModel projectMembership, CancellationToken cancellationToken)
+    {
+        if (projectMembership.Dynamics.HasValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        if (projectMembership.SharePoint.HasValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        return Task.CompletedTask;
     }
 }

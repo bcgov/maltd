@@ -72,7 +72,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
             throw new ArgumentException("Username cannot be null or empty", nameof(username));
         }
 
-        var user = await _userSearchService.SearchAsync(username);
+        var user = await _userSearchService.SearchAsync(username, cancellationToken);
 
         if (string.IsNullOrEmpty(user?.UserPrincipalName))
         {
@@ -136,7 +136,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
         Logger.Debug("Removing access for {Username}", username);
 
-        var user = await _userSearchService.SearchAsync(username);
+        var user = await _userSearchService.SearchAsync(username, cancellationToken);
 
         if (string.IsNullOrEmpty(user?.UserPrincipalName))
         {
@@ -200,7 +200,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         Logger.Debug("Checking {Username} has access to project", username);
 
 
-        var user = await _userSearchService.SearchAsync(username);
+        var user = await _userSearchService.SearchAsync(username, cancellationToken);
 
         if (string.IsNullOrEmpty(user?.UserPrincipalName))
         {

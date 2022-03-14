@@ -1,5 +1,4 @@
-﻿namespace BcGov.Jag.AccountManagement.Client.Data;
-
+﻿namespace BcGov.Jag.AccountManagement.Shared;
 public class ProjectMembershipModel
 {
     public string ProjectName { get; set; }

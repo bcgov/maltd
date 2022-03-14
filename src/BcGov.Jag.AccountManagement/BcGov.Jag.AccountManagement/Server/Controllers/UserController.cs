@@ -1,10 +1,10 @@
-﻿using BcGov.Jag.AccountManagement.Server.Services;
+﻿using BcGov.Jag.AccountManagement.Server.Features.Users;
+using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-
 
 namespace BcGov.Jag.AccountManagement.Server.Controllers;
 
@@ -27,7 +27,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> SearchAsync([FromQuery(Name = "q")][Required] string query, CancellationToken cancellationToken)
     {
-        var user = await _service.SearchAsync(query);
+        var user = await _service.SearchAsync(query, cancellationToken);
 
         if (user is not null)
         {
@@ -36,7 +36,6 @@ public class UserController : ControllerBase
 
         return NotFound();
     }
-
 
     [HttpGet]
     [Route("{username}")]
@@ -57,4 +56,13 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+
+    [HttpPost]
+    [Route("UpdateUserProjects/{username}")]
+    public async Task<IActionResult> UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership, CancellationToken cancellationToken)
+    {
+        ChangeAccess.Request request = new ChangeAccess.Request(username, projectMembership);
+        await _mediator.Send(request, cancellationToken);
+        return Ok();
+    }
 }

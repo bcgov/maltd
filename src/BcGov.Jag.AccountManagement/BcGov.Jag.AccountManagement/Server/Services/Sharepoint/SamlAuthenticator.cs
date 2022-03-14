@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Xml;
@@ -41,14 +42,14 @@ public class SamlAuthenticator : ISamlAuthenticator
     public async Task<string> GetStsSamlTokenAsync(string relyingParty, string username, string password,
         string stsUrl, bool cached = true)
     {
-        string securityTokenResponse;
+        string? securityTokenResponse;
 
         SamlTokenParameters tokenParameters = new SamlTokenParameters(relyingParty, username, stsUrl);
         if (cached)
         {
             _logger.LogDebug("Checking for cached token");
             securityTokenResponse = _tokenCache.GetToken(tokenParameters);
-            if (securityTokenResponse != null)
+            if (securityTokenResponse is not null)
             {
                 _logger.LogTrace("Returning cached token");
                 return securityTokenResponse;
@@ -76,7 +77,7 @@ public class SamlAuthenticator : ISamlAuthenticator
 
         var responseContent = await responseMessage.Content.ReadAsStringAsync();
         
-        if (TryParseXml(responseContent, out XmlDocument soapResponse))
+        if (TryParseXml(responseContent, out XmlDocument? soapResponse))
         {
             // <a:Action s:mustUnderstand="1">http://schemas.xmlsoap.org/ws/2005/02/trust/RSTR/Issue</a:Action>
             // <a:Action s:mustUnderstand="1">http://www.w3.org/2005/08/addressing/soap/fault</a:Action>
@@ -114,7 +115,7 @@ public class SamlAuthenticator : ISamlAuthenticator
                         relyingParty,
                         new { Code = code, Subcode = subcode, Reason = reason });
 
-                    throw new SamlAuthenticationException($"Request to {stsUrl} return HTTP Status {responseMessage.StatusCode}", code, subcode, reason);
+                    throw new SamlAuthenticationException($"Request to {stsUrl} return HTTP Status {responseMessage.StatusCode}", code!, subcode!, reason!);
                 }
                 else
                 {
@@ -192,7 +193,7 @@ public class SamlAuthenticator : ISamlAuthenticator
         if (trustUri != wreplyUri)
         {
             CookieCollection cookies = cookieContainer.GetCookies(trustUri);
-            string fedAuthCookieValue = cookies["FedAuth"]?.Value;
+            string? fedAuthCookieValue = cookies["FedAuth"]?.Value;
 
             if (!string.IsNullOrEmpty(fedAuthCookieValue))
             {
@@ -212,7 +213,7 @@ public class SamlAuthenticator : ISamlAuthenticator
     /// <param name="xml">The potential XML content.</param>
     /// <param name="document">The output <see cref="XmlDocument"/></param>
     /// <returns><c>true</c> if the XML was successfully parse, otherwise <c>false</c>.</returns>
-    private static bool TryParseXml(string xml, out XmlDocument document)
+    private static bool TryParseXml(string xml, [MaybeNullWhen(false)]  out XmlDocument document)
     {
         try
         {
@@ -237,7 +238,7 @@ public class SamlAuthenticator : ISamlAuthenticator
         // create a name space manager for the prefixes we need to reference
         XmlNamespaceManager namespaceManager = GetXmlNamespaceManager(document);
 
-        XmlNode actionNode = document.SelectSingleNode("/s:Envelope/s:Header/a:Action", namespaceManager);
+        XmlNode? actionNode = document.SelectSingleNode("/s:Envelope/s:Header/a:Action", namespaceManager);
         string action = actionNode?.InnerText ?? string.Empty;
 
         if (string.IsNullOrEmpty(action))
@@ -300,10 +301,10 @@ public class SamlAuthenticator : ISamlAuthenticator
 
         // Update correct elements content using XPath. These paths could be simplified
         // but are full path to avoid possible errors 
-        soapDocument.SelectSingleNode("/s:Envelope/s:Header/a:To", namespaceManager).InnerText = toUrl;
-        soapDocument.SelectSingleNode("/s:Envelope/s:Header/o:Security/o:UsernameToken/o:Username", namespaceManager).InnerText = username;
-        soapDocument.SelectSingleNode("/s:Envelope/s:Header/o:Security/o:UsernameToken/o:Password", namespaceManager).InnerText = password;
-        soapDocument.SelectSingleNode("/s:Envelope/s:Body/t:RequestSecurityToken/wsp:AppliesTo/a:EndpointReference/a:Address", namespaceManager).InnerText = relyingParty;
+        soapDocument.SelectSingleNode("/s:Envelope/s:Header/a:To", namespaceManager)!.InnerText = toUrl;
+        soapDocument.SelectSingleNode("/s:Envelope/s:Header/o:Security/o:UsernameToken/o:Username", namespaceManager)!.InnerText = username;
+        soapDocument.SelectSingleNode("/s:Envelope/s:Header/o:Security/o:UsernameToken/o:Password", namespaceManager)!.InnerText = password;
+        soapDocument.SelectSingleNode("/s:Envelope/s:Body/t:RequestSecurityToken/wsp:AppliesTo/a:EndpointReference/a:Address", namespaceManager)!.InnerText = relyingParty;
 
         // return the document as a string
         return soapDocument.OuterXml;
@@ -314,11 +315,11 @@ public class SamlAuthenticator : ISamlAuthenticator
     /// </summary>
     /// <param name="soapDocument"></param>
     /// <returns></returns>
-    private static string ExtractSoapBody(XmlDocument soapDocument)
+    private static string? ExtractSoapBody(XmlDocument soapDocument)
     {
         XmlNamespaceManager namespaceManager = GetXmlNamespaceManager(soapDocument);
 
-        string body = GetNodeInnerXml(soapDocument, namespaceManager, "/s:Envelope/s:Body");
+        string? body = GetNodeInnerXml(soapDocument, namespaceManager, "/s:Envelope/s:Body");
         return body;
     }
 
@@ -341,23 +342,23 @@ public class SamlAuthenticator : ISamlAuthenticator
         return new RequestSecurityTokenResponseLifetime { Created = created, Expires = expires };
     }
 
-    private static string GetNodeInnerText(XmlDocument soapDocument, XmlNamespaceManager namespaceManager, string path)
+    private static string? GetNodeInnerText(XmlDocument soapDocument, XmlNamespaceManager namespaceManager, string path)
     {
-        XmlNode node = soapDocument.SelectSingleNode(path, namespaceManager);
+        XmlNode? node = soapDocument.SelectSingleNode(path, namespaceManager);
         return node?.InnerText;
     }
 
-    private static string GetNodeInnerXml(XmlDocument soapDocument, XmlNamespaceManager namespaceManager, string path)
+    private static string? GetNodeInnerXml(XmlDocument soapDocument, XmlNamespaceManager namespaceManager, string path)
     {
-        XmlNode node = soapDocument.SelectSingleNode(path, namespaceManager);
+        XmlNode? node = soapDocument.SelectSingleNode(path, namespaceManager);
         return node?.InnerXml;
     }
 
     private static DateTimeOffset GetDateTimeOffset(XmlDocument soapDocument, XmlNamespaceManager namespaceManager, string path)
     {
-        string innerText = GetNodeInnerText(soapDocument, namespaceManager, path);
+        string? innerText = GetNodeInnerText(soapDocument, namespaceManager, path);
 
-        if (innerText == null)
+        if (innerText is null)
         {
             return DateTimeOffset.MinValue; // not good
         }

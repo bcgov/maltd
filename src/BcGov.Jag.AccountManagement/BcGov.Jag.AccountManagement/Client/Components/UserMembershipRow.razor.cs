@@ -1,4 +1,4 @@
-﻿using BcGov.Jag.AccountManagement.Client.Data;
+﻿using BcGov.Jag.AccountManagement.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -33,7 +33,7 @@ public partial class UserMembershipRow : IAsyncDisposable
     {
         if (firstRender)
         {
-            module = await JS.InvokeAsync<IJSObjectReference>("import", "./scripts.js");
+            module = await JS!.InvokeAsync<IJSObjectReference>("import", "./scripts.js");
         }
 
         await module!.InvokeVoidAsync("setElementProperty", inputElement, "indeterminate", ProjectChecked is null);
@@ -49,25 +49,29 @@ public partial class UserMembershipRow : IAsyncDisposable
         }
     }
 
-    private async Task OnProjectChange(ChangeEventArgs e)
+    private Task OnProjectChange(ChangeEventArgs e)
     {
         // set all the checkboxes the same
-        ProjectChecked = (bool)e.Value;
+        ProjectChecked = (bool)e.Value!;
 
         if (RowData.Dynamics.HasValue) RowData.Dynamics = ProjectChecked;
         if (RowData.SharePoint.HasValue) RowData.SharePoint = ProjectChecked;
+
+        return Task.CompletedTask;
     }
 
-    private async Task OnDynamicsChange(ChangeEventArgs e)
+    private Task OnDynamicsChange(ChangeEventArgs e)
     {
-        RowData.Dynamics = (bool)e.Value;
+        RowData.Dynamics = (bool)e.Value!;
         UpdateProjectChecked();
+        return Task.CompletedTask;
     }
 
-    private async Task OnSharePointChange(ChangeEventArgs e)
+    private Task OnSharePointChange(ChangeEventArgs e)
     {
-        RowData.SharePoint = (bool)e.Value;
+        RowData.SharePoint = (bool)e.Value!;
         UpdateProjectChecked();
+        return Task.CompletedTask;
     }
 
     private void UpdateProjectChecked()
