@@ -35,7 +35,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
         Logger.Debug("Adding {Username} to project", username);
 
-        User user = await _userSearchService.SearchAsync(username);
+        User user = await _userSearchService.SearchAsync(username, cancellationToken);
 
         SystemUser entry = await client
             .For<SystemUser>()
@@ -172,11 +172,11 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .Select(_ => _.BusinessUnitId)
             .FindEntriesAsync(cancellationToken);
 
-        BusinessUnit businessUnit = null;
+        BusinessUnit? businessUnit = null;
 
         foreach (var entry in entries)
         {
-            if (businessUnit == null)
+            if (businessUnit is null)
             {
                 businessUnit = entry;
             }
@@ -197,5 +197,5 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         return businessUnit;
     }
 
-    private IODataClient GetODataClient() => _factory.Create(Project.Id + "-dynamics");
+    private IODataClient GetODataClient() => _factory.Create(Project.Name + "-dynamics");
 }

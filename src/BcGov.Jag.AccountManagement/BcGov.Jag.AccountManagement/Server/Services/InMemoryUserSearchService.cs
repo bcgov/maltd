@@ -21,7 +21,7 @@ public class InMemoryUserSearchService : IUserSearchService
     /// <summary>Searches for a user asynchronously.</summary>
     /// <param name="query">The username to query for</param>
     /// <returns>The found user or null if not found.</returns>
-    public Task<User?> SearchAsync(string query)
+    public Task<User?> SearchAsync(string query, CancellationToken cancellationToken)
     {
         User? user = null;
 
@@ -41,7 +41,7 @@ public class InMemoryUserSearchService : IUserSearchService
 
     public Task<string> GetUserPrincipalNameAsync(string samAccountName)
     {
-        User user = null;
+        User? user = null;
 
         if (!string.IsNullOrEmpty(samAccountName))
         {

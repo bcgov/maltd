@@ -10,4 +10,7 @@ public interface IUserApi
 
     [Get("/api/user/{username}")]
     Task<DetailedUser> LookupAsync(string username);
+
+    [Post("/api/user/UpdateUserProjects/{username}")]
+    Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
 }

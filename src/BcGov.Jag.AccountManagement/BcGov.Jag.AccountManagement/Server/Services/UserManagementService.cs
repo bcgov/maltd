@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using BcGov.Jag.AccountManagement.Server.Models;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
 using BcGov.Jag.AccountManagement.Shared;
@@ -32,6 +31,46 @@ public class UserManagementService : IUserManagementService
         _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
     }
 
+    public async Task ChangeUserProjectAccessAsync(
+        string username, 
+        ProjectConfiguration project,
+        ProjectMembershipModel projectMembership,
+        CancellationToken cancellationToken)
+    {
+        if (projectMembership.Dynamics.HasValue)
+        {
+            await AddRemoveUserAsync(username, project, ProjectType.Dynamics, projectMembership.Dynamics.Value, cancellationToken);
+        }
+
+        if (projectMembership.SharePoint.HasValue)
+        {
+            await AddRemoveUserAsync(username, project, ProjectType.SharePoint, projectMembership.SharePoint.Value, cancellationToken);
+        }
+    }
+
+    private async Task AddRemoveUserAsync(string username, ProjectConfiguration project, ProjectType projectType, bool add, CancellationToken cancellationToken)
+    {
+        ProjectResource? resource = project.Resources.SingleOrDefault(_ => _.Type == projectType);
+        if (resource is null)
+        {
+            _logger.LogWarning("Requested to add/remove user from {Resource} but {Project} is not configured with this resource.", projectType, project.Name);
+        }
+        else
+        {
+            IResourceUserManagementService service = GetResourceUserManagementService(project, resource);
+            if (add)
+            {
+                _logger.LogInformation("Adding {Username} to {Project} - {Resource}", username, project.Name, projectType);
+                await service.AddUserAsync(username, cancellationToken);
+            }
+            else
+            {
+                _logger.LogInformation("Removing {Username} from {Project} - {Resource}", username, project.Name, projectType);
+                await service.RemoveUserAsync(username, cancellationToken);
+            }
+        }
+    }
+
     public async Task<List<ProjectResourceStatus>> AddUserToProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)
     {
         var requests = CreateAddUserRequests(user, project, cancellationToken);
@@ -56,7 +95,7 @@ public class UserManagementService : IUserManagementService
 
             if (task.IsCompletedSuccessfully)
             {
-                string message = task.Result;
+                string? message = task.Result;
                 if (string.IsNullOrEmpty(message))
                 {
                     message = null;
@@ -64,7 +103,7 @@ public class UserManagementService : IUserManagementService
 
                 _logger.LogDebug("Request to add {User} to {Project} {Resource} completed successfully",
                     new { user.UserName, user.Email },
-                    new { request.Configuration.Name, request.Configuration.Id },
+                    new { request.Configuration.Name },
                     new { request.Resource.Type, request.Resource.Resource });
 
                 statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Member, Message = message });
@@ -80,7 +119,7 @@ public class UserManagementService : IUserManagementService
                     _logger.LogError(task.Exception,
                         "Request add user {@User} to project {Project} for resource {Resource} failed (Error Id: {ErrorId})",
                         new { user.Id, user.UserName, user.UserPrincipalName },
-                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Configuration.Name },
                         new { request.Resource.Type, request.Resource.Resource },
                         errorId);
                 }
@@ -89,7 +128,7 @@ public class UserManagementService : IUserManagementService
                     // log without exception
                     _logger.LogError("Request add user {@User} to project {Project} for resource {Resource} failed (Error Id: {ErrorId})",
                         new { user.Id, user.UserName, user.UserPrincipalName },
-                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Configuration.Name },
                         new { request.Resource.Type, request.Resource.Resource },
                         errorId);
                 }
@@ -103,90 +142,75 @@ public class UserManagementService : IUserManagementService
 
     public async Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Before CreateUserHasAccessRequests");
-        List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> requests = CreateUserHasAccessRequests(user, cancellationToken);
-        _logger.LogDebug("After CreateUserHasAccessRequests");
+        string username = user.UserName;
 
-        // wait for all tasks to complete
-        Task<bool[]> aggregateTask = Task.WhenAll(requests.Select(_ => _.Task));
+        var requests = CreateUserHasAccessRequests();
 
-        try
+        await Parallel.ForEachAsync(requests, async (request, cancellationToken) =>
         {
-            _logger.LogDebug("Before await aggregateTask");
-            await aggregateTask;
-            _logger.LogDebug("After await aggregateTask");
-        }
-        catch (Exception exception)
-        {
-            // if any of the tasks throws an error, that first exception will be thrown
-            // we can safely ignore this exception because we are going to iterate over
-            // all of the requests and if faulted, log them out too
-            _logger.LogDebug(exception, "After await aggregateTask - Exception");
-        }
+            request.Access = await request.Service.UserHasAccessAsync(username, cancellationToken);
+        });
 
         List<Project> projects = new List<Project>();
 
-        foreach (var request in requests)
+        foreach (var requestGroup in requests.GroupBy(_ => _.Configuration))
         {
-            Project project = projects.SingleOrDefault(_ => _.Id == request.Configuration.Id);
-            if (project == null)
+            Project project = new Project
             {
-                project = new Project
-                {
-                    Id = request.Configuration.Id,
-                    Name = request.Configuration.Name,
-                    Resources = new List<ProjectResourceStatus>()
-                };
+                Name = requestGroup.Key.Name,
+                Resources = new List<ProjectResourceStatus>()
+            };
 
-                projects.Add(project);
-            }
+            projects.Add(project);
 
-            var task = request.Task;
-
-            if (task.IsCompletedSuccessfully)
+            foreach (var requestItem in requestGroup)
             {
-                _logger.LogDebug("Request to check user access to {Project} for {Resource} completed successfully",
-                    new { request.Configuration.Name, request.Configuration.Id },
-                    new { request.Resource.Type, request.Resource.Resource });
+                // TODO: handle null
+                bool userHasAccess = requestItem.Access is not null && requestItem.Access.Value;
 
-                bool userHasAccess = task.Result;
                 project.Resources.Add(new ProjectResourceStatus
                 {
-                    Type = request.Resource.Type.ToString(),
+                    Type = requestItem.Resource.Type.ToString(),
                     Status = userHasAccess
                         ? ProjectResourceStatuses.Member
                         : ProjectResourceStatuses.NotMember
                 });
-
             }
-            else if (task.IsFaulted)
-            {
-                Exception exception = task.Exception?.InnerException;
-                Guid errorId = Guid.NewGuid();
 
-                string message = GetUserErrorMessageFor(exception, errorId);
-                
-                if (exception != null)
-                {
-                    // log with exception
-                    _logger.LogError(exception, "Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
-                        new { user.Id, user.UserName, user.UserPrincipalName },
-                        new { request.Configuration.Name, request.Configuration.Id },
-                        new { request.Resource.Type, request.Resource.Resource },
-                        errorId);
-                }
-                else
-                {
-                    // log without exception
-                    _logger.LogError("Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
-                        new { user.Id, user.UserName, user.UserPrincipalName },
-                        new { request.Configuration.Name, request.Configuration.Id },
-                        new { request.Resource.Type, request.Resource.Resource },
-                        errorId);
-                }
 
-                project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
-            }
+
+            //if (task.IsCompletedSuccessfully)
+            //{
+            //}
+            //else if (task.IsFaulted)
+            //{
+            //    Exception exception = task.Exception?.InnerException;
+            //    Guid errorId = Guid.NewGuid();
+
+            //    string message = GetUserErrorMessageFor(exception, errorId);
+
+            //    if (exception != null)
+            //    {
+            //        // log with exception
+            //        _logger.LogError(exception, "Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
+            //            new { user.Id, user.UserName, user.UserPrincipalName },
+            //            new { request.Configuration.Name, request.Configuration.Id },
+            //            new { request.Resource.Type, request.Resource.Resource },
+            //            errorId);
+            //    }
+            //    else
+            //    {
+            //        // log without exception
+            //        _logger.LogError("Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
+            //            new { user.Id, user.UserName, user.UserPrincipalName },
+            //            new { request.Configuration.Name, request.Configuration.Id },
+            //            new { request.Resource.Type, request.Resource.Resource },
+            //            errorId);
+            //    }
+
+            //    project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
+            //}
+
         }
 
         return projects;
@@ -238,7 +262,7 @@ public class UserManagementService : IUserManagementService
 
             if (task.IsCompletedSuccessfully)
             {
-                string message = task.Result;
+                string? message = task.Result;
                 if (string.IsNullOrEmpty(message))
                 {
                     message = null;
@@ -246,7 +270,7 @@ public class UserManagementService : IUserManagementService
 
                 _logger.LogDebug("Request to remove {User} from {Project} {Resource} completed successfully",
                     new { user.UserName, user.Email },
-                    new { request.Configuration.Name, request.Configuration.Id },
+                    new { request.Configuration.Name },
                     new { request.Resource.Type, request.Resource.Resource });
 
                 statuses.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.NotMember, Message = message });
@@ -262,7 +286,7 @@ public class UserManagementService : IUserManagementService
                     _logger.LogError(task.Exception,
                         "Request to remove user {@User} from project {Project} for resource {Resource} failed (Error Id: {errorId})",
                     new { user.Id, user.UserName, user.UserPrincipalName },
-                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Configuration.Name },
                         new { request.Resource.Type, request.Resource.Resource },
                         errorId);
                 }
@@ -271,7 +295,7 @@ public class UserManagementService : IUserManagementService
                     // log without exception
                     _logger.LogError("Request to remove user {@User} from project {Project} for resource {Resource} failed (Error Id: {errorId})",
                     new { user.Id, user.UserName, user.UserPrincipalName },
-                        new { request.Configuration.Name, request.Configuration.Id },
+                        new { request.Configuration.Name },
                         new { request.Resource.Type, request.Resource.Resource },
                         errorId);
                 }
@@ -283,36 +307,32 @@ public class UserManagementService : IUserManagementService
         return statuses;
     }
 
-    private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> CreateUserHasAccessRequests(User user, CancellationToken cancellationToken)
+    private List<ProjectResourceAccess> CreateUserHasAccessRequests()
     {
-        List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<bool> Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task<bool>)>();
+        List<ProjectResourceAccess> requests = new List<ProjectResourceAccess>();
 
-        foreach (var projectConfiguration in _projects)
+        foreach (var project in _projects)
         {
-            foreach (ProjectResource resource in projectConfiguration.Resources)
+            foreach (ProjectResource resource in project.Resources)
             {
-                var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
-                if (resourceUserManagementService != null)
-                {
-                    // user Task.Run? Return the task? 
-                    // when just returning the task, the logs indicate the individual resource resourceUserManagementService starts executing 
-                    // on the same thread running this code.  Use Task.Run() starts the requests on a thread pool thread.
-                    // however, it does not appear to resolve the performance issue of taking 35-40 seconds to complete in production with 70+ systems
-                    var task = Task.Run(() => resourceUserManagementService.UserHasAccessAsync(user.UserName, cancellationToken), cancellationToken);
-                    requests.Add((projectConfiguration, resource, task));
-                }
+                var service = GetResourceUserManagementService(project, resource);
+                requests.Add(new ProjectResourceAccess(project, resource, service));
             }
         }
 
         return requests;
     }
 
+
     private List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> CreateAddUserRequests(User user, ProjectConfiguration project, CancellationToken cancellationToken)
     {
         List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> requests
             = new List<(ProjectConfiguration, ProjectResource, Task<string> Task)>();
 
-        foreach (var projectConfiguration in _projects.Where(_ => _.Id == project.Id))
+        // this shouldn't happen
+        if (user is null || string.IsNullOrEmpty(user.UserName)) return requests;
+
+        foreach (var projectConfiguration in _projects.Where(_ => _.Name == project.Name))
         {
             foreach (ProjectResource resource in projectConfiguration.Resources)
             {
@@ -332,7 +352,7 @@ public class UserManagementService : IUserManagementService
     {
         List<(ProjectConfiguration Configuration, ProjectResource Resource, Task<string> Task)> requests = new List<(ProjectConfiguration, ProjectResource, Task<string>)>();
 
-        foreach (var projectConfiguration in _projects.Where(_ => _.Id == project.Id))
+        foreach (var projectConfiguration in _projects.Where(_ => _.Name == project.Name))
         {
             foreach (ProjectResource resource in projectConfiguration.Resources)
             {
@@ -360,5 +380,36 @@ public class UserManagementService : IUserManagementService
                 _logger.LogWarning("Unknown resource type {Type}, project resource will be skipped", resource.Type);
                 return null;
         }
+    }
+
+    private class ProjectResourceAccess : ProjectResourceRequest<bool?>
+    {
+        public ProjectResourceAccess(ProjectConfiguration configuration, ProjectResource resource, IResourceUserManagementService service)
+            : base(configuration, resource, service, null)
+        {
+        }
+
+        public bool? Access
+        {
+            get { return State; }
+            set { State = value; }
+        }
+    }
+
+    private abstract class ProjectResourceRequest<TState>
+    {
+        protected ProjectResourceRequest(ProjectConfiguration configuration, ProjectResource resource, IResourceUserManagementService service, TState stateDefault)
+        {
+            Configuration = configuration;
+            Resource = resource;
+            Service = service;
+            State = stateDefault;
+        }
+
+        public ProjectConfiguration Configuration { get; init; }
+        public ProjectResource Resource { get; init; }
+        public IResourceUserManagementService Service { get; init; }
+
+        protected TState State { get; set; }
     }
 }

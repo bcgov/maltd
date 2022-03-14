@@ -10,4 +10,6 @@ public interface IRepository
     Task<User?> SearchAsync(string username);
 
     Task<DetailedUser> LookupAsync(string username);
+
+    Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
 }

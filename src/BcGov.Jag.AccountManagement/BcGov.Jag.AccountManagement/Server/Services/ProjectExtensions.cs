@@ -53,7 +53,7 @@ public static class ProjectExtensions
         //
         // {Id}-dynamics-authorization
         //
-        string projectResourceKey = project.Id + "-dynamics";
+        string projectResourceKey = project.Name + "-dynamics";
 
         // add authorization HttpClient 
         services.AddHttpClient(projectResourceKey + "-authorization", configure => configure.BaseAddress = projectResource.AuthorizationUri)

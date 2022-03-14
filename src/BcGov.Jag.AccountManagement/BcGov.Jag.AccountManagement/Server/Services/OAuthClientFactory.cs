@@ -22,7 +22,7 @@ public class OAuthClientFactory : IOAuthClientFactory
         if (project == null) throw new ArgumentNullException(nameof(project));
 
         // OAuth is always dynamics
-        string projectResourceKey = project.Id + "-dynamics";
+        string projectResourceKey = project.Name + "-dynamics";
 
         var httpClientFactory = _serviceProvider.GetRequiredService<IHttpClientFactory>();
         HttpClient httpClient = httpClientFactory.CreateClient(projectResourceKey + "-authorization");

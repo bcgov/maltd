@@ -79,26 +79,15 @@ public class Project
     {
     }
 
-    public Project(string id, string name)
+    public Project(string name)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            throw new ArgumentException("Id cannot be null or empty", nameof(id));
-        }
-
         if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException("Name cannot be null or empty", nameof(name));
         }
 
-        Id = id;
         Name = name;
     }
-
-    /// <summary>
-    /// The id of the project
-    /// </summary>
-    public string Id { get; set; }
 
     /// <summary>
     /// The name of the project
@@ -137,7 +126,7 @@ public class ProjectResourceStatus
     /// Will be used in the case the status is error.
     /// This message may be displayed to the user.
     /// </summary>
-    public string Message { get; set; }
+    public string? Message { get; set; }
 }
 
 public static class ProjectResourceStatuses

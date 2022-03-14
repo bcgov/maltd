@@ -34,4 +34,7 @@ public interface IUserManagementService
     /// <param name="cancellationToken"></param>
     /// <returns>The list of projects a user is currently assigned to.</returns>
     Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken);
+
+
+    Task ChangeUserProjectAccessAsync(string username, ProjectConfiguration project, ProjectMembershipModel projectMembership, CancellationToken cancellationToken);
 }
