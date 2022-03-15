@@ -22,7 +22,7 @@ public class Lookup
         public string Username { get; }
     }
 
-    public class Handler : IRequestHandler<Request, DetailedUser>
+    public class Handler : IRequestHandler<Request, DetailedUser?>
     {
         private readonly IUserSearchService _userSearchService;
         private readonly IUserManagementService _userManagementService;
@@ -35,7 +35,7 @@ public class Lookup
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<DetailedUser> Handle(Request request, CancellationToken cancellationToken)
+        public async Task<DetailedUser?> Handle(Request request, CancellationToken cancellationToken)
         {
             try
             {

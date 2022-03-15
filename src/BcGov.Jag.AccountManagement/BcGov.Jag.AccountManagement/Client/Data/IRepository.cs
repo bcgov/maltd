@@ -6,10 +6,8 @@ namespace BcGov.Jag.AccountManagement.Client.Data;
 /// Provides wrapper around the various APIs
 /// </summary>
 public interface IRepository
-{
-    Task<User?> SearchAsync(string username);
-
-    Task<DetailedUser> LookupAsync(string username);
+{ 
+    Task<DetailedUser?> LookupAsync(string username);
 
     Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
 }

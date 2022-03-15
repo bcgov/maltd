@@ -13,23 +13,22 @@ public class Repository : IRepository
         _userApi = userApi ?? throw new ArgumentNullException(nameof(userApi));
     }
 
-    public async Task<DetailedUser> LookupAsync(string username)
+    public async Task<DetailedUser?> LookupAsync(string username)
     {
-        var user = await _userApi.LookupAsync(username);
-        return user;
-    }
-
-    public async Task<User?> SearchAsync(string username)
-    {
-        try
+        var response = await _userApi.LookupAsync(username);
+        if (response.IsSuccessStatusCode)
         {
-            var user = await _userApi.SearchAsync(username);
-            return user;
+            return response.Content;
         }
-        catch (ApiException exception) when (exception.StatusCode == HttpStatusCode.NotFound)
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
         {
+            
             return null;
         }
+
+        // TODO: handle other error, HttpStatusCode.InternalServerError
+        return null;
     }
 
     public async Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership)
