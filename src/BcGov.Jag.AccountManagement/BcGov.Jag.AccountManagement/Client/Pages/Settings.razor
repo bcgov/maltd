@@ -1,0 +1,60 @@
+@page "/settings"
+
+<div class="m-4">
+    <ul class="nav nav-tabs border-2" id="myTab">
+        <li class="nav-item">
+            <NavLink class="nav-link active px-5 border-0 text-decoration-none mb-0" data-bs-toggle="tab" href="settings#home">Dynamics</NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="nav-link px-5 border-0 text-decoration-none mb-0" data-bs-toggle="tab" href="settings#profile">Sharepoint</NavLink>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active m-3" id="home">
+            <h6 class="mt-4 fw-bold">Dynamics Configuration</h6>
+            <form class="d-flex flex-row w-100 flex-wrap" id="dynamicsForm" onsubmit="submitDynamics(event, 'dynamicsForm')">
+                @foreach (var property in dynamicsProperties)
+                {
+                     <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            @property
+                        </label>
+                    
+                        <input class="form-control form-control-sm" name=@property required aria-required
+                        />
+                </div>
+                }
+                <div class="col-12 my-4 pb-2 pe-4 form-group w-100">
+                    <button class="btn btn-primary w-100" >Validate</button>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane m-3" id="profile">
+            <h6 class="mt-4 fw-bold">Sharepoint Configuration</h6>
+            <form class="d-flex flex-row w-100 flex-wrap" id="sharepointForm" onsubmit="submitDynamics(event, 'sharepointForm')">
+                @foreach (var property in sharepointProperties)
+                {
+                     <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            @property
+                        </label>
+                    
+                        <input class="form-control form-control-sm" name=@property required aria-required/>
+                    
+                </div>
+                }
+                <div class="col-12 my-4 pb-2 pe-4 form-group w-100">
+                    <button class="btn btn-primary w-100" >Validate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    private string[] dynamicsProperties = {"Type", "Resource", "ApiGatewayHost", "ApiGatewayPolicy",
+    "ClientId", "ClientSecret", "Username", "Password", "AuthorizationUri"};
+    private string[] sharepointProperties = {"Type", "Resource", "ApiGatewayHost", "ApiGatewayPolicy",
+        "AuthorizationUri", "RelyingPartyIdentifier", "Username", "Password"};
+}

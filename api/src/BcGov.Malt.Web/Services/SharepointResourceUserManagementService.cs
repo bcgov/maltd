@@ -54,11 +54,7 @@ namespace BcGov.Malt.Web.Services
     {
         private static readonly StringComparer LoginNameComparer = StringComparer.OrdinalIgnoreCase;
 
-        private readonly RefitSettings _refitSettings = new RefitSettings
-        {
-            // for SharePoint we dont want to send fields that are null
-            ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions() { IgnoreNullValues = true })
-        };
+        private readonly RefitSettings _refitSettings = new RefitSettings();
 
         private readonly IUserSearchService _userSearchService;
         private readonly ISamlAuthenticator _samlAuthenticator;
@@ -316,53 +312,6 @@ namespace BcGov.Malt.Web.Services
             await _samlAuthenticator.GetSharepointFedAuthCookieAsync(resource, samlToken, httpClient, cookieContainer, apiGatewayHost, apiGatewayPolicy);
 
             return httpClient;
-        }
-    }
-
-
-    public sealed class SystemTextJsonContentSerializer : IContentSerializer
-    {
-        private static readonly MediaTypeHeaderValue ContentType = new MediaTypeHeaderValue("application/json")
-        {
-            CharSet = Encoding.UTF8.WebName
-        };
-
-        public SystemTextJsonContentSerializer(JsonSerializerOptions serializerOptions)
-        {
-            SerializerOptions = serializerOptions;
-        }
-
-        private JsonSerializerOptions SerializerOptions { get; }
-
-        public async Task<T> DeserializeAsync<T>(HttpContent content)
-        {
-            using var utf8Json = await content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<T>(utf8Json, SerializerOptions);
-            return data;
-        }
-
-        public Task<HttpContent> SerializeAsync<T>(T item)
-        {
-            StringContent content = null;
-
-            try
-            {
-                // this was using a memory stream but it was failing to serialize on the request
-                string json = JsonSerializer.Serialize(item, SerializerOptions);
-#pragma warning disable CA2000 // Call System.IDisposable.Dispose, justification: value is being returned
-                content = new StringContent(json, Encoding.UTF8, "application/json");
-#pragma warning restore CA2000
-
-                content.Headers.ContentType = ContentType;
-
-                HttpContent httpContent = content;
-                return Task.FromResult(httpContent);
-            }
-            catch (Exception)
-            {
-                content?.Dispose();
-                throw;
-            }
         }
     }
 }

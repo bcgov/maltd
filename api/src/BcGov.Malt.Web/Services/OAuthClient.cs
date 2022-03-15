@@ -51,7 +51,7 @@ namespace BcGov.Malt.Web.Services
 
                 if (response.Content != null)
                 {
-                    responseData = await response.Content.ReadAsStringAsync();
+                    responseData = await response.Content.ReadAsStringAsync(cancellationToken);
                 }
 
                 //throw new OAuthApiException(
@@ -65,7 +65,7 @@ namespace BcGov.Malt.Web.Services
             }
 
             await using var stream = await response.Content
-                .ReadAsStreamAsync();
+                .ReadAsStreamAsync(cancellationToken);
 
             var token = await JsonSerializer.DeserializeAsync<Token>(stream, cancellationToken: cancellationToken);
 

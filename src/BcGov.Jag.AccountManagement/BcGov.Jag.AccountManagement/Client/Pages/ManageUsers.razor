@@ -1,0 +1,61 @@
+﻿@page "/manageusers"
+
+<PageTitle>Manage Users</PageTitle>
+
+<EditForm Model="@searchModel" OnValidSubmit="@OnValidSubmit">
+    <!-- BEGIN SEARCH INPUT -->
+    <div class="input-group mb-1">
+        <InputText class="form-control" @bind-Value="searchModel.Username" placeholder="Search User with IDIR" />
+        <span class="input-group-btn">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+        </span>
+
+    </div>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+</EditForm>
+
+@if (notFound is not null && notFound.Value)
+{
+    <div>User not found</div>
+}
+
+@if (spinning)
+{
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else if (!String.IsNullOrWhiteSpace(user.UserName))
+{
+    <div class="panel panel-default mt-3">
+        <div class="panel-heading fw-bold">User Info</div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <UserDetails User=@user />
+            </div>
+        </div>
+    </div>
+
+    @if (projectMembershipRows is not null && projectMembershipRows.Count > 0)
+    {
+        <div class="panel panel-default mt-3">
+            <div class="panel-heading fw-bold">Project Info</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <UserMembershipGrid RowsData="@projectMembershipRows" />
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary mb-3" @onclick="SaveChanges">Save Changes</button>
+
+        if (projectMembershipChanges is not null && projectMembershipChanges.Count > 0)
+        {
+            <UserMembershipGrid RowsData="@projectMembershipChanges" />            
+        }
+    }
+}
