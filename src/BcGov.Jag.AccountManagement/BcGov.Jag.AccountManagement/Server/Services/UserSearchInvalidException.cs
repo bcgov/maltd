@@ -1,7 +1,7 @@
 ﻿namespace BcGov.Jag.AccountManagement.Server.Services;
 
 [Serializable]
-public class UserSearchInvalidException : Exception
+public class UserSearchInvalidException : UserSearchException
 {
     public UserSearchInvalidException() { }
     public UserSearchInvalidException(string message) : base(message) { }

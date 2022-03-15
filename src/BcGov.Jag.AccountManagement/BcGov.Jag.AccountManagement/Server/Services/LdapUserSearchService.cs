@@ -26,7 +26,7 @@ internal class LdapUserSearchService : IUserSearchService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<User?> SearchAsync(string samAccountName)
+    public async Task<User?> SearchAsync(string samAccountName, CancellationToken cancellationToken)
     {
         User? user = await SearchForAsync(samAccountName, LdapSearchAttributes);
         return user;
@@ -60,6 +60,7 @@ internal class LdapUserSearchService : IUserSearchService
 
             User? user = null; // not found
 
+            // there will be zero or one since sAMAccountName must be unique in Active Directory
             await foreach (var entry in searchResults)
             {
                 user = MapSearchResult(entry);
@@ -67,10 +68,11 @@ internal class LdapUserSearchService : IUserSearchService
             
             return user; 
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-
-            throw;
+            // TODO: get more specific exception types thrown and provide better error messages
+            _logger.LogError(exception, "Failed to execute user search");
+            throw new UserSearchFailedException("Failed to execute user search", exception);
         }
     }
 

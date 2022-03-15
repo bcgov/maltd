@@ -31,4 +31,9 @@ public class Repository : IRepository
             return null;
         }
     }
+
+    public async Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership)
+    {
+        await _userApi.UpdateUserProjectsAsync(username, projectMembership);
+    }
 }

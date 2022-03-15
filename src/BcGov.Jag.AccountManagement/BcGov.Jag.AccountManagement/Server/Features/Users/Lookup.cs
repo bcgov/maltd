@@ -48,7 +48,7 @@ public class Lookup
 
                 _logger.LogDebug("Searching for user {Username}", request.Username);
 
-                var user = await _userSearchService.SearchAsync(request.Username);
+                var user = await _userSearchService.SearchAsync(request.Username, cancellationToken);
 
                 if (user == null)
                 {

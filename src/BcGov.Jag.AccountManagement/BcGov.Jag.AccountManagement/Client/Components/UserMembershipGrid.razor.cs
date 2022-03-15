@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using BcGov.Jag.AccountManagement.Client.Data;
+using BcGov.Jag.AccountManagement.Shared;
 namespace BcGov.Jag.AccountManagement.Client.Components;
 
 public partial class UserMembershipGrid
