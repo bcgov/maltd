@@ -53,7 +53,12 @@ public class UserController : ControllerBase
 
         DetailedUser result = await _mediator.Send(new Features.Users.Lookup.Request(username), cancellationToken);
 
-        return Ok(result);
+        if (result is not null)
+        {
+            return Ok(result);
+        }
+
+        return NotFound();
     }
 
 

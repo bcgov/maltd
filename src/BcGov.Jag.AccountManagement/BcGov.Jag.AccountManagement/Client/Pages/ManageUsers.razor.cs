@@ -30,16 +30,31 @@ public partial class ManageUsers
 
     private IList<ProjectMembershipModel> projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
 
+    private bool? notFound = null;
+
     private async Task OnValidSubmit()
     {
+        notFound = null;
         spinning = true;
         await Task.Delay(1);
 
         try
         {
-            user = await Repository.LookupAsync(searchModel.Username);
-            projectMembershipRows = user.ToViewModel();
-            projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
+            var foundUser = await Repository.LookupAsync(searchModel.Username);
+            if (foundUser is not null)
+            {
+                notFound = false;
+                user = foundUser;
+                projectMembershipRows = user.ToViewModel();
+                projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
+            }
+            else
+            {
+                notFound = true;
+                user = new DetailedUser();
+                projectMembershipRows = Array.Empty<ProjectMembershipModel>();
+                projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
+            }
         }
         finally
         {

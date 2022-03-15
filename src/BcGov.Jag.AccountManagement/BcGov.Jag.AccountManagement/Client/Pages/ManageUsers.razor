@@ -16,6 +16,11 @@
 
 </EditForm>
 
+@if (notFound is not null && notFound.Value)
+{
+    <div>User not found</div>
+}
+
 @if (spinning)
 {
     <div class="d-flex justify-content-center align-items-center h-100">
