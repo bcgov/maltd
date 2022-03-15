@@ -1,28 +1,24 @@
 ﻿@using BcGov.Jag.AccountManagement.Shared
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>bcgov GUID</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>UPN</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>@User.Id</td>
-            <td>@User.LastName</td>
-            <td>@User.FirstName</td>
-            <td>@User.UserName</td>
-            <td>@User.Email</td>
-            <td>@User.UserPrincipalName</td>
-        </tr>
-    </tbody>
-</table>
+<dl class="row w-100">
+    <dt class="col-sm-3 col-md-2 col-lg-2 col-form-label-sm">First Name</dt>
+    <dd class="col-sm-3 col-md-3 col-lg-3 col-form-label-sm">@User.FirstName</dd>
 
+    <dt class="col-sm-3 col-md-2 col-lg-2 col-form-label-sm">UPN</dt>
+    <dd class="col-md-5 col-sm-3 col-lg-5 col-form-label-sm">@User.UserPrincipalName</dd>
+
+    <dt class="col-sm-3 col-md-2 col-lg-2 col-form-label-sm">Last Name</dt>
+    <dd class="col-sm-3 col-md-3 col-lg-3 col-form-label-sm">@User.LastName</dd>
+
+    <dt class="col-sm-3 col-md-2 col-lg-2 col-form-label-sm">Email</dt>
+    <dd class="col-md-5 col-sm-3 col-lg-5 col-form-label-sm">@User.Email</dd>
+
+    <dt class="col-sm-3 col-md-2 col-lg-2 col-form-label-sm">Username</dt>
+    <dd class="col-sm-3 col-md-3 col-lg-3 col-form-label-sm">@User.UserName</dd>
+
+    <dt class="col-sm-3 col-md-2 col-lg-2 col-form-label-sm">GUID</dt>
+    <dd class="col-md-5 col-sm-3 col-lg-5 col-form-label-sm flex-wrap">@User.Id</dd>
+</dl>
 @code {
 
     [EditorRequired]
