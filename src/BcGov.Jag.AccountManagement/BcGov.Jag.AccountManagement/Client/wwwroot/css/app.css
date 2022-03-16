@@ -107,3 +107,9 @@ a, .btn-link {
     .nav-tabs {
         box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
     }
+    .input-invalid {
+        outline: 1px solid red !important;
+    }
+    .text-red {
+        color: red;
+    }
