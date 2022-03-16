@@ -1,18 +1,21 @@
 ﻿@page "/manageusers"
 
 <PageTitle>Manage Users</PageTitle>
-
-<EditForm Model="@searchModel" OnValidSubmit="@OnValidSubmit">
-
     @{
         var className = "form-control ";
         var errorClassName = "invisible";
         if (notFound is not null && notFound.Value)
         {
             className += "input-invalid";
-            errorClassName = "visible text-danger form-control-sm px-0";
+            errorClassName = "visible text-red form-control-sm px-0";
         } 
+        void onSubmitClick() {
+            notFound = null;
+            className = "form-control ";
+            errorClassName = "invisible";
+        }
     }
+    <EditForm Model="@searchModel" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="onSubmitClick">
     <!-- BEGIN SEARCH INPUT -->
     <div class="input-group mb-1">
         <InputText class="@className" @bind-Value="searchModel.Username" placeholder="Search User with IDIR" />
@@ -20,11 +23,10 @@
             <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
         </span>
     </div>
+    <ValidationMessage For="() => searchModel.Username"></ValidationMessage>
     <div class="@errorClassName">User Not Found</div>
     
     <DataAnnotationsValidator />
-    <ValidationSummary />
-
 </EditForm>
 
 @if (spinning)
