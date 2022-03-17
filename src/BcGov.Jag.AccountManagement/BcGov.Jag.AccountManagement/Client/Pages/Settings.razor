@@ -13,15 +13,14 @@
         <div class="tab-pane active m-3" id="home">
             <h6 class="mt-4 fw-bold">Dynamics Configuration</h6>
             <form class="d-flex flex-row w-100 flex-wrap" id="dynamicsForm" onsubmit="submitDynamics(event, 'dynamicsForm')">
-                @foreach (var property in dynamicsProperties)
+                @foreach (var field in dynamicsFields)
                 {
                      <div class="col-6 mb-2 pb-2 pe-4 form-group">
                         <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
-                            @property
+                            @field.Label
                         </label>
                     
-                        <input class="form-control form-control-sm" name=@property required aria-required
-                        />
+                        <input class="form-control form-control-sm" name=@field.Name required aria-required="true"  placeholder=@field.Placeholder/>
                 </div>
                 }
                 <div class="col-12 my-4 pb-2 pe-4 form-group w-100">
@@ -32,14 +31,14 @@
         <div class="tab-pane m-3" id="profile">
             <h6 class="mt-4 fw-bold">Sharepoint Configuration</h6>
             <form class="d-flex flex-row w-100 flex-wrap" id="sharepointForm" onsubmit="submitDynamics(event, 'sharepointForm')">
-                @foreach (var property in sharepointProperties)
+                @foreach (var field in sharepointFields)
                 {
                      <div class="col-6 mb-2 pb-2 pe-4 form-group">
                         <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
-                            @property
+                            @field.Label
                         </label>
                     
-                        <input class="form-control form-control-sm" name=@property required aria-required/>
+                        <input class="form-control form-control-sm" name=@field.Name required aria-required="true" placeholder=@field.Placeholder />
                     
                 </div>
                 }
@@ -53,8 +52,29 @@
 
 
 @code{
-    private string[] dynamicsProperties = {"Type", "Resource", "ApiGatewayHost", "ApiGatewayPolicy",
-    "ClientId", "ClientSecret", "Username", "Password", "AuthorizationUri"};
-    private string[] sharepointProperties = {"Type", "Resource", "ApiGatewayHost", "ApiGatewayPolicy",
-        "AuthorizationUri", "RelyingPartyIdentifier", "Username", "Password"};
+    private FormField[] dynamicsFields = new FormField[] {
+            new FormField { Label = "Api Gateway Host", Name = "ApiGatewayHost", Placeholder = "wsgw.dev.jag.gov.bc.ca" },
+            new FormField { Label = "Api Gateway Policy", Name = "ApiGatewayPolicy", Placeholder = "dynamics" },
+            new FormField { Label = "Dynamics Url", Name = "Resource", Placeholder = "https://hostname/api/data/v9.0/" },
+            new FormField { Label = "Authorization Url", Name = "AuthorizationUri", Placeholder = "https://ststest.gov.bc.ca/adfs/oauth2/token/" },
+            new FormField { Label = "Username", Name = "Username", Placeholder = "username@idir" },
+            new FormField { Label = "Password", Name = "Password" },
+    };
+
+    private FormField[] sharepointFields =  new FormField[] {
+            new FormField { Label = "Api Gateway Host", Name = "ApiGatewayHost", Placeholder = "wsgw.dev.jag.gov.bc.ca" },
+            new FormField { Label = "Api Gateway Policy", Name = "ApiGatewayPolicy", Placeholder = "sharepoint" },
+            new FormField { Label = "SharePoint Url", Name = "Resource", Placeholder="https://sharepoint-host" },
+            new FormField { Label = "Authorization Url", Name = "AuthorizationUri", Placeholder = "https://ststest.gov.bc.ca/adfs/services/trust/2005/UsernameMixed" },
+            new FormField { Label = "Relying Party Identifier", Name = "RelyingPartyIdentifier", Placeholder = "urn:something" },
+            new FormField { Label = "Username", Name = "Username", Placeholder = "IDIR\\username" },
+            new FormField { Label = "Password", Name = "Password" },
+    };
+
+    public class FormField
+    {
+        public string Label { get; set; }
+        public string Name { get; set; }
+        public string Placeholder { get; set; }
+    }
 }
