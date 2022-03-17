@@ -1,4 +1,5 @@
 ﻿@page "/manageusers"
+@attribute [Authorize]
 
 <PageTitle>Manage Users</PageTitle>
     @{
@@ -60,10 +61,5 @@ else if (!String.IsNullOrWhiteSpace(user.UserName))
         </div>
 
         <button class="btn btn-primary mb-3" @onclick="SaveChanges">Save Changes</button>
-
-        if (projectMembershipChanges is not null && projectMembershipChanges.Count > 0)
-        {
-            <UserMembershipGrid RowsData="@projectMembershipChanges" />            
-        }
     }
 }
