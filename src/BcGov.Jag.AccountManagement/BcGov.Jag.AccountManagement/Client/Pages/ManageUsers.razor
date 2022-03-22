@@ -1,5 +1,6 @@
 ﻿@page "/manageusers"
 @attribute [Authorize]
+@inject IToastService toastService
 
 <PageTitle>Manage Users</PageTitle>
     @{
@@ -61,5 +62,10 @@ else if (!String.IsNullOrWhiteSpace(user.UserName))
         </div>
 
         <button class="btn btn-primary mb-3" @onclick="SaveChanges">Save Changes</button>
+        if(successSave is not null && successSave.Value == true) {
+            toastService.ShowSuccess("Projects Saved Successfully");
+        } else if(successSave is not null && successSave.Value == false) {
+            toastService.ShowError("Error occured");
+        }
     }
 }
