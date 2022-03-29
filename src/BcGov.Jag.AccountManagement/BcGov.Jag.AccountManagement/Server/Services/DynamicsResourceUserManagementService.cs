@@ -4,6 +4,7 @@ using BcGov.Jag.AccountManagement.Server.Models.Dynamics;
 using ILogger = Serilog.ILogger;
 using Simple.OData.Client;
 using BcGov.Jag.AccountManagement.Shared;
+using BcGov.Jag.AccountManagement.Server.Infrastructure;
 
 namespace BcGov.Jag.AccountManagement.Server.Services;
 
@@ -23,19 +24,19 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
     }
 
-    public override async Task<string> AddUserAsync(string username, CancellationToken cancellationToken)
+    public override async Task<string> AddUserAsync(User user, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(username))
+        ArgumentNullException.ThrowIfNull(user);
+
+        if (string.IsNullOrEmpty(user.UserName))
         {
-            throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
 
         IODataClient client = GetODataClient();
-        string logon = IDIR.Logon(username);
+        string logon = IDIR.Logon(user.UserName);
 
-        Logger.Debug("Adding {Username} to project", username);
-
-        User user = await _userSearchService.SearchAsync(username, cancellationToken);
+        Logger.Debug("Adding {Username} to project", user.UserName);
 
         SystemUser entry = await client
             .For<SystemUser>()
@@ -45,7 +46,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
         if (entry == null)
         {
-            Logger.Information("{Username} does not exist, creating a new record", username);
+            Logger.Information("{Username} does not exist, creating a new record", user.UserName);
 
             BusinessUnit rootBusinessUnit = await GetRootBusinessUnit(client, cancellationToken);
 
@@ -54,7 +55,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             {
                 Firstname = user.FirstName,
                 Lastname = user.LastName,
-                DomainName = IDIR.Logon(username),
+                DomainName = logon,
                 InternalEMailAddress = user.Email,
                 BusinessUnit = rootBusinessUnit,
                 IsDisabled = false,
@@ -75,17 +76,19 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         return string.Empty;
     }
 
-    public override async Task<string> RemoveUserAsync(string username, CancellationToken cancellationToken)
+    public override async Task<string> RemoveUserAsync(User user, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(username))
+        ArgumentNullException.ThrowIfNull(user);
+
+        if (string.IsNullOrEmpty(user.UserName))
         {
-            throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
 
         IODataClient client = GetODataClient();
-        string logon = IDIR.Logon(username);
+        string logon = IDIR.Logon(user.UserName);
 
-        Logger.Debug("Removing {Username} from project", username);
+        Logger.Debug("Removing {Username} from project", user.UserName);
 
         SystemUser entry = await client
             .For<SystemUser>()
@@ -95,7 +98,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
         if (entry == null)
         {
-            Logger.Information("User {Username} was not found in Dynamics, will not perform update", username);
+            Logger.Information("User {Username} was not found in Dynamics, will not perform update", user.UserName);
             return string.Empty;
         }
 
@@ -105,18 +108,24 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         return string.Empty;
     }
 
-    public override async Task<bool> UserHasAccessAsync(string username, CancellationToken cancellationToken)
+    public override async Task<bool> UserHasAccessAsync(User user, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(username))
+        ArgumentNullException.ThrowIfNull(user);
+
+        if (string.IsNullOrEmpty(user.UserName))
         {
-            throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
+
+        using var userHasAccessActivity = DiagnosticTrace.StartActivity("Check User Has Access");
+        userHasAccessActivity?.AddTag("Project", this.Project.Name);
+        userHasAccessActivity?.AddTag("Resource", "Dynamics");
 
         IODataClient client = GetODataClient();
 
-        string logon = IDIR.Logon(username);
+        string logon = IDIR.Logon(user.UserName);
 
-        Logger.Debug("Checking {Username} has access to project", username);
+        Logger.Debug("Checking if user has access to project");
 
         SystemUser entry = await client
             .For<SystemUser>()
@@ -198,4 +207,27 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
     }
 
     private IODataClient GetODataClient() => _factory.Create(Project.Name + "-dynamics");
+
+    public override async Task<IList<UserStatus>> GetUsersAsync(CancellationToken cancellationToken)
+    {
+        using var activity = DiagnosticTrace.StartActivity("Get Dynamics Users");
+
+        IODataClient client = GetODataClient();
+
+        var users = await client
+            .For<SystemUser>()
+            .Select(_ => new { _.DomainName, _.IsDisabled })
+            .FindEntriesAsync(cancellationToken);
+
+        return users
+            .Select(_ => new UserStatus { Username = _.DomainName, IsDisabled = _.IsDisabled.Value })
+            .ToList();
+
+    }
+}
+
+public class UserStatus
+{
+    public string Username { get; set; }
+    public bool IsDisabled { get; set; }
 }

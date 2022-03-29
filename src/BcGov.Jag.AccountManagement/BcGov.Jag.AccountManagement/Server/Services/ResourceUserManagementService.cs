@@ -1,4 +1,5 @@
 ﻿using BcGov.Jag.AccountManagement.Server.Models.Configuration;
+using BcGov.Jag.AccountManagement.Shared;
 using ILogger = Serilog.ILogger;
 
 namespace BcGov.Jag.AccountManagement.Server.Services;
@@ -74,7 +75,8 @@ public abstract class ResourceUserManagementService : IResourceUserManagementSer
 
     protected ILogger Logger { get; }
 
-    public abstract Task<string> AddUserAsync(string username, CancellationToken cancellationToken);
-    public abstract Task<bool> UserHasAccessAsync(string username, CancellationToken cancellationToken);
-    public abstract Task<string> RemoveUserAsync(string username, CancellationToken cancellationToken);
+    public abstract Task<string> AddUserAsync(User user, CancellationToken cancellationToken);
+    public abstract Task<bool> UserHasAccessAsync(User user, CancellationToken cancellationToken);
+    public abstract Task<string> RemoveUserAsync(User user, CancellationToken cancellationToken);
+    public abstract Task<IList<UserStatus>> GetUsersAsync(CancellationToken cancellationToken);
 }
