@@ -32,23 +32,23 @@ public class UserManagementService : IUserManagementService
     }
 
     public async Task ChangeUserProjectAccessAsync(
-        string username, 
+        User user, 
         ProjectConfiguration project,
         ProjectMembershipModel projectMembership,
         CancellationToken cancellationToken)
     {
         if (projectMembership.Dynamics.HasValue)
         {
-            await AddRemoveUserAsync(username, project, ProjectType.Dynamics, projectMembership.Dynamics.Value, cancellationToken);
+            await AddRemoveUserAsync(user, project, ProjectType.Dynamics, projectMembership.Dynamics.Value, cancellationToken);
         }
 
         if (projectMembership.SharePoint.HasValue)
         {
-            await AddRemoveUserAsync(username, project, ProjectType.SharePoint, projectMembership.SharePoint.Value, cancellationToken);
+            await AddRemoveUserAsync(user, project, ProjectType.SharePoint, projectMembership.SharePoint.Value, cancellationToken);
         }
     }
 
-    private async Task AddRemoveUserAsync(string username, ProjectConfiguration project, ProjectType projectType, bool add, CancellationToken cancellationToken)
+    private async Task AddRemoveUserAsync(User user, ProjectConfiguration project, ProjectType projectType, bool add, CancellationToken cancellationToken)
     {
         ProjectResource? resource = project.Resources.SingleOrDefault(_ => _.Type == projectType);
         if (resource is null)
@@ -60,13 +60,13 @@ public class UserManagementService : IUserManagementService
             IResourceUserManagementService service = GetResourceUserManagementService(project, resource);
             if (add)
             {
-                _logger.LogInformation("Adding {Username} to {Project} - {Resource}", username, project.Name, projectType);
-                await service.AddUserAsync(username, cancellationToken);
+                _logger.LogInformation("Adding {Username} to {Project} - {Resource}", user.UserName, project.Name, projectType);
+                await service.AddUserAsync(user, cancellationToken);
             }
             else
             {
-                _logger.LogInformation("Removing {Username} from {Project} - {Resource}", username, project.Name, projectType);
-                await service.RemoveUserAsync(username, cancellationToken);
+                _logger.LogInformation("Removing {Username} from {Project} - {Resource}", user.UserName, project.Name, projectType);
+                await service.RemoveUserAsync(user, cancellationToken);
             }
         }
     }
@@ -142,14 +142,22 @@ public class UserManagementService : IUserManagementService
 
     public async Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken)
     {
-        string username = user.UserName;
-
-        var requests = CreateUserHasAccessRequests();
-
-        await Parallel.ForEachAsync(requests, async (request, cancellationToken) =>
+        ArgumentNullException.ThrowIfNull(user);
+        if (string.IsNullOrEmpty(user.UserName))
         {
-            request.Access = await request.Service.UserHasAccessAsync(username, cancellationToken);
-        });
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
+        }
+
+        using var usernameScope = _logger.BeginScope(new Dictionary<string, object> { { "Username", user.UserName } });
+
+        List<ProjectResourceAccess> requests = CreateUserHasAccessRequests();
+
+        var tasks = requests.Select(request => request.Service.UserHasAccessAsync(user, cancellationToken)).ToList();
+        await Task.WhenAll(tasks);
+        //await Parallel.ForEachAsync(requests, async (request, cancellationToken) =>
+        //{
+        //    request.Access = await request.Service.UserHasAccessAsync(user, cancellationToken);
+        //});
 
         List<Project> projects = new List<Project>();
 
@@ -214,6 +222,15 @@ public class UserManagementService : IUserManagementService
         }
 
         return projects;
+    }
+
+    public async Task<IList<UserStatus>> GetUsersAsync(ProjectConfiguration project, ProjectResource resource, CancellationToken cancellationToken)
+    {
+        var service = GetResourceUserManagementService(project, resource);
+
+        var users = await service.GetUsersAsync(cancellationToken);
+
+        return users;
     }
 
     private string GetUserErrorMessageFor(Exception exception, Guid errorId)
@@ -339,7 +356,7 @@ public class UserManagementService : IUserManagementService
                 var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                 if (resourceUserManagementService != null)
                 {
-                    var task = Task.Run(() => resourceUserManagementService.AddUserAsync(user.UserName, cancellationToken), cancellationToken);
+                    var task = Task.Run(() => resourceUserManagementService.AddUserAsync(user, cancellationToken), cancellationToken);
                     requests.Add((projectConfiguration, resource, task));
                 }
             }
@@ -359,7 +376,7 @@ public class UserManagementService : IUserManagementService
                 var resourceUserManagementService = GetResourceUserManagementService(projectConfiguration, resource);
                 if (resourceUserManagementService != null)
                 {
-                    var task = Task.Run(() => resourceUserManagementService.RemoveUserAsync(user.UserName, cancellationToken), cancellationToken);
+                    var task = Task.Run(() => resourceUserManagementService.RemoveUserAsync(user, cancellationToken), cancellationToken);
                     requests.Add((projectConfiguration, resource, task));
                 }
             }

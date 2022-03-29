@@ -1,4 +1,5 @@
-﻿using BcGov.Jag.AccountManagement.Server.Features.Users;
+﻿using BcGov.Jag.AccountManagement.Server.Features.Reports;
+using BcGov.Jag.AccountManagement.Server.Features.Users;
 using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Shared;
 using MediatR;
@@ -69,5 +70,16 @@ public class UserController : ControllerBase
         ChangeAccess.Request request = new ChangeAccess.Request(username, projectMembership);
         await _mediator.Send(request, cancellationToken);
         return Ok();
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("Report")]
+    public async Task<IActionResult> GetUserReportAsync(CancellationToken cancellationToken)
+    {
+        UserMembershipReport.Request request = new UserMembershipReport.Request();
+        UserMembershipReport.Response response = await _mediator.Send(request, cancellationToken);
+
+        return Ok(response.Report);
     }
 }

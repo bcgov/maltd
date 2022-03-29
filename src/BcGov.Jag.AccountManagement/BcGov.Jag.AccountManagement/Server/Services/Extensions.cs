@@ -9,7 +9,7 @@ public static class Extensions
 
         services
             .Configure<LdapConfiguration>(configuration.GetSection(LdapConfiguration.Section))
-            .AddTransient<IUserSearchService, LdapUserSearchService>();
+            .AddScoped<IUserSearchService, LdapUserSearchService>();
 
         return services;
     }
