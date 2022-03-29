@@ -8,6 +8,7 @@ using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Models.Authorization;
 using MediatR;
 using System.Reflection;
+using Blazored.Toast;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -56,6 +57,7 @@ builder.Services.AddSingleton<ITokenCache<OAuthOptions, Token>, OAuthTokenCache>
 builder.Services.AddTransient<IOAuthClientFactory, OAuthClientFactory>();
 
 builder.Services.AddTransient<IAccessTokenLoader, AccessTokenLoader>();
+builder.Services.AddBlazoredToast();
 
 var app = builder.Build();
 

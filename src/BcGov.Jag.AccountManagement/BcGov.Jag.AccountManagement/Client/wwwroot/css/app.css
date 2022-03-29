@@ -113,3 +113,11 @@ a, .btn-link {
     .text-red {
         color: red;
     }
+
+    .blazored-toast-body .blazored-toast-header h5 {
+        font-size: 1.0rem !important;
+    }
+
+    .blazored-toast {
+        width: 22rem !important;
+    }

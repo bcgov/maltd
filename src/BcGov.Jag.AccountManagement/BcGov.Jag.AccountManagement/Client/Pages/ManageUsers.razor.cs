@@ -32,9 +32,12 @@ public partial class ManageUsers
 
     private bool? notFound = null;
 
+    private bool? successSave = null;
+
     private async Task OnValidSubmit()
     {
         notFound = null;
+        successSave = null;
         spinning = true;
         await Task.Delay(1);
 
@@ -65,8 +68,19 @@ public partial class ManageUsers
 
     private async Task SaveChanges()
     {
-        projectMembershipChanges = user.GetChanges(projectMembershipRows).ToList();
-
-        await Repository.UpdateUserProjectsAsync(searchModel.Username, projectMembershipChanges);
+        spinning = true;
+        successSave = null;
+        Console.WriteLine("spinning set as true");
+        try
+        {
+            projectMembershipChanges = user.GetChanges(projectMembershipRows).ToList();
+            await Repository.UpdateUserProjectsAsync(searchModel.Username, projectMembershipChanges);
+            successSave = true;
+            spinning = false;
+        } catch( Exception ex ) {
+            Console.WriteLine("exception occur "+ex);
+            successSave = false;
+            spinning = false;
+        }
     }
 }
