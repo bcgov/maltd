@@ -26,6 +26,10 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
     public override async Task<string> AddUserAsync(User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Add User To Project");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "Dynamics");
+
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
@@ -78,6 +82,10 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
     public override async Task<string> RemoveUserAsync(User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Remove User From Project");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "Dynamics");
+
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
@@ -110,6 +118,10 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
     public override async Task<bool> UserHasAccessAsync(User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Check User Access");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "Dynamics");
+
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
@@ -117,9 +129,9 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
 
-        using var userHasAccessActivity = DiagnosticTrace.StartActivity("Check User Has Access");
-        userHasAccessActivity?.AddTag("Project", this.Project.Name);
-        userHasAccessActivity?.AddTag("Resource", "Dynamics");
+        using var userHasAccessActivity = Diagnostics.Source.StartActivity("Check User Has Access");
+        userHasAccessActivity?.AddTag("project.name", this.Project.Name);
+        userHasAccessActivity?.AddTag("project.type", "Dynamics");
 
         IODataClient client = GetODataClient();
 
@@ -210,7 +222,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
     public override async Task<IList<UserStatus>> GetUsersAsync(CancellationToken cancellationToken)
     {
-        using var activity = DiagnosticTrace.StartActivity("Get Dynamics Users");
+        using var activity = Diagnostics.Source.StartActivity("Get Dynamics Users");
 
         IODataClient client = GetODataClient();
 

@@ -67,6 +67,10 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
     public override async Task<string> AddUserAsync(Shared.User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Add User To Project");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "SharePoint");
+
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
@@ -129,6 +133,10 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
     
     public override async Task<string> RemoveUserAsync(Shared.User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Remove User From Project");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "SharePoint");
+
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
@@ -192,6 +200,10 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
     public override async Task<bool> UserHasAccessAsync(Shared.User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Check User Access");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "SharePoint");
+
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
@@ -205,9 +217,9 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
             return false;
         }
 
-        using var userHasAccessActivity = DiagnosticTrace.StartActivity("Check User Has Access");
-        userHasAccessActivity?.AddTag("Project", this.Project.Name);
-        userHasAccessActivity?.AddTag("Resource", "SharePoint");
+        using var userHasAccessActivity = Diagnostics.Source.StartActivity("Check User Has Access");
+        userHasAccessActivity?.AddTag("project.name", this.Project.Name);
+        userHasAccessActivity?.AddTag("project.type", "SharePoint");
 
         Logger.Debug("Checking if user has access to project");
 
@@ -246,7 +258,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
     public override async Task<IList<UserStatus>> GetUsersAsync(CancellationToken cancellationToken)
     {
-        using var activity = DiagnosticTrace.StartActivity("Get SharePoint Users");
+        using var activity = Diagnostics.Source.StartActivity("Get SharePoint Users");
 
         Logger.Information("Getting user list from SharePoint is not currently supported. Returning empty list");
         return Array.Empty<UserStatus>();

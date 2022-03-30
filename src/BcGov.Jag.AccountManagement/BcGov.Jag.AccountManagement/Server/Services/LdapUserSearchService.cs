@@ -49,8 +49,8 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
             throw new UserSearchInvalidException($"Invalid characters in query {query}, returning null.");
         }
 
-        using var userSearchActivity = DiagnosticTrace.StartActivity("User Search");
-        userSearchActivity?.AddTag("sAMAccountName", query);
+        using var userSearchActivity = Diagnostics.Source.StartActivity("User Search");
+        userSearchActivity?.AddTag("query.samaccountname", query);
 
         try
         {
@@ -58,7 +58,7 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
 
             ILdapSearchResults? searchResults = null;
 
-            using (var searchActivity = DiagnosticTrace.StartActivity("Active Directory Search"))
+            using (var searchActivity = Diagnostics.Source.StartActivity("Active Directory Search"))
             {
                 searchResults = await connection.SearchAsync(
                     _configuration.DistinguishedName,
@@ -88,10 +88,8 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
 
     public async Task<ActiveDirectoryUserStatus?> GetAccountStatusAsync(string username, CancellationToken cancellationToken)
     {
-        const string UserAccountControlAttribute = "userAccountControl";
-
-        using var userSearchActivity = DiagnosticTrace.StartActivity("Active Directory User Lookup");
-        userSearchActivity?.AddTag("sAMAccountName", username);
+        using var userSearchActivity = Diagnostics.Source.StartActivity("Active Directory User Lookup");
+        userSearchActivity?.AddTag("query.samaccountname", username);
 
         var connection = await GetLdapConnectionAsync();
 
@@ -99,7 +97,7 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
             _configuration.DistinguishedName,
             LdapConnection.ScopeSub,
             $"(&(objectCategory=person)(objectClass=user)(sAMAccountName={username}))",
-            new[] { UserAccountControlAttribute },
+            new[] { "userAccountControl", "company", "mail", "sn", "givenName" },
             false);
 
         // there will be zero or one since sAMAccountName must be unique in Active Directory
@@ -108,17 +106,25 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
             UserAccountControl accountControl = default(UserAccountControl);
 
             LdapAttributeSet attributeSet = entry.GetAttributeSet();
-            if (attributeSet.TryGetValue(UserAccountControlAttribute, out var ldapAttributeValue))
+            if (attributeSet.TryGetValue("userAccountControl", out var ldapAttributeValue))
             {
                 accountControl = (UserAccountControl) int.Parse(ldapAttributeValue.StringValue);
             }
 
-
-            return new ActiveDirectoryUserStatus { Username = username, UserAccountControl = accountControl };
+            return new ActiveDirectoryUserStatus 
+            { 
+                Username = username, 
+                UserAccountControl = accountControl,
+                Company = GetValueOrDefault(attributeSet, "company"),
+                Email = GetValueOrDefault(attributeSet, "mail"),
+                LastName = GetValueOrDefault(attributeSet, "sn"),
+                FirstName = GetValueOrDefault(attributeSet, "givenName")
+            };
         }
 
         return null; // not found
     }
+
 
     private async Task<LdapConnection> GetLdapConnectionAsync()
     {
@@ -141,15 +147,15 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
         try
         {
             LdapConnection connection = new LdapConnection();
-            using (var connectActivity = DiagnosticTrace.StartActivity("Active Directory Connect"))
+            using (var connectActivity = Diagnostics.Source.StartActivity("Active Directory Connect"))
             {
-                connectActivity?.AddTag("Server", _configuration.Server);
-                connectActivity?.AddTag("Port", 389);
+                connectActivity?.AddTag("active-directory.server", _configuration.Server);
+                connectActivity?.AddTag("active-directory.port", 389);
 
                 await connection.ConnectAsync(_configuration.Server, 389);
             }
 
-            using (var bindActivity = DiagnosticTrace.StartActivity("Active Directory Bind"))
+            using (var bindActivity = Diagnostics.Source.StartActivity("Active Directory Bind"))
             {
                 await connection.BindAsync(_configuration.Username, _configuration.Password);
             }
@@ -201,7 +207,35 @@ internal class LdapUserSearchService : IUserSearchService, IDisposable
 public class ActiveDirectoryUserStatus
 {
     public string Username { get; set; }
-    public UserAccountControl UserAccountControl;
+    public UserAccountControl UserAccountControl { get; set; }
+
+    public string Company { get; set; }
+
+    public string LastName { get; set; }
+    public string FirstName { get; set; }
+    public string Email { get; set; }
+
+    public string DisplayName
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(LastName) && !string.IsNullOrEmpty(FirstName))
+            {
+                return $"{LastName}, {FirstName}";
+            }
+            else if (!string.IsNullOrEmpty(LastName))
+            {
+                return LastName;
+            }
+            else if (!string.IsNullOrEmpty(FirstName))
+            {
+                return FirstName;
+            }
+
+            return string.Empty;
+
+        }
+    }
 }
 
 [Flags]
