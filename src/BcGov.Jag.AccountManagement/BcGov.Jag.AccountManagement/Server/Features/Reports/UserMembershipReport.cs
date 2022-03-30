@@ -39,15 +39,18 @@ public class UserMembershipReport
         private readonly ProjectConfigurationCollection _projects;
         private readonly IUserManagementService _userManagementService;
         private readonly IUserSearchService _userSearchService;
+        private readonly ILogger<Handler> _logger;
 
         public Handler(
-            ProjectConfigurationCollection projects, 
+            ProjectConfigurationCollection projects,
             IUserManagementService userManagementService,
-            IUserSearchService userSearchService)
+            IUserSearchService userSearchService,
+            ILogger<Handler> logger)
         {
             _projects = projects ?? throw new ArgumentNullException(nameof(projects));
             _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
             _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
@@ -72,6 +75,12 @@ public class UserMembershipReport
 
                     foreach (var user in users.Where(_ => !string.IsNullOrEmpty(_.Username)))
                     {
+                        if (!user.Username.StartsWith("IDIR\\", StringComparison.OrdinalIgnoreCase))
+                        {
+                            _logger.LogInformation("{Username} does not appear to be an IDIR. We can only process IDIR accounts", user.Username);
+                            continue;
+                        }
+
                         DynamicsUserAccessStatus record = new DynamicsUserAccessStatus
                         {
                             ProjectName = project.Name,
