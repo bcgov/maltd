@@ -13,6 +13,8 @@ using Blazored.Toast;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var logger = GetLogger(builder);
+
 // Add services to the container.
 
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) => {
@@ -21,7 +23,7 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) => {
         .Enrich.WithExceptionDetails(new DestructuringOptionsBuilder().WithDefaultDestructurers());
 });
 
-builder.AddTelemetry();
+builder.AddTelemetry(logger);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -88,3 +90,22 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+
+/// <summary>
+/// Gets a logger for application setup.
+/// </summary>
+/// <returns></returns>
+static Serilog.ILogger GetLogger(WebApplicationBuilder builder)
+{
+    var configuration = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .WriteTo.Console();
+
+    if (builder.Environment.IsDevelopment())
+    {
+        configuration.WriteTo.Debug();
+    }
+
+    return configuration.CreateLogger();
+}

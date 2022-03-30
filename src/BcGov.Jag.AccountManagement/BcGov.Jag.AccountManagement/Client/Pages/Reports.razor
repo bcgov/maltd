@@ -1,3 +1,24 @@
 @page "/reports"
+@using BcGov.Jag.AccountManagement.Client.Data
 @attribute [Authorize]
+
+@inject IRepository _repository;
+@inject IJSRuntime JS
+
 <div>Reports Page</div>
+
+<button @onclick="DownloadReport">
+    Run Report
+</button>
+
+@code {
+
+    private async Task DownloadReport()
+    {
+        var fileStream = await _repository.GetUserAccessReportAsync();
+        var fileName = "user-access-report.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+}

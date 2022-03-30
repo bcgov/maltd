@@ -79,7 +79,7 @@ public class UserController : ControllerBase
     {
         UserMembershipReport.Request request = new UserMembershipReport.Request();
         UserMembershipReport.Response response = await _mediator.Send(request, cancellationToken);
-
-        return Ok(response.Report);
+        
+        return File(response.Report, "text/csv", "dynamics-user-report.csv");
     }
 }

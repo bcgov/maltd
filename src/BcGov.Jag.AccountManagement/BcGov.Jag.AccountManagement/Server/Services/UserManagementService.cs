@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using BcGov.Jag.AccountManagement.Server.Infrastructure;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
 using BcGov.Jag.AccountManagement.Shared;
@@ -50,6 +51,9 @@ public class UserManagementService : IUserManagementService
 
     private async Task AddRemoveUserAsync(User user, ProjectConfiguration project, ProjectType projectType, bool add, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Change User Project Access");
+        activity?.AddTag("operation", add ? "Add" : "Remove");
+
         ProjectResource? resource = project.Resources.SingleOrDefault(_ => _.Type == projectType);
         if (resource is null)
         {
@@ -142,6 +146,8 @@ public class UserManagementService : IUserManagementService
 
     public async Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Get Projects For User");
+
         ArgumentNullException.ThrowIfNull(user);
         if (string.IsNullOrEmpty(user.UserName))
         {
@@ -226,6 +232,9 @@ public class UserManagementService : IUserManagementService
 
     public async Task<IList<UserStatus>> GetUsersAsync(ProjectConfiguration project, ProjectResource resource, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Get Project Users");
+        activity?.AddTag("project.name", project.Name);
+
         var service = GetResourceUserManagementService(project, resource);
 
         var users = await service.GetUsersAsync(cancellationToken);
@@ -257,6 +266,9 @@ public class UserManagementService : IUserManagementService
 
     public async Task<List<ProjectResourceStatus>> RemoveUserFromProjectAsync(User user, ProjectConfiguration project, CancellationToken cancellationToken)
     {
+        using var activity = Diagnostics.Source.StartActivity("Remove User From Project");
+        activity?.AddTag("project.name", project.Name);
+
         var requests = CreateRemoveUserRequests(user, project, cancellationToken);
 
         // wait for all tasks to complete

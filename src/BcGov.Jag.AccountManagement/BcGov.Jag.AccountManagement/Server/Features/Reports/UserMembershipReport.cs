@@ -1,6 +1,9 @@
-﻿using BcGov.Jag.AccountManagement.Server.Models;
+﻿using BcGov.Jag.AccountManagement.Server.Infrastructure;
+using BcGov.Jag.AccountManagement.Server.Models;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Services;
+using FlatFiles;
+using FlatFiles.TypeMapping;
 using MediatR;
 using System.Text;
 
@@ -14,19 +17,21 @@ public class UserMembershipReport
 
     public class Response
     {
-        public Response(List<List<string>> rows)
+        public Response(List<DynamicsUserAccessStatus> records)
         {
-            StringBuilder buffer = new StringBuilder();
-            foreach (var row in rows)
-            {
-                buffer.Append(string.Join(",", row));
-                buffer.AppendLine();
-            }
+            var mapper = DynamicsUserAccessStatus.GetMapper();
 
-            Report = buffer.ToString();
+            StringBuilder buffer = new StringBuilder();
+
+            using (var writer = new StringWriter())
+            {
+                var options = new DelimitedOptions() { IsFirstRecordSchema = true };                
+                mapper.Write(writer, records, options);             
+                Report = Encoding.UTF8.GetBytes(writer.ToString());
+            }
         }
 
-        public string Report { get; set; }
+        public byte[] Report { get; set; }
     }
 
     public class Handler : IRequestHandler<Request, Response>
@@ -47,9 +52,17 @@ public class UserMembershipReport
 
         public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
         {
+            using var activity = Diagnostics.Source.StartActivity("User Access Report");
+
+            var records = await GetRecordsAsync(cancellationToken);
+            return new Response(records);
+        }
+
+        private async Task<List<DynamicsUserAccessStatus>> GetRecordsAsync(CancellationToken cancellationToken)
+        {
             Dictionary<string, ActiveDirectoryUserStatus> userStatus = new Dictionary<string, ActiveDirectoryUserStatus>(StringComparer.OrdinalIgnoreCase);
 
-            List<Tuple<ProjectConfiguration, ProjectResource, UserStatus>> results = new List<Tuple<ProjectConfiguration, ProjectResource, UserStatus>>();
+            List<DynamicsUserAccessStatus> records = new List<DynamicsUserAccessStatus>();
 
             foreach (ProjectConfiguration project in _projects)
             {
@@ -59,7 +72,15 @@ public class UserMembershipReport
 
                     foreach (var user in users.Where(_ => !string.IsNullOrEmpty(_.Username)))
                     {
-                        results.Add(Tuple.Create(project, resource, user));
+                        DynamicsUserAccessStatus record = new DynamicsUserAccessStatus
+                        {
+                            ProjectName = project.Name,
+                            ProjecAccountDisabled = user.IsDisabled,
+                            ActiveDirectoryAccount = user.Username
+                        };
+
+                        records.Add(record);
+
 
                         // avoid looking up active directory user multiple times if they exist in multiple projects
                         if (!userStatus.TryGetValue(user.Username, out var status))
@@ -71,54 +92,62 @@ public class UserMembershipReport
                                 userStatus.Add(user.Username, status);
                             }
                         }
+
+                        if (status is not null)
+                        {
+                            record.ActiveDirectoryAccountExists = true;
+                            record.ActiveDirectoryCompany = status.Company;
+                            record.ActiveDirectoryDisplayName = status.DisplayName;
+                            record.ActiveDirectoryEmail = status.Email;
+                            record.ActiveDirectoryAccountDisabled = status.UserAccountControl.HasFlag(UserAccountControl.AccountDisabled);
+                            record.ActiveDirectoryPasswordExpired = status.UserAccountControl.HasFlag(UserAccountControl.PasswordExpired);
+                            record.ActiveDirectoryLockedout = status.UserAccountControl.HasFlag(UserAccountControl.Lockout);
+                        }
+                        else
+                        {
+                            record.ActiveDirectoryAccountExists = false;
+                        }
                     }
                 }
             }
 
-            List<List<string>> rows = new List<List<string>>();
-
-            List<string> header = new List<string>();
-            header.Add("IDIR Username");
-            header.Add("Project Name");
-            header.Add("Resource Type");
-            header.Add("Resource Account Disabled");
-
-            header.Add("IDIR Account");
-            header.Add("Is Account Disabled");
-            header.Add("Is Password Expired");
-            header.Add("Is Account Locked Out");
-
-            rows.Add(header);
-
-            foreach (var result in results)
-            {
-                List<string> row = new List<string>();
-                row.Add(result.Item1.Name); // Project Name
-                row.Add(result.Item2.Type.ToString()); // Resource Type
-                row.Add(result.Item3.Username);
-                row.Add(result.Item3.IsDisabled.ToString());
-
-
-
-                if (userStatus.TryGetValue(result.Item3.Username, out var status))
-                {
-                    row.Add("Exists");
-                    row.Add(status.UserAccountControl.HasFlag(UserAccountControl.AccountDisabled).ToString());
-                    row.Add(status.UserAccountControl.HasFlag(UserAccountControl.PasswordExpired).ToString());
-                    row.Add(status.UserAccountControl.HasFlag(UserAccountControl.Lockout).ToString());
-                }
-                else
-                {
-                    row.Add("Not Found");
-                    row.Add(String.Empty);
-                    row.Add(String.Empty);
-                    row.Add(String.Empty);
-                }
-
-                rows.Add(row);
-            }
-
-            return new Response(rows);
+            return records;
         }
+
+    }
+}
+
+public class DynamicsUserAccessStatus
+{
+    public string ProjectName { get; set; }
+    public bool ProjecAccountDisabled { get; set; }
+
+    public bool ActiveDirectoryAccountExists { get; set; }
+
+    public string? ActiveDirectoryAccount { get; set; }
+    public string? ActiveDirectoryDisplayName { get; set; }
+    public string? ActiveDirectoryEmail { get; set; }
+    public string? ActiveDirectoryCompany { get; set; }
+
+    public bool? ActiveDirectoryAccountDisabled { get; set; }
+    public bool? ActiveDirectoryPasswordExpired { get; set; }
+    public bool? ActiveDirectoryLockedout { get; set; }
+
+    public static IDelimitedTypeMapper<DynamicsUserAccessStatus> GetMapper()
+    {
+        IDelimitedTypeMapper<DynamicsUserAccessStatus>? mapper = DelimitedTypeMapper.Define<DynamicsUserAccessStatus>();
+
+        mapper.Property(c => c.ProjectName).ColumnName("Dynamics Project");
+        mapper.Property(c => c.ActiveDirectoryAccount).ColumnName("AD Account");
+        mapper.Property(c => c.ProjecAccountDisabled).ColumnName("Dynamics Account Disabled");
+
+        mapper.Property(c => c.ActiveDirectoryDisplayName).ColumnName("AD Display Name");
+        mapper.Property(c => c.ActiveDirectoryEmail).ColumnName("AD Email");
+        mapper.Property(c => c.ActiveDirectoryCompany).ColumnName("AD Company");
+        mapper.Property(c => c.ActiveDirectoryAccountDisabled).ColumnName("AD Account Disabled");
+        mapper.Property(c => c.ActiveDirectoryPasswordExpired).ColumnName("AD Password Expired");
+        mapper.Property(c => c.ActiveDirectoryLockedout).ColumnName("AD Account Locked Out");
+
+        return mapper;
     }
 }

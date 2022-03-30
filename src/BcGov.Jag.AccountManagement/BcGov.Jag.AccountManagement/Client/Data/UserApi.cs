@@ -13,4 +13,7 @@ public interface IUserApi
 
     [Post("/api/user/UpdateUserProjects/{username}")]
     Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
+
+    [Get("/api/user/report")]
+    Task<HttpResponseMessage> GetUserAccessReportAsync();
 }
