@@ -86,16 +86,14 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
         ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken);
 
-        GetSharePointWebVerboseResponse web = await restClient.GetWebAsync(cancellationToken);
+        var siteGroupTitle = await GetSiteGroupGroupNameAsync(restClient, "Members", cancellationToken);
 
-        if (string.IsNullOrEmpty(web?.Data?.Title))
+        if (string.IsNullOrEmpty(siteGroupTitle))
         {
-            Logger.Warning("Cannot get site group name for {Project} on resource {ResourceType}", Project.Name, ProjectResource.Type);
             return $"Unable to get SharePoint site group name";
         }
 
         // we always add users to '<site-group> Members'
-        var siteGroupTitle = web.Data.Title + " Members";
 
         GetSiteGroupsVerboseResponse siteGroups =
             await restClient.GetSiteGroupsByTitleAsync(siteGroupTitle, cancellationToken);
@@ -157,12 +155,19 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
         ISharePointClient restClient = await GetSharePointRestClientForUpdate(cancellationToken);
 
+        var ownersGroup = await GetSiteGroupGroupNameAsync(restClient, "Owners", cancellationToken);
+        var membersGroup = await GetSiteGroupGroupNameAsync(restClient, "Members", cancellationToken);
+        var visitorsGroup = await GetSiteGroupGroupNameAsync(restClient, "Visitors", cancellationToken);
+
         var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
         var siteGroups = groups.Data.Results;
 
         StringBuilder response = new StringBuilder();
 
-        foreach (var siteGroup in siteGroups)
+        foreach (var siteGroup in siteGroups.Where(_ =>
+            _.Title.Equals(ownersGroup, StringComparison.OrdinalIgnoreCase) ||
+            _.Title.Equals(membersGroup, StringComparison.OrdinalIgnoreCase) ||
+            _.Title.Equals(visitorsGroup, StringComparison.OrdinalIgnoreCase)))
         {
             try
             {
@@ -224,13 +229,24 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
         ISharePointClient restClient = await GetSharePointRestClient();
 
+        // we only really want to be checking the Members group which we add/remove from
+        // other groups the service account doesn't have permissions to query and flood the traces
+        // with 403 errors, we always add/remove users to '<site-group> Members'
+        var ownersGroup = await GetSiteGroupGroupNameAsync(restClient, "Owners", cancellationToken);
+        var membersGroup = await GetSiteGroupGroupNameAsync(restClient, "Members", cancellationToken);
+        var visitorsGroup = await GetSiteGroupGroupNameAsync(restClient, "Visitors", cancellationToken);
+
         var groups = await restClient.GetSiteGroupsAsync(cancellationToken);
         var siteGroups = groups.Data.Results;
 
         // service account does not have permission to view membership of "Excel Services Viewers"
         // TODO: make this configurable
-        foreach (var siteGroup in siteGroups)
+        foreach (var siteGroup in siteGroups.Where(_ =>
+            _.Title.Equals(ownersGroup, StringComparison.OrdinalIgnoreCase) ||
+            _.Title.Equals(membersGroup, StringComparison.OrdinalIgnoreCase) ||
+            _.Title.Equals(visitorsGroup, StringComparison.OrdinalIgnoreCase)))
         {
+            Logger.Debug("Getting users in {@SiteGroup}", siteGroup);
             try
             {
                 var getUsersResponse = await restClient.GetUsersInGroupAsync(siteGroup.Id, cancellationToken);
@@ -245,7 +261,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
             catch (ApiException e) when (e.StatusCode == HttpStatusCode.Forbidden)
             {
                 // we dont have access to all site groups
-                Logger.Debug(e, "No access to {@SiteGroup}, unable to check access", siteGroup);
+                Logger.Warning(e, "No access to {@SiteGroup}, unable to check access", siteGroup);
             }
         }
 
@@ -255,10 +271,33 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
     public override async Task<IList<UserStatus>> GetUsersAsync(CancellationToken cancellationToken)
     {
         using var activity = Diagnostics.Source.StartActivity("Get SharePoint Users");
-
-        Logger.Information("Getting user list from SharePoint is not currently supported. Returning empty list");
+        Logger.Information("Getting user list from SharePoint is not currently supported, returning empty list");
         return Array.Empty<UserStatus>();
     }
+
+    /// <summary>
+    /// Gets the name of the site group group, it will be "Site Members", or null if it could not be found.
+    /// </summary>
+    /// <param name="restClient"></param>
+    /// <param name="groupNameSuffix"></param>
+    /// <param name="restClient"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    private async Task<string?> GetSiteGroupGroupNameAsync(ISharePointClient restClient, string groupNameSuffix, CancellationToken cancellationToken)
+    {
+        GetSharePointWebVerboseResponse web = await restClient.GetWebAsync(cancellationToken);
+
+        if (string.IsNullOrEmpty(web?.Data?.Title))
+        {
+            Logger.Warning("Cannot get site group name for {Project} on resource {ResourceType}", Project.Name, ProjectResource.Type);
+            return null;
+        }
+
+        // we always add users to '<site-group> Members'
+        var siteGroupTitle = web.Data.Title + " " + groupNameSuffix.Trim();
+        return siteGroupTitle;
+    }
+
 
     private async Task<ISharePointClient> GetSharePointRestClient()
     {
