@@ -1,13 +1,4 @@
-﻿@* <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-    @* <a class="navbar-brand" href="">Account Management</a>
-    <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-    </div>
-    </div> *@
-
-<div class="@NavMenuCssClass">
+﻿<div class="@NavMenuCssClass">
     <nav class="flex-column navbar-light">
         <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li class="nav-item px-0">
@@ -16,7 +7,7 @@
                 </NavLink>
             </li>
             <li class="nav-item px-0 ">
-                <AuthorizeView>
+                <AuthorizeView  Roles="portal_access">
                     <Authorized>
                         <NavLink class="nav-link text-dark ps-2 text-nowrap" href="manageusers">
                             <i class="bi bi-people-fill pe-2"></i> Manage Users
@@ -26,10 +17,11 @@
                             <i class="bi bi-receipt pe-2"></i> Reports
                         </NavLink>
 
+                        <!-- 
                         <NavLink class="nav-link text-dark ps-2" href="settings">
                             <i class="bi bi-gear pe-2"></i> Settings
                         </NavLink>
-
+                        -->
                     </Authorized>
                 </AuthorizeView>
             </li>

@@ -1,14 +1,14 @@
 @page "/reports"
 @using BcGov.Jag.AccountManagement.Client.Data
-@attribute [Authorize]
+@attribute [Authorize(Roles = "portal_access")]
 
 @inject IRepository _repository;
 @inject IJSRuntime JS
 
-<div>Reports Page</div>
+<h1>Reports Page</h1>
 
-<button @onclick="DownloadReport">
-    Run Report
+<button class="btn btn-primary" @onclick="DownloadReport">
+    Download Dynamics User Access Report
 </button>
 
 @code {
@@ -16,7 +16,7 @@
     private async Task DownloadReport()
     {
         var fileStream = await _repository.GetUserAccessReportAsync();
-        var fileName = "user-access-report.csv";
+        var fileName = $"dynamics-user-access-report-{DateTime.Now:yyyy-MM-dd_HH-mm}.csv";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
