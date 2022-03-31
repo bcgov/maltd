@@ -1,4 +1,6 @@
 @page "/settings"
+@inject IToastService toastService
+@attribute [Authorize]
 
 <div class="m-4">
     <ul class="nav nav-tabs border-2" id="myTab">
@@ -12,21 +14,93 @@
     <div class="tab-content">
         <div class="tab-pane active m-3" id="home">
             <h6 class="mt-4 fw-bold">Dynamics Configuration</h6>
-            <form class="d-flex flex-row w-100 flex-wrap" id="dynamicsForm" onsubmit="submitDynamics(event, 'dynamicsForm')">
-                @foreach (var field in dynamicsFields)
-                {
+            @if (spinning)
+            {
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            } else {       
+
+            <EditForm Model="@resourceModel" OnValidSubmit="@Validate" class="d-flex flex-row w-100 flex-wrap">
+            @* <form class="d-flex flex-row w-100 flex-wrap" id="dynamicsForm" onsubmit="submitDynamics(event, 'dynamicsForm')"> *@
+                @* @foreach (var field in dynamicsFields)
+                { *@
                      <div class="col-6 mb-2 pb-2 pe-4 form-group">
                         <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
-                            @field.Label
+                            Api Gateway Host
                         </label>
-                    
-                        <input class="form-control form-control-sm" name=@field.Name required aria-required="true"  placeholder=@field.Placeholder/>
+                        <InputText @bind-Value="resourceModel.ApiGatewayHost" required 
+                        aria-required="true"  class="form-control form-control-sm" 
+                        placeholder="wsgw.dev.jag.gov.bc.ca"/> 
                 </div>
-                }
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Api Gateway Policy
+                        </label>
+                        <InputText @bind-Value="resourceModel.ApiGatewayPolicy" required 
+                        aria-required="true"  class="form-control form-control-sm" 
+                        placeholder="dynamics"/> 
+                </div>
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Dynamics Url
+                        </label>
+                        <InputText @bind-Value="dynamicsUrl" required 
+                        aria-required="true"  class="form-control form-control-sm" 
+                        placeholder="https://hostname/api/data/v9.0/"/> 
+                </div>
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Authorization Url
+                        </label>
+                        <InputText @bind-Value="authorizationUrl" required 
+                        aria-required="true"  class="form-control form-control-sm" 
+                        placeholder="https://ststest.gov.bc.ca/adfs/oauth2/token/"/> 
+                </div>
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Client ID
+                        </label>
+                        <InputText @bind-Value="resourceModel.ClientId" required 
+                        aria-required="true"  class="form-control form-control-sm" 
+                        placeholder="client id"/> 
+                </div>
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Client Secret
+                        </label>
+                        <InputText @bind-Value="resourceModel.ClientSecret" required 
+                        aria-required="true"  class="form-control form-control-sm" /> 
+                </div>
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Username
+                        </label>
+                        <InputText @bind-Value="resourceModel.Username" required 
+                        aria-required="true"  class="form-control form-control-sm" 
+                        placeholder="username@idir"/> 
+                </div>
+                <div class="col-6 mb-2 pb-2 pe-4 form-group">
+                        <label class="mb-1 col-form-label col-form-label-sm" for="flexRadioDefault">
+                            Password
+                        </label>
+                        <InputText @bind-Value="resourceModel.Password" required 
+                        aria-required="true"  class="form-control form-control-sm" /> 
+                </div>
+                @* } *@
                 <div class="col-12 my-4 pb-2 pe-4 form-group w-100">
-                    <button class="btn btn-primary w-100" >Validate</button>
+                    <button class="btn btn-primary w-100" type="submit">Validate</button>
                 </div>
-            </form>
+                </EditForm>
+                if(successValidate is not null && successValidate.Value == true) {
+                    toastService.ShowSuccess("Configurations tested Successfully");
+                } else if(successValidate is not null && successValidate.Value == false) {
+                    toastService.ShowError("Not able to connect. Please try again");
+                }
+            }
+            @* </form> *@
         </div>
         <div class="tab-pane m-3" id="profile">
             <h6 class="mt-4 fw-bold">Sharepoint Configuration</h6>
@@ -43,7 +117,7 @@
                 </div>
                 }
                 <div class="col-12 my-4 pb-2 pe-4 form-group w-100">
-                    <button class="btn btn-primary w-100" >Validate</button>
+                    <button class="btn btn-primary w-100" @onclick="Validate">Validate</button>
                 </div>
             </form>
         </div>

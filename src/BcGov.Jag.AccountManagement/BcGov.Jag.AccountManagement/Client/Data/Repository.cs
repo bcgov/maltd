@@ -35,4 +35,9 @@ public class Repository : IRepository
     {
         await _userApi.UpdateUserProjectsAsync(username, projectMembership);
     }
+
+    public async Task validateProjectConfigAsync(ProjectResource projectResource) {
+
+        await _userApi.validateProjectConfigAsync(projectResource);
+    }
 }

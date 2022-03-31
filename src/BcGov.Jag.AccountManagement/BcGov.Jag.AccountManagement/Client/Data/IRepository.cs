@@ -10,4 +10,6 @@ public interface IRepository
     Task<DetailedUser?> LookupAsync(string username);
 
     Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
+
+    Task validateProjectConfigAsync(ProjectResource projectResource);
 }
