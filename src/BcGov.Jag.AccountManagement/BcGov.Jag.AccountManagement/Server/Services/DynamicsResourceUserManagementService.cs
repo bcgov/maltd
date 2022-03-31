@@ -118,10 +118,6 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
     public override async Task<bool> UserHasAccessAsync(User user, CancellationToken cancellationToken)
     {
-        using var activity = Diagnostics.Source.StartActivity("Check User Access");
-        activity?.AddTag("project.name", Project.Name);
-        activity?.AddTag("project.type", "Dynamics");
-
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
