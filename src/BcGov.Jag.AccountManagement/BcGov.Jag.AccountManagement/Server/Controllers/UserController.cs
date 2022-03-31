@@ -1,5 +1,6 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System;
+using BcGov.Jag.AccountManagement.Server.Features.Reports;
 using BcGov.Jag.AccountManagement.Server.Features.Users;
 using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Shared;
@@ -111,5 +112,16 @@ public class UserController : ControllerBase
             return Ok();
         }
         return BadRequest();
+    }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("Report")]
+    public async Task<IActionResult> GetUserReportAsync(CancellationToken cancellationToken)
+    {
+        UserMembershipReport.Request request = new UserMembershipReport.Request();
+        UserMembershipReport.Response response = await _mediator.Send(request, cancellationToken);
+        
+        return File(response.Report, "text/csv", "dynamics-user-report.csv");
     }
 }

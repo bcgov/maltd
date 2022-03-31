@@ -12,4 +12,6 @@ public interface IRepository
     Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
 
     Task validateProjectConfigAsync(ProjectResource projectResource);
+
+    Task<Stream> GetUserAccessReportAsync();
 }

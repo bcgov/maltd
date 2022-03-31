@@ -40,4 +40,11 @@ public class Repository : IRepository
 
         await _userApi.validateProjectConfigAsync(projectResource);
     }
+    
+    public async Task<Stream> GetUserAccessReportAsync()
+    {
+        var response = await _userApi.GetUserAccessReportAsync();
+        Stream stream = await response.Content.ReadAsStreamAsync();
+        return stream;
+    }
 }

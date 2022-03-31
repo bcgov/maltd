@@ -56,4 +56,9 @@ public class InMemoryUserSearchService : IUserSearchService
 
         return Task.FromResult(user.Email); // UPN is not the same as Email, but good enough for testing
     }
+
+    public Task<ActiveDirectoryUserStatus?> GetAccountStatusAsync(string username, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

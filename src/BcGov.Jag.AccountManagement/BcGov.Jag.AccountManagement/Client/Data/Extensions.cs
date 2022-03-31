@@ -13,7 +13,10 @@ public static class Extensions
         // only send the access token on requests to the API
         builder.Services
             .AddRefitClient<IUserApi>()
-            .ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseAddress); })
+            .ConfigureHttpClient(client => {
+                client.BaseAddress = new Uri(baseAddress);
+                client.Timeout = TimeSpan.FromMinutes(5);
+            })
             .AddHttpMessageHandler(services =>
                 services.GetRequiredService<AuthorizationMessageHandler>()
                 .ConfigureHandler(new[] { baseAddress + "api/" }));

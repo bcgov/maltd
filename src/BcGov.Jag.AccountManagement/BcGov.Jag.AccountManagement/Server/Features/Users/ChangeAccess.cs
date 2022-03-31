@@ -22,21 +22,30 @@ public static class ChangeAccess
     public class Handler : IRequestHandler<Request, Unit>
     {
         private readonly ProjectConfigurationCollection _projects;
+        
         private readonly IUserManagementService _userManagementService;
+        private readonly IUserSearchService _userSearchService;
 
-        public Handler(ProjectConfigurationCollection projects, IUserManagementService userManagementService)
+        public Handler(ProjectConfigurationCollection projects, IUserManagementService userManagementService, IUserSearchService userSearchService)
         {
             _projects = projects ?? throw new ArgumentNullException(nameof(projects));
             _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
+            _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
         }
 
         public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
         {
+            var user = await _userSearchService.SearchAsync(request.Username, cancellationToken);
+            if (user is null)
+            {
+                return Unit.Value;
+            }
+
             // TODO: change this to be parallel
             foreach (var projectMembership in request.ProjectMemberships)
             {
                 var project = _projects.Single(_ => _.Name == projectMembership.ProjectName);
-                await _userManagementService.ChangeUserProjectAccessAsync(request.Username, project, projectMembership, cancellationToken);
+                await _userManagementService.ChangeUserProjectAccessAsync(user, project, projectMembership, cancellationToken);
             }
 
             return Unit.Value;

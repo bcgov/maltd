@@ -66,18 +66,22 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
     }
 
-    public override async Task<string> AddUserAsync(string username, CancellationToken cancellationToken)
+    public override async Task<string> AddUserAsync(Shared.User user, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(username))
-        {
-            throw new ArgumentException("Username cannot be null or empty", nameof(username));
-        }
+        using var activity = Diagnostics.Source.StartActivity("Add User To Project");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "SharePoint");
 
-        var user = await _userSearchService.SearchAsync(username, cancellationToken);
+        ArgumentNullException.ThrowIfNull(user);
+
+        if (string.IsNullOrEmpty(user.UserName))
+        {
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
+        }
 
         if (string.IsNullOrEmpty(user?.UserPrincipalName))
         {
-            Logger.Information("Cannot locate UPN for for {Username}, cannot add users access", username);
+            Logger.Information("Cannot locate UPN for for {Username}, cannot add users access", user.UserName);
             return $"Unable to locate user's User Principal Name (UPN)";
         }
 
@@ -106,7 +110,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         var siteGroup = siteGroups.Data.Results[0];
 
         Logger.Information("Adding {Username} to site collection {@SiteGroup} for {Project} on resource {ResourceType}",
-            username,
+            user.UserName,
             siteGroup,
             Project.Name,
             ProjectResource.Type);
@@ -128,20 +132,24 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         }
     }
     
-    public override async Task<string> RemoveUserAsync(string username, CancellationToken cancellationToken)
+    public override async Task<string> RemoveUserAsync(Shared.User user, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(username))
+        using var activity = Diagnostics.Source.StartActivity("Remove User From Project");
+        activity?.AddTag("project.name", Project.Name);
+        activity?.AddTag("project.type", "SharePoint");
+
+        ArgumentNullException.ThrowIfNull(user);
+
+        if (string.IsNullOrEmpty(user.UserName))
         {
-            throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
 
-        Logger.Debug("Removing access for {Username}", username);
+        Logger.Debug("Removing access for {Username}", user.UserName);
 
-        var user = await _userSearchService.SearchAsync(username, cancellationToken);
-
-        if (string.IsNullOrEmpty(user?.UserPrincipalName))
+        if (string.IsNullOrEmpty(user.UserPrincipalName))
         {
-            Logger.Information("Cannot locate UPN for for {Username}, cannot remove users access", username);
+            Logger.Information("Cannot locate UPN for for {Username}, cannot remove users access", user.UserName);
             return "User not found";
         }
         
@@ -184,30 +192,33 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
             catch (ApiException e) when (e.StatusCode == HttpStatusCode.Forbidden)
             {
                 // we dont have access to all site groups
-                Logger.Debug(e, "No access to {@SiteGroup}, unable to remove {Username} access", siteGroup, username);
+                Logger.Debug(e, "No access to {@SiteGroup}, unable to remove {Username} access", siteGroup, user.UserName);
             }
         }
 
         return response.ToString();
     }
 
-    public override async Task<bool> UserHasAccessAsync(string username, CancellationToken cancellationToken)
+    public override async Task<bool> UserHasAccessAsync(Shared.User user, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(username))
+        ArgumentNullException.ThrowIfNull(user);
+
+        if (string.IsNullOrEmpty(user.UserName))
         {
-            throw new ArgumentException("Username cannot be null or empty", nameof(username));
+            throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
 
-        Logger.Debug("Checking {Username} has access to project", username);
-
-
-        var user = await _userSearchService.SearchAsync(username, cancellationToken);
-
-        if (string.IsNullOrEmpty(user?.UserPrincipalName))
+        if (string.IsNullOrEmpty(user.UserPrincipalName))
         {
-            Logger.Information("Cannot locate UPN for for {Username}, cannot check users access", username);
+            Logger.Information("User does not have a UPN, cannot check users access");
             return false;
         }
+
+        using var userHasAccessActivity = Diagnostics.Source.StartActivity("Check User Has Access");
+        userHasAccessActivity?.AddTag("project.name", this.Project.Name);
+        userHasAccessActivity?.AddTag("project.type", "SharePoint");
+
+        Logger.Debug("Checking if user has access to project");
 
         // format the SharePoint login name format
         string loginName = Constants.LoginNamePrefix + user.UserPrincipalName;
@@ -240,6 +251,14 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         }
 
         return false;
+    }
+
+    public override async Task<IList<UserStatus>> GetUsersAsync(CancellationToken cancellationToken)
+    {
+        using var activity = Diagnostics.Source.StartActivity("Get SharePoint Users");
+
+        Logger.Information("Getting user list from SharePoint is not currently supported. Returning empty list");
+        return Array.Empty<UserStatus>();
     }
 
     private async Task<ISharePointClient> GetSharePointRestClient()

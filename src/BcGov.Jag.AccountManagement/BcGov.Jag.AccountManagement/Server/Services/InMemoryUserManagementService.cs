@@ -87,7 +87,7 @@ public class InMemoryUserManagementService : IUserManagementService
         return Task.FromResult(projects.Select(_ => new Project(_.Name)).ToList());
     }
 
-    public Task ChangeUserProjectAccessAsync(string username, ProjectConfiguration project, ProjectMembershipModel projectMembership, CancellationToken cancellationToken)
+    public Task ChangeUserProjectAccessAsync(User user, ProjectConfiguration project, ProjectMembershipModel projectMembership, CancellationToken cancellationToken)
     {
         if (projectMembership.Dynamics.HasValue)
         {
@@ -100,5 +100,10 @@ public class InMemoryUserManagementService : IUserManagementService
         }
 
         return Task.CompletedTask;
+    }
+
+    public Task<IList<UserStatus>> GetUsersAsync(ProjectConfiguration project, ProjectResource resource, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

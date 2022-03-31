@@ -16,4 +16,7 @@ public interface IUserApi
 
     [Post("/api/user/UpdateUserProjects/validate")]
     Task validateProjectConfigAsync(ProjectResource projectResource);
+    
+    [Get("/api/user/report")]
+    Task<HttpResponseMessage> GetUserAccessReportAsync();
 }

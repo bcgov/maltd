@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Exceptions.Core;
+using BcGov.Jag.AccountManagement.Server.Infrastructure;
 using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
@@ -13,7 +14,10 @@ using Blazored.Toast;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
+
 var builder = WebApplication.CreateBuilder(args);
+var logger = GetLogger(builder);
+
 // Add services to the container.
 
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) => {
@@ -26,6 +30,8 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 });
+builder.AddTelemetry(logger);
+
 builder.Services.AddRazorPages();
 
 builder.Services
@@ -41,7 +47,7 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddLdapUserSearch(builder.Configuration);
 builder.Services.AddMemoryCache();
 
-builder.Services.ConfigureProjectResources(builder.Configuration, Serilog.Log.Logger); // TODO: pass in a configured logger
+builder.Services.ConfigureProjectResources(builder.Configuration, logger);
 
 builder.Services.AddTransient<IUserManagementService, UserManagementService>();
 builder.Services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
@@ -90,3 +96,22 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+
+/// <summary>
+/// Gets a logger for application setup.
+/// </summary>
+/// <returns></returns>
+static Serilog.ILogger GetLogger(WebApplicationBuilder builder)
+{
+    var configuration = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .WriteTo.Console();
+
+    if (builder.Environment.IsDevelopment())
+    {
+        configuration.WriteTo.Debug();
+    }
+
+    return configuration.CreateLogger();
+}

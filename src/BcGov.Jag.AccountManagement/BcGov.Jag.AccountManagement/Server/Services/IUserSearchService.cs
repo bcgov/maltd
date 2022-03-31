@@ -11,4 +11,6 @@ public interface IUserSearchService
     /// <param name="samAccountName">The username to query for</param>
     /// <returns>The found user or null if not found.</returns>
     Task<User?> SearchAsync(string samAccountName, CancellationToken cancellationToken);
+
+    Task<ActiveDirectoryUserStatus?> GetAccountStatusAsync(string username, CancellationToken cancellationToken);
 }
