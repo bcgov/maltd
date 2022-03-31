@@ -3,6 +3,7 @@ using BcGov.Jag.AccountManagement.Server.Infrastructure;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
 using BcGov.Jag.AccountManagement.Shared;
+using Microsoft.Extensions.Caching.Memory;
 using Refit;
 using Serilog;
 
@@ -15,21 +16,21 @@ public class UserManagementService : IUserManagementService
     private readonly IODataClientFactory _oDataClientFactory;
     private readonly ProjectConfigurationCollection _projects;
     private readonly ISamlAuthenticator _samlAuthenticator;
-    private readonly IUserSearchService _userSearchService;
-
+    private readonly IServiceProvider _serviceProvider;
 
     public UserManagementService(
         ProjectConfigurationCollection projects,
         ILogger<UserManagementService> logger,
         IODataClientFactory oDataClientFactory,
-        IUserSearchService userSearchService,
-        ISamlAuthenticator samlAuthenticator)
+        ISamlAuthenticator samlAuthenticator,
+        IServiceProvider serviceProvider
+        )
     {
         _projects = projects ?? throw new ArgumentNullException(nameof(projects));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _oDataClientFactory = oDataClientFactory ?? throw new ArgumentNullException(nameof(oDataClientFactory));
-        _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
         _samlAuthenticator = samlAuthenticator ?? throw new ArgumentNullException(nameof(samlAuthenticator));
+        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
     public async Task ChangeUserProjectAccessAsync(
@@ -146,13 +147,13 @@ public class UserManagementService : IUserManagementService
 
     public async Task<List<Project>> GetProjectsForUserAsync(User user, CancellationToken cancellationToken)
     {
-        using var activity = Diagnostics.Source.StartActivity("Get Projects For User");
-
         ArgumentNullException.ThrowIfNull(user);
         if (string.IsNullOrEmpty(user.UserName))
         {
             throw new ArgumentException("Username cannot be null or empty", nameof(user));
         }
+
+        using var activity = Diagnostics.Source.StartActivity("Get Projects For User");
 
         using var usernameScope = _logger.BeginScope(new Dictionary<string, object> { { "Username", user.UserName } });
 
@@ -160,10 +161,6 @@ public class UserManagementService : IUserManagementService
 
         var tasks = requests.Select(request => request.CheckUserHasAccessAsync(user, cancellationToken)).ToList();
         await Task.WhenAll(tasks);
-        //await Parallel.ForEachAsync(requests, async (request, cancellationToken) =>
-        //{
-        //    request.Access = await request.Service.UserHasAccessAsync(user, cancellationToken);
-        //});
 
         List<Project> projects = new List<Project>();
 
@@ -402,9 +399,10 @@ public class UserManagementService : IUserManagementService
         switch (resource.Type)
         {
             case ProjectType.Dynamics:
-                return new DynamicsResourceUserManagementService(project, resource, _oDataClientFactory, _userSearchService, Log.Logger.ForContext<DynamicsResourceUserManagementService>());
+                return new DynamicsResourceUserManagementService(project, resource, _oDataClientFactory, Log.Logger.ForContext<DynamicsResourceUserManagementService>());
             case ProjectType.SharePoint:
-                return new SharePointResourceUserManagementService(project, resource, _userSearchService, _samlAuthenticator, Log.Logger.ForContext<SharePointResourceUserManagementService>());
+                var cache = _serviceProvider.GetRequiredService<IMemoryCache>();
+                return new SharePointResourceUserManagementService(project, resource, _samlAuthenticator, cache, Log.Logger.ForContext<SharePointResourceUserManagementService>());
             default:
                 _logger.LogWarning("Unknown resource type {Type}, project resource will be skipped", resource.Type);
                 return null;
