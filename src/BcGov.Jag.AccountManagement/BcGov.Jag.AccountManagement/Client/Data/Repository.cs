@@ -1,4 +1,5 @@
 ﻿using BcGov.Jag.AccountManagement.Shared;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Refit;
 using System.Net;
 
@@ -15,16 +16,23 @@ public class Repository : IRepository
 
     public async Task<DetailedUser?> LookupAsync(string username)
     {
-        var response = await _userApi.LookupAsync(username);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            return response.Content;
-        }
+            var response = await _userApi.LookupAsync(username);
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content;
+            }
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+
+                return null;
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
         {
-            
-            return null;
+            exception.Redirect();
         }
 
         // TODO: handle other error, HttpStatusCode.InternalServerError
@@ -33,13 +41,28 @@ public class Repository : IRepository
 
     public async Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership)
     {
-        await _userApi.UpdateUserProjectsAsync(username, projectMembership);
+        try
+        {
+            await _userApi.UpdateUserProjectsAsync(username, projectMembership);
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 
     public async Task<Stream> GetUserAccessReportAsync()
     {
-        var response = await _userApi.GetUserAccessReportAsync();
-        Stream stream = await response.Content.ReadAsStreamAsync();
-        return stream;
+        try
+        {
+            var response = await _userApi.GetUserAccessReportAsync();
+            Stream stream = await response.Content.ReadAsStreamAsync();
+            return stream;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+            return null!; // dont think this really gets executed
+        }
     }
 }
