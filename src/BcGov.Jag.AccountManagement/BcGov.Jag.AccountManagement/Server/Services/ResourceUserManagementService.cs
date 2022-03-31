@@ -1,4 +1,5 @@
 ﻿using BcGov.Jag.AccountManagement.Server.Models.Configuration;
+using BcGov.Jag.AccountManagement.Shared;
 using ILogger = Serilog.ILogger;
 
 namespace BcGov.Jag.AccountManagement.Server.Services;

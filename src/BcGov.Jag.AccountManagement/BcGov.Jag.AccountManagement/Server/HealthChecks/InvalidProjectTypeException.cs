@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
+using BcGov.Jag.AccountManagement.Shared;
 
 namespace BcGov.Jag.AccountManagement.Server.HealthChecks;
 

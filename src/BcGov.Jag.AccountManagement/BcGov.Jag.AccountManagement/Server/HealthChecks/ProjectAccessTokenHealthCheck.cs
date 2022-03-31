@@ -2,6 +2,7 @@
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
+using BcGov.Jag.AccountManagement.Shared;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace BcGov.Jag.AccountManagement.Server.HealthChecks;

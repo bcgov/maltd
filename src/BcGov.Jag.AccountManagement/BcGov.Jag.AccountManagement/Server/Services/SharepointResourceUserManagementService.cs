@@ -5,6 +5,7 @@ using BcGov.Jag.AccountManagement.Server.Infrastructure;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Models.SharePoint;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
+using BcGov.Jag.AccountManagement.Shared;
 using Refit;
 using ILogger = Serilog.ILogger;
 

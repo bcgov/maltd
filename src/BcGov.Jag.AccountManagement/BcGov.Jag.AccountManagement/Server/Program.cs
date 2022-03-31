@@ -5,10 +5,13 @@ using Serilog.Exceptions.Core;
 using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
-using BcGov.Jag.AccountManagement.Server.Models.Authorization;
+using BcGov.Jag.AccountManagement.Shared;
+using BcGov.Jag.AccountManagement.Shared.Authorization;
 using MediatR;
 using System.Reflection;
 using Blazored.Toast;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -19,7 +22,10 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) => {
         .Enrich.WithExceptionDetails(new DestructuringOptionsBuilder().WithDefaultDestructurers());
 });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+});
 builder.Services.AddRazorPages();
 
 builder.Services
