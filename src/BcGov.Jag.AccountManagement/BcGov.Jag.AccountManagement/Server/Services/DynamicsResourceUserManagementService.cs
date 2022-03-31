@@ -11,17 +11,14 @@ namespace BcGov.Jag.AccountManagement.Server.Services;
 public class DynamicsResourceUserManagementService : ResourceUserManagementService
 {
     private readonly IODataClientFactory _factory;
-    private readonly IUserSearchService _userSearchService;
 
     public DynamicsResourceUserManagementService(ProjectConfiguration project,
         ProjectResource projectResource,
         IODataClientFactory factory,
-        IUserSearchService userSearchService,
         ILogger logger)
         : base(project, projectResource, logger)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        _userSearchService = userSearchService ?? throw new ArgumentNullException(nameof(userSearchService));
     }
 
     public override async Task<string> AddUserAsync(User user, CancellationToken cancellationToken)
