@@ -158,7 +158,7 @@ public class UserManagementService : IUserManagementService
 
         List<ProjectResourceAccess> requests = CreateUserHasAccessRequests();
 
-        var tasks = requests.Select(request => request.Service.UserHasAccessAsync(user, cancellationToken)).ToList();
+        var tasks = requests.Select(request => request.CheckUserHasAccessAsync(user, cancellationToken)).ToList();
         await Task.WhenAll(tasks);
         //await Parallel.ForEachAsync(requests, async (request, cancellationToken) =>
         //{
@@ -416,6 +416,11 @@ public class UserManagementService : IUserManagementService
         public ProjectResourceAccess(ProjectConfiguration configuration, ProjectResource resource, IResourceUserManagementService service)
             : base(configuration, resource, service, null)
         {
+        }
+
+        public async Task CheckUserHasAccessAsync(User user, CancellationToken cancellationToken)
+        {
+            Access = await Service.UserHasAccessAsync(user, cancellationToken);
         }
 
         public bool? Access

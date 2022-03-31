@@ -41,7 +41,7 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddLdapUserSearch(builder.Configuration);
 builder.Services.AddMemoryCache();
 
-builder.Services.ConfigureProjectResources(builder.Configuration, Serilog.Log.Logger); // TODO: pass in a configured logger
+builder.Services.ConfigureProjectResources(builder.Configuration, logger);
 
 builder.Services.AddTransient<IUserManagementService, UserManagementService>();
 builder.Services.AddTransient<IODataClientFactory, DefaultODataClientFactory>();
