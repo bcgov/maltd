@@ -200,10 +200,6 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
 
     public override async Task<bool> UserHasAccessAsync(Shared.User user, CancellationToken cancellationToken)
     {
-        using var activity = Diagnostics.Source.StartActivity("Check User Access");
-        activity?.AddTag("project.name", Project.Name);
-        activity?.AddTag("project.type", "SharePoint");
-
         ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
