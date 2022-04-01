@@ -39,13 +39,18 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
         Logger.Debug("Adding {Username} to project", user.UserName);
 
+        var systemAdministratorRole = await GetSystemAdministratorRole(client, cancellationToken);
+
         SystemUser entry = await client
             .For<SystemUser>()
             .Filter(_ => _.DomainName == logon)
-            .Select(_ => _.SystemUserId)
+            .Select(_ => new { _.SystemUserId, _.Roles })
+            .Expand(_ => new { _.Roles })
             .FindEntryAsync(cancellationToken);
 
-        if (entry == null)
+        // the roles do not appear to be loading here
+
+        if (entry is null)
         {
             Logger.Information("{Username} does not exist, creating a new record", user.UserName);
 
@@ -60,7 +65,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
                 InternalEMailAddress = user.Email,
                 BusinessUnit = rootBusinessUnit,
                 IsDisabled = false,
-                SharePointEmailAddress = user.UserPrincipalName
+                SharePointEmailAddress = user.UserPrincipalName,
+                Roles = systemAdministratorRole is not null ?  new List<Role> { systemAdministratorRole } : Array.Empty<Role>()
             };
 
             await client
@@ -70,6 +76,26 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         }
         else
         {
+            if (systemAdministratorRole is not null)
+            {
+                // not roles do not appear to be loading, so this will probably replace the user's roles with just
+                // System Administrator
+                var roles = entry.Roles ?? new List<Role>();
+
+                // does the user have system administrator role already?
+                if (!roles.Any(role => role.RoleId == systemAdministratorRole.RoleId))
+                {
+                    Logger.Information("Adding {Role} to user {@SystemUser}", "System Administrator", entry);
+                    roles.Add(systemAdministratorRole);
+
+                    entry = await client
+                        .For<SystemUser>()
+                        .Key(entry.SystemUserId)
+                        .Set(new Dictionary<string, object> { { "systemuserroles_association", roles } })
+                        .UpdateEntryAsync();
+                }
+            }
+
             Logger.Information("{@SystemUser} exists ensuring the user is enabled", entry);
             await UpdateSystemUserDisableFlag(client, entry.SystemUserId, user, false, cancellationToken);
         }
@@ -209,6 +235,29 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         }
 
         return businessUnit;
+    }
+
+
+    private async Task<Role?> GetSystemAdministratorRole(IODataClient client, CancellationToken cancellationToken)
+    {
+        var entries = await client
+            .For<Role>()
+            .Filter(_ => _.Name == "System Administrator")
+            .FindEntriesAsync();
+
+        var roles = entries.ToList();
+        if (roles.Count == 0)
+        {
+            Logger.Warning("Could not find {Role}", "System Administrator");
+            return null;
+        }
+        if (roles.Count > 1)
+        {
+            Logger.Warning("Found {Count} {Role} roles, the first one will used", roles.Count, "System Administrator");
+        }
+
+        var role = roles.FirstOrDefault();
+        return role;
     }
 
     private IODataClient GetODataClient() => _factory.Create(Project.Name + "-dynamics");
