@@ -188,40 +188,6 @@ public class UserManagementService : IUserManagementService
                 });
             }
 
-
-
-            //if (task.IsCompletedSuccessfully)
-            //{
-            //}
-            //else if (task.IsFaulted)
-            //{
-            //    Exception exception = task.Exception?.InnerException;
-            //    Guid errorId = Guid.NewGuid();
-
-            //    string message = GetUserErrorMessageFor(exception, errorId);
-
-            //    if (exception != null)
-            //    {
-            //        // log with exception
-            //        _logger.LogError(exception, "Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
-            //            new { user.Id, user.UserName, user.UserPrincipalName },
-            //            new { request.Configuration.Name, request.Configuration.Id },
-            //            new { request.Resource.Type, request.Resource.Resource },
-            //            errorId);
-            //    }
-            //    else
-            //    {
-            //        // log without exception
-            //        _logger.LogError("Request to check {User} access to access to {Project} for {Resource} failed (Error ID: {ErrorId})",
-            //            new { user.Id, user.UserName, user.UserPrincipalName },
-            //            new { request.Configuration.Name, request.Configuration.Id },
-            //            new { request.Resource.Type, request.Resource.Resource },
-            //            errorId);
-            //    }
-
-            //    project.Resources.Add(new ProjectResourceStatus { Type = request.Resource.Type.ToString(), Status = ProjectResourceStatuses.Error, Message = message });
-            //}
-
         }
 
         return projects;

@@ -35,6 +35,9 @@ public class SystemUser
     [JsonPropertyName("sharepointemailaddress")]
     public string SharePointEmailAddress { get; set; }
 
+    [JsonPropertyName("systemuserroles_association")]
+    public IList<Role> Roles { get; set; }
+
     [JsonIgnore]
     private string DebuggerDisplay
     {
