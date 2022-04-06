@@ -39,7 +39,9 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
         Logger.Debug("Adding {Username} to project", user.UserName);
 
-        var systemAdministratorRole = await GetSystemAdministratorRole(client, cancellationToken);
+        BusinessUnit rootBusinessUnit = await GetRootBusinessUnit(client, cancellationToken);
+
+        var systemAdministratorRole = await GetSystemAdministratorRole(client, rootBusinessUnit, cancellationToken);
 
         SystemUser entry = await client
             .For<SystemUser>()
@@ -53,8 +55,6 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         if (entry is null)
         {
             Logger.Information("{Username} does not exist, creating a new record", user.UserName);
-
-            BusinessUnit rootBusinessUnit = await GetRootBusinessUnit(client, cancellationToken);
 
             // populate the SystemUser with required attributes
             entry = new SystemUser
@@ -238,17 +238,19 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
     }
 
 
-    private async Task<Role?> GetSystemAdministratorRole(IODataClient client, CancellationToken cancellationToken)
+    private async Task<Role?> GetSystemAdministratorRole(IODataClient client, BusinessUnit businessUnit, CancellationToken cancellationToken)
     {
+        // may be better just to filter by business unit, but this works
         var entries = await client
             .For<Role>()
+            .Expand(_ => _.BusinessUnit)
             .Filter(_ => _.Name == "System Administrator")
             .FindEntriesAsync();
 
-        var roles = entries.ToList();
+        var roles = entries.Where(_ => _.BusinessUnit != null && _.BusinessUnit.BusinessUnitId == businessUnit.BusinessUnitId).ToList();
         if (roles.Count == 0)
         {
-            Logger.Warning("Could not find {Role}", "System Administrator");
+            Logger.Warning("Could not find {Role} in {BusinessUnit}", "System Administrator", businessUnit);
             return null;
         }
         if (roles.Count > 1)

@@ -10,4 +10,8 @@ public class Role
 
     [JsonPropertyName("name")]
     public string Name { get; set; }
+
+    [JsonPropertyName("businessunitid")]
+    public BusinessUnit BusinessUnit { get; set; }
+
 }
