@@ -17,9 +17,6 @@ public class ProjectResource
     /// </summary>
     public Uri Resource { get; set; }
 
-    [Obsolete("Use Resource")]
-    public Uri BaseAddress => Resource;
-
     public string Username { get; set; }
     public string Password { get; set; }
 

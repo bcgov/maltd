@@ -5,6 +5,7 @@ using ILogger = Serilog.ILogger;
 using Simple.OData.Client;
 using BcGov.Jag.AccountManagement.Shared;
 using BcGov.Jag.AccountManagement.Server.Infrastructure;
+using System.Text.Json.Serialization;
 
 namespace BcGov.Jag.AccountManagement.Server.Services;
 
@@ -46,11 +47,9 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         SystemUser entry = await client
             .For<SystemUser>()
             .Filter(_ => _.DomainName == logon)
-            .Select(_ => new { _.SystemUserId, _.Roles })
-            .Expand(_ => new { _.Roles })
+            .Select(_ => new { _.SystemUserId })
             .FindEntryAsync(cancellationToken);
 
-        // the roles do not appear to be loading here
 
         if (entry is null)
         {
@@ -65,8 +64,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
                 InternalEMailAddress = user.Email,
                 BusinessUnit = rootBusinessUnit,
                 IsDisabled = false,
-                SharePointEmailAddress = user.UserPrincipalName,
-                Roles = systemAdministratorRole is not null ?  new List<Role> { systemAdministratorRole } : Array.Empty<Role>()
+                SharePointEmailAddress = user.UserPrincipalName
             };
 
             await client
@@ -76,32 +74,64 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         }
         else
         {
-            if (systemAdministratorRole is not null)
-            {
-                // not roles do not appear to be loading, so this will probably replace the user's roles with just
-                // System Administrator
-                var roles = entry.Roles ?? new List<Role>();
-
-                // does the user have system administrator role already?
-                if (!roles.Any(role => role.RoleId == systemAdministratorRole.RoleId))
-                {
-                    Logger.Information("Adding {Role} to user {@SystemUser}", "System Administrator", entry);
-                    roles.Add(systemAdministratorRole);
-
-                    entry = await client
-                        .For<SystemUser>()
-                        .Key(entry.SystemUserId)
-                        .Set(new Dictionary<string, object> { { "systemuserroles_association", roles } })
-                        .UpdateEntryAsync();
-                }
-            }
-
             Logger.Information("{@SystemUser} exists ensuring the user is enabled", entry);
             await UpdateSystemUserDisableFlag(client, entry.SystemUserId, user, false, cancellationToken);
         }
 
+        if (systemAdministratorRole is not null)
+        {
+            Logger.Information("Adding user to system administrator role");
+            await AddRoleToUserAsync(systemAdministratorRole.RoleId, entry.SystemUserId);
+        }
+
         return string.Empty;
     }
+
+    class AssignRoleRequest
+    {
+        [JsonPropertyName("@odata.id")]
+        public Uri Request { get; set; }
+    }
+
+    private async Task AddRoleToUserAsync(Guid roleId, Guid userId)
+    {
+        AssignRoleRequest assignRoleRequest = new AssignRoleRequest 
+        { 
+            Request = new Uri(ProjectResource.Resource + $"roles({roleId})") 
+        };
+
+        JsonContent requestContent = JsonContent.Create(assignRoleRequest);
+        string requestUri = $"{ProjectResource.Resource.PathAndQuery}systemusers({userId})/systemuserroles_association/$ref";
+
+        HttpClient client = _factory.CreateHttpClient(Project.Name + "-dynamics");
+        var response = await client.PostAsync(requestUri, requestContent);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Logger
+                .ForContext("ResponseContent", responseContent)
+                .ForContext("StatusCode", response.StatusCode)
+                .ForContext("UserId", userId)
+                .ForContext("RoleId", roleId)
+                .ForContext("Project", Project.Name)
+                .ForContext("Resource", ProjectResource.Resource)
+                .Information("Could not add role to user");            
+
+            // TODO: this should return an error
+        }
+    }
+
+    //private async Task UserHasRoleAsync(Guid userId, Guid roleId)
+    //{
+    //    // var requestUri = $"{ProjectResource.Resource.PathAndQuery}systemusers?$select=systemuserroles_association/Name,systemuserroles_association/RoleId&$expand=systemuserroles_association&$filter=SystemUserId eq guid'{userId}'";
+    //    var requestUri = $"{ProjectResource.Resource.PathAndQuery}SystemUserSet?$select=systemuserroles_association/Name,systemuserroles_association/RoleId&$expand=systemuserroles_association";
+
+    //    HttpClient client = _factory.CreateHttpClient(Project.Name + "-dynamics");
+    //    var response = await client.GetAsync(requestUri);
+
+    //    var responseContent = await response.Content.ReadAsStringAsync();
+    //}
 
     public override async Task<string> RemoveUserAsync(User user, CancellationToken cancellationToken)
     {
@@ -161,8 +191,13 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         SystemUser entry = await client
             .For<SystemUser>()
             .Filter(_ => _.DomainName == logon && _.IsDisabled == false)
-            .Select(_ => _.SystemUserId)
+            .Select(_ => new { _.SystemUserId })
             .FindEntryAsync(cancellationToken);
+
+        //if (entry != null)
+        //{
+        //    await UserHasRoleAsync(entry.SystemUserId, Guid.Empty);
+        //}
 
         return entry != null;
     }

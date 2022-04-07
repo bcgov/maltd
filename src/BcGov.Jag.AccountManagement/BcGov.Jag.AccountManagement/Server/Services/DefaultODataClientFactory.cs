@@ -19,10 +19,7 @@ public class DefaultODataClientFactory : IODataClientFactory
 
     public IODataClient Create(string name)
     {
-        if (name is null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(name);
 
         //_odataClientLogger.LogDebug("Creating IODataClient");
 
@@ -36,9 +33,16 @@ public class DefaultODataClientFactory : IODataClientFactory
         ////settings.OnTrace = (message, args) => _odataClientLogger.LogInformation(message, args);
 
         ODataClient oDataClient = new ODataClient(settings);
-
+        
         //_odataClientLogger.LogDebug("Created IODataClient");
         return oDataClient;
+    }
+
+    public HttpClient CreateHttpClient(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        HttpClient httpClient = _httpClientFactory.CreateClient(name);
+        return httpClient;
     }
 
     private string GetMetadataDocument()
@@ -55,5 +59,7 @@ public class DefaultODataClientFactory : IODataClientFactory
         }
 
         return _dynamicsMetadata;
-    }     
+    }
+
+
 }
