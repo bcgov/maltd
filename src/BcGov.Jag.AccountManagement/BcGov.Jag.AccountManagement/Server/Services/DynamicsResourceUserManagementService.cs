@@ -67,7 +67,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
                 SharePointEmailAddress = user.UserPrincipalName
             };
 
-            await client
+            entry = await client
                 .For<SystemUser>()
                 .Set(entry)
                 .InsertEntryAsync(cancellationToken);
