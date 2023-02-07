@@ -1,5 +1,6 @@
 @page "/settings"
-@attribute [Authorize(Roles = "portal_access")]
+@using BcGov.Jag.AccountManagement.Shared;
+@attribute [Authorize(Roles = Roles.UserAccessManager)]
 
 <div class="m-4">
     <ul class="nav nav-tabs border-2" id="myTab">

@@ -1,4 +1,5 @@
-﻿<div class="@NavMenuCssClass">
+﻿@using BcGov.Jag.AccountManagement.Shared;
+<div class="@NavMenuCssClass">
     <nav class="flex-column navbar-light">
         <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li class="nav-item px-0">
@@ -7,7 +8,7 @@
                 </NavLink>
             </li>
             <li class="nav-item px-0 ">
-                <AuthorizeView  Roles="portal_access">
+                <AuthorizeView Roles="@Roles.UserAccessManager">
                     <Authorized>
                         <NavLink class="nav-link text-dark ps-2 text-nowrap" href="manageusers">
                             <i class="bi bi-people-fill pe-2"></i> Manage Users

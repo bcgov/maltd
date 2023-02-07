@@ -278,7 +278,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         // check if we have the item in cache
         string key = $"{Project.Name}-{ProjectResource.Type}-Groups";
 
-        if (_cache.TryGetValue(key, out SharePointGroups groups))
+        if (_cache.TryGetValue(key, out SharePointGroups? groups))
         {
             return groups;
         }

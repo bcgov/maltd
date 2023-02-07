@@ -26,6 +26,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = Roles.UserAccessManager)]
     public async Task<IActionResult> SearchAsync([FromQuery(Name = "q")][Required] string query, CancellationToken cancellationToken)
     {
         var user = await _service.SearchAsync(query, cancellationToken);
@@ -40,6 +41,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("{username}")]
+    [Authorize(Roles = Roles.UserAccessManager)]
     public async Task<IActionResult> LookupAsync(string username, CancellationToken cancellationToken)
     {
         // TODO: user model validation
@@ -65,19 +67,20 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("UpdateUserProjects/{username}")]
+    [Authorize(Roles = Roles.UserAccessManager)]
     public async Task<IActionResult> UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership, CancellationToken cancellationToken)
     {
-        ChangeAccess.Request request = new ChangeAccess.Request(username, projectMembership);
+        ChangeAccess.Request request = new(username, projectMembership);
         await _mediator.Send(request, cancellationToken);
         return Ok();
     }
 
-    [AllowAnonymous]
     [HttpGet]
     [Route("Report")]
+    [Authorize(Roles = Roles.UserAccessManager)]
     public async Task<IActionResult> GetUserReportAsync(CancellationToken cancellationToken)
     {
-        UserMembershipReport.Request request = new UserMembershipReport.Request();
+        UserMembershipReport.Request request = new();
         UserMembershipReport.Response response = await _mediator.Send(request, cancellationToken);
         
         return File(response.Report, "text/csv", "dynamics-user-report.csv");

@@ -24,6 +24,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
 
     public override async Task<string> AddUserAsync(User user, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(user);
+
         using var activity = Diagnostics.Source.StartActivity("Add User To Project");
         activity?.AddTag("project.name", Project.Name);
         activity?.AddTag("project.type", "Dynamics");

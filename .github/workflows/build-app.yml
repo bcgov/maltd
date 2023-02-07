@@ -6,14 +6,14 @@ on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
     paths:
-      - "maltd/api/src/**"
+      - "api/src/**"
       - ".github/workflows/api-dotnet-core.yml"
 
 jobs:
   build:
     defaults:
       run:
-        working-directory: ./api/src
+        working-directory: ./src/BcGov.Jag.AccountManagement
 
     runs-on: ubuntu-latest
 
@@ -22,7 +22,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.302
+        dotnet-version: 7.0.102
     - name: Install dependencies
       run: dotnet restore
     - name: Build
