@@ -1,5 +1,6 @@
 ﻿@page "/manageusers"
-@attribute [Authorize(Roles = "portal_access")]
+@using BcGov.Jag.AccountManagement.Shared;
+@attribute [Authorize(Roles = Roles.UserAccessManager)]
 @inject IToastService toastService
 
 <PageTitle>Manage Users</PageTitle>

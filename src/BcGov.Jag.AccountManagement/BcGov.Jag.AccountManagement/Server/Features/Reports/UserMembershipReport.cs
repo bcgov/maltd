@@ -21,14 +21,10 @@ public class UserMembershipReport
         {
             var mapper = DynamicsUserAccessStatus.GetMapper();
 
-            StringBuilder buffer = new StringBuilder();
-
-            using (var writer = new StringWriter())
-            {
-                var options = new DelimitedOptions() { IsFirstRecordSchema = true };                
-                mapper.Write(writer, records, options);             
-                Report = Encoding.UTF8.GetBytes(writer.ToString());
-            }
+            using var writer = new StringWriter();
+            var options = new DelimitedOptions() { IsFirstRecordSchema = true };
+            mapper.Write(writer, records, options);
+            Report = Encoding.UTF8.GetBytes(writer.ToString());
         }
 
         public byte[] Report { get; set; }
@@ -63,9 +59,9 @@ public class UserMembershipReport
 
         private async Task<List<DynamicsUserAccessStatus>> GetRecordsAsync(CancellationToken cancellationToken)
         {
-            Dictionary<string, ActiveDirectoryUserStatus> userStatus = new Dictionary<string, ActiveDirectoryUserStatus>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, ActiveDirectoryUserStatus> userStatus = new(StringComparer.OrdinalIgnoreCase);
 
-            List<DynamicsUserAccessStatus> records = new List<DynamicsUserAccessStatus>();
+            List<DynamicsUserAccessStatus> records = new();
 
             foreach (ProjectConfiguration project in _projects)
             {
@@ -81,7 +77,7 @@ public class UserMembershipReport
                             continue;
                         }
 
-                        DynamicsUserAccessStatus record = new DynamicsUserAccessStatus
+                        DynamicsUserAccessStatus record = new()
                         {
                             ProjectName = project.Name,
                             ProjecAccountDisabled = user.IsDisabled,

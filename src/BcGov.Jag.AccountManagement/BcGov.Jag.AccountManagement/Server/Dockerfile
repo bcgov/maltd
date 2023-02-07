@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["BcGov.Jag.AccountManagement/Server/BcGov.Jag.AccountManagement.Server.csproj", "BcGov.Jag.AccountManagement/Server/"]
 COPY ["BcGov.Jag.AccountManagement/Shared/BcGov.Jag.AccountManagement.Shared.csproj", "BcGov.Jag.AccountManagement/Shared/"]
