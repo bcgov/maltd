@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using BcGov.Jag.AccountManagement.Shared;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 using System.Security.Claims;
 using System.Text;
@@ -29,43 +30,13 @@ public class KeycloakAccountClaimsPrincipalFactory<TAccount> : AccountClaimsPrin
                 var accessTokenResult = await TokenProvider.RequestAccessToken();
                 if (accessTokenResult.Status == AccessTokenResultStatus.Success && accessTokenResult.TryGetToken(out AccessToken accessToken))
                 {
-                    string token = accessToken.Value;
-                    string[] parts = token.Split('.');
-                    var json = FromBase64UrlString(parts[1]);
-
-                    JsonNode accessTokenNode = JsonNode.Parse(json)!;
-
-                    JsonArray? roles = accessTokenNode["resource_access"]?[resourceName]?["roles"]?.AsArray();
-                    if (roles is not null)
-                    {
-                        foreach (var roleNode in roles)
-                        {
-                            var role = roleNode?.GetValue<string>();
-                            if (role is not null)
-                            {
-                                identity.AddClaim(new Claim(ClaimTypes.Role, role));
-                            }
-                        }
-                    }
+                    var roles = ResourceRoleAccessor.GetResourceRolesFromAccessToken(resourceName, accessToken.Value);
+                    identity.AddClaims(roles);
                 }
             }
         }
 
         return principal;
-    }
-
-    private static string FromBase64UrlString(string value)
-    {
-        value = value.Replace('-', '+');
-        value = value.Replace('_', '/');
-        switch (value.Length % 4)
-        {
-            case 2: value += "=="; break;
-            case 3: value += "="; break;
-        }
-        var data = Convert.FromBase64String(value);
-        var json = UTF8Encoding.UTF8.GetString(data);
-        return json;
     }
 
     private string GetResourceName()

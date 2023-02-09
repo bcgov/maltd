@@ -10,7 +10,8 @@ using BcGov.Jag.AccountManagement.Server.Models.Authorization;
 using MediatR;
 using System.Reflection;
 using Blazored.Toast;
-
+using System.Security.Claims;
+using BcGov.Jag.AccountManagement.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 var logger = GetLogger(builder);
@@ -28,12 +29,51 @@ builder.AddTelemetry(logger);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+//uncomment if you need to troubleshoot Identity Model exceptions
+//Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        string? audience = builder.Configuration["Jwt:Audience"];
+
         options.Authority = builder.Configuration["Jwt:Authority"];
-        options.Audience = builder.Configuration["Jwt:Audience"];
+        options.Audience = audience;
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = (context) =>
+            {
+                if (context.Principal is null)
+                {
+                    context.Fail("No authenticated");
+                    return Task.CompletedTask;
+                }
+
+                string? accessToken = context.Request.Headers.Authorization.FirstOrDefault();
+
+                if (audience is not null && accessToken is not null)
+                {
+                    // On the existing in coming ClaimsIdentity Claims collection, one of the claims will be
+                    // resource_access. We could parse that, however, if we parse the access token, the front end
+                    // and the server side will use the same code for getting the resource level roles
+
+                    // strip Bearer from the auth header
+                    var scheme = "Bearer ";
+                    if (accessToken.StartsWith(scheme))
+                    {
+                        accessToken = accessToken[scheme.Length..];
+                    }
+
+                    IEnumerable<Claim> roles = ResourceRoleAccessor.GetResourceRolesFromAccessToken(audience, accessToken);
+                    ClaimsIdentity identity = new(context.Principal.Identity, roles);
+                    context.Principal = new(identity);
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
