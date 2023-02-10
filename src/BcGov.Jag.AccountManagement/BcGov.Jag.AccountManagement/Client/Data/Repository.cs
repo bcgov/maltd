@@ -18,7 +18,7 @@ public class Repository : IRepository
     {
         try
         {
-            var response = await _userApi.LookupAsync(username);
+            var response = await _userApi.LookupAsync(username).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 return response.Content;
@@ -43,7 +43,7 @@ public class Repository : IRepository
     {
         try
         {
-            await _userApi.UpdateUserProjectsAsync(username, projectMembership);
+            await _userApi.UpdateUserProjectsAsync(username, projectMembership).ConfigureAwait(false);
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -55,8 +55,8 @@ public class Repository : IRepository
     {
         try
         {
-            var response = await _userApi.GetUserAccessReportAsync();
-            Stream stream = await response.Content.ReadAsStreamAsync();
+            var response = await _userApi.GetUserAccessReportAsync().ConfigureAwait(false);
+            Stream stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             return stream;
         }
         catch (AccessTokenNotAvailableException exception)

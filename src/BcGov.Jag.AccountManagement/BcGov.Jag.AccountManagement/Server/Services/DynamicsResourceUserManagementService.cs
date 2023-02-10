@@ -50,7 +50,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .For<SystemUser>()
             .Filter(_ => _.DomainName == logon)
             .Select(_ => new { _.SystemUserId })
-            .FindEntryAsync(cancellationToken);
+            .FindEntryAsync(cancellationToken)
+            .ConfigureAwait(false);
 
 
         if (entry is null)
@@ -72,7 +73,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             entry = await client
                 .For<SystemUser>()
                 .Set(entry)
-                .InsertEntryAsync(cancellationToken);
+                .InsertEntryAsync(cancellationToken)
+                .ConfigureAwait(false);
         }
         else
         {
@@ -157,7 +159,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .For<SystemUser>()
             .Filter(_ => _.DomainName == logon)
             .Select(_ => _.SystemUserId)
-            .FindEntryAsync(cancellationToken);
+            .FindEntryAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         if (entry == null)
         {
@@ -194,7 +197,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .For<SystemUser>()
             .Filter(_ => _.DomainName == logon && _.IsDisabled == false)
             .Select(_ => new { _.SystemUserId })
-            .FindEntryAsync(cancellationToken);
+            .FindEntryAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         //if (entry != null)
         //{
@@ -247,7 +251,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .For<BusinessUnit>()
             .Filter(_ => _.ParentBusinessUnit == null)
             .Select(_ => _.BusinessUnitId)
-            .FindEntriesAsync(cancellationToken);
+            .FindEntriesAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         BusinessUnit? businessUnit = null;
 
@@ -282,7 +287,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .For<Role>()
             .Expand(_ => _.BusinessUnit)
             .Filter(_ => _.Name == "System Administrator")
-            .FindEntriesAsync();
+            .FindEntriesAsync()
+            .ConfigureAwait(false);
 
         var roles = entries.Where(_ => _.BusinessUnit != null && _.BusinessUnit.BusinessUnitId == businessUnit.BusinessUnitId).ToList();
         if (roles.Count == 0)
@@ -310,7 +316,8 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
         var users = await client
             .For<SystemUser>()
             .Select(_ => new { _.DomainName, _.IsDisabled })
-            .FindEntriesAsync(cancellationToken);
+            .FindEntriesAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         return users
             .Select(_ => new UserStatus { Username = _.DomainName, IsDisabled = _.IsDisabled.Value })
