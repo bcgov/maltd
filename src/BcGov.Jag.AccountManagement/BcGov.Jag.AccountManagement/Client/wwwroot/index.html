@@ -31,9 +31,9 @@
     <div id="app" class="h-100">
         <div class="d-flex justify-content-center align-items-center h-100">
             <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Loading...</span>
             </div>
-          </div>
+        </div>
     </div>
 
     <div id="blazor-error-ui">
@@ -42,38 +42,39 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
-    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
     <script src="js/bootstrap.min.js"></script>
 
-    
-<script>
-    function submitDynamics(event, formName) {
-        event.preventDefault();
+
+    <script>
+        function submitDynamics(event, formName) {
+            event.preventDefault();
         const form = document.querySelector('#'+formName);
-        const data = Object.fromEntries(new FormData(form).entries());
-        console.log('Form data -- ', data);
-    }
+            const data = Object.fromEntries(new FormData(form).entries());
+            console.log('Form data -- ', data);
+        }
 
-    async function downloadFileFromStream(fileName, contentStreamReference) {
-        const arrayBuffer = await contentStreamReference.arrayBuffer();
-        const blob = new Blob([arrayBuffer]);
-        const url = URL.createObjectURL(blob);
+        async function downloadFileFromStream(fileName, contentStreamReference) {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
 
-        triggerFileDownload(fileName, url);
+            triggerFileDownload(fileName, url);
 
-        URL.revokeObjectURL(url);
-    }
+            URL.revokeObjectURL(url);
+        }
 
-    function triggerFileDownload(fileName, url) {
-        const anchorElement = document.createElement('a');
-        anchorElement.href = url;
-        anchorElement.download = fileName ?? '';
-        anchorElement.click();
-        anchorElement.remove();
-    }
+        function triggerFileDownload(fileName, url) {
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+        }
+    </script>
 
-</script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () { Blazor.start(); });
+    </script>
 </body>
-
 </html>
