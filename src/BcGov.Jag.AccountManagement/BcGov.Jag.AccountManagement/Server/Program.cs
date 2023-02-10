@@ -107,6 +107,19 @@ builder.Services.AddBlazoredToast();
 
 var app = builder.Build();
 
+// adjust the path base if set. Used when the application is run from a sub-app / sub-path
+// see https://learn.microsoft.com/en-us/aspnet/core/blazor/host-and-deploy/?view=aspnetcore-7.0&tabs=visual-studio#app-base-path
+var pathBase = app.Configuration.GetValue<string>("PathBase");
+if (!string.IsNullOrEmpty(pathBase))
+{
+    logger.Information("Using path base {PathBase}");
+    app.UsePathBase(pathBase);
+}
+else
+{
+    logger.Information("No path base set");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
