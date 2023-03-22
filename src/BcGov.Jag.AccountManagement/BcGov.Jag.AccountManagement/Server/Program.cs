@@ -12,6 +12,7 @@ using System.Reflection;
 using Blazored.Toast;
 using System.Security.Claims;
 using BcGov.Jag.AccountManagement.Shared;
+using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 var logger = GetLogger(builder);
@@ -76,7 +77,7 @@ builder.Services
         };
     });
 
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddLdapUserSearch(builder.Configuration);
 builder.Services.AddMemoryCache();
@@ -123,6 +124,7 @@ else
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    IdentityModelEventSource.ShowPII = true;
     app.UseWebAssemblyDebugging();
 }
 else

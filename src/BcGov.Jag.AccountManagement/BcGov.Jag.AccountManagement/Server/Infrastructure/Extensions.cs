@@ -31,23 +31,19 @@ public static class Extensions
             .CreateDefault()
             .AddService(Diagnostics.Source.Name, serviceInstanceId: Environment.MachineName);
 
-        builder.Services.AddOpenTelemetryTracing(options =>
-        {
-            options
-                .SetResourceBuilder(resourceBuilder)
-                .AddHttpClientInstrumentation(options =>
-                {                    
-                    options.Filter = HttpClientRequestFilter;
-                })
-                .AddAspNetCoreInstrumentation()
-                .AddSource(Diagnostics.Source.Name)
-                .AddJaegerExporter();
-
-
-            // if we need to coustomize the exporter options
-            ////builder.Services.Configure<JaegerExporterOptions>(...);
-        });
-
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(configure =>
+            {
+                configure
+                    .SetResourceBuilder(resourceBuilder)
+                    .AddHttpClientInstrumentation(options =>
+                    {
+                        options.Filter = HttpClientRequestFilter;
+                    })
+                    .AddAspNetCoreInstrumentation()
+                    .AddSource(Diagnostics.Source.Name)
+                    .AddJaegerExporter();
+            });
     }
 
     private static bool HttpClientRequestFilter(HttpRequestMessage message)
