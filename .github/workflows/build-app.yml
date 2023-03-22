@@ -2,12 +2,11 @@ name: .NET Core Buid
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
     types: [opened, reopened, edited, synchronize]
     paths:
-      - "api/src/**"
-      - ".github/workflows/api-dotnet-core.yml"
+      - "src/**"
 
 jobs:
   build:
