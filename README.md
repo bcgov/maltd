@@ -2,7 +2,8 @@
 
 Management of Accounts and Licensing Tool for Dynamics/Sharepoint
 
-[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<Redirect-URL>)
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+
 ![.NET Core Buid](https://github.com/bcgov/maltd/workflows/.NET%20Core%20Buid/badge.svg)
 
 ![Jest Unit Tests](https://github.com/bcgov/maltd/workflows/Jest%20Unit%20Tests/badge.svg)
