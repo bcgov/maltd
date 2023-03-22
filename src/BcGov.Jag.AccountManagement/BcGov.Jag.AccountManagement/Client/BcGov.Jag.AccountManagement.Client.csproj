@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Shared\BcGov.Jag.AccountManagement.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+
 </Project>
