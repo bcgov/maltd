@@ -48,19 +48,31 @@ public static class Extensions
 
     private static bool HttpClientRequestFilter(HttpRequestMessage message)
     {
-        // do not trace calls to splunk
-        return message.RequestUri?.Host != "hec.monitoring.ag.gov.bc.ca";
+        var path = message.RequestUri?.LocalPath ?? string.Empty;
+
+        // do not trace calls to splunk or seq
+        bool isNotLoggingPath = path != "/services/collector" && path != "/api/events/raw";
+        return isNotLoggingPath;
     }
 
     private static bool AspNetCoreFilter(HttpContext httpContext)
     {
-        if (IsWebAssemblyRequest(httpContext)) return false;
+        var request = httpContext.Request;
+        if (request.Method != "GET") return true; // instrument this request
+
+        var path = request.Path.ToUriComponent(); // get the path as string
+
+        if (path.StartsWith("/_framework/")) return false;
+        if (path.StartsWith("/authentication")) return false;
+
+        if (path == "/_vs/browserLink") return false;
+
+        var response = httpContext.Response;
+        if (response.StatusCode == 404 || response.StatusCode == 0)
+        {
+            if (path.Contains("/_framework/")) return false;
+        }
+
         return true;
-
-    }
-
-    private static bool IsWebAssemblyRequest(HttpContext httpContext)
-    {
-        return httpContext.Request.Method == "GET" && httpContext.Request.Path.StartsWithSegments("/_framework", StringComparison.OrdinalIgnoreCase);
     }
 }

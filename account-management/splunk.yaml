@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+
+  #############################################################################################
+  ###                           Splunk                                                      ###
+  ###                                                                                       ###  ###                                                                                       ###
+  ### Web: http://localhost:8000   Username: admin, Password: password                      ###
+  ### HEC: http://localhost:8088   Token: token                                             ###
+  #############################################################################################
+  splunk:
+    image: splunk/splunk:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 50M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
+    ports:
+      - 8000:8000
+      - 8088:8088
+    environment:
+      SPLUNK_START_ARGS: --accept-license
+      TZ: America/Vancouver
+    volumes:
+      - "./splunk-config.yaml:/tmp/defaults/default.yml"

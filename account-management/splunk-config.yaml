@@ -1,0 +1,10 @@
+# see https://splunk.github.io/docker-splunk/ADVANCED.html#usage
+# contains the default settings for running Splunk in docker for local development
+splunk:
+  admin_user: admin
+  password: password
+  hec:
+    enable: true
+    ssl: false
+    port: 8088
+    token: token
