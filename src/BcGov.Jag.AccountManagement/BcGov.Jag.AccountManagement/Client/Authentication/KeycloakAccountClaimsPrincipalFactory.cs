@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 using System.Security.Claims;
-using System.Text;
-using System.Text.Json.Nodes;
 
 namespace BcGov.Jag.AccountManagement.Client.Authentication;
 

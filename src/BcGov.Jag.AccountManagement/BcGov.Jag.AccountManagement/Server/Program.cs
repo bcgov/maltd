@@ -7,7 +7,6 @@ using BcGov.Jag.AccountManagement.Server.Services;
 using BcGov.Jag.AccountManagement.Server.Services.Sharepoint;
 using BcGov.Jag.AccountManagement.Server.Models.Configuration;
 using BcGov.Jag.AccountManagement.Server.Models.Authorization;
-using MediatR;
 using System.Reflection;
 using Blazored.Toast;
 using System.Security.Claims;

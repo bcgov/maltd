@@ -1,6 +1,5 @@
 ﻿using BcGov.Jag.AccountManagement.Shared;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Refit;
 using System.Net;
 
 namespace BcGov.Jag.AccountManagement.Client.Data;

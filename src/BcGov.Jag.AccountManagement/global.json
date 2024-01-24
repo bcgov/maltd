@@ -1,6 +1,6 @@
 {
 	"sdk": {
-      "version": "7.0.102",
+      "version": "net8.0",
 	   "rollForward": "minor" 
 	}
   }
