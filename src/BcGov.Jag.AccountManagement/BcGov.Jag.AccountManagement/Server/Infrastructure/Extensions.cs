@@ -1,7 +1,5 @@
 ﻿using OpenTelemetry.Trace;
-using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
-using OpenTelemetry.Instrumentation.Http;
 
 namespace BcGov.Jag.AccountManagement.Server.Infrastructure;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BcGov.Jag.AccountManagement.Shared;
+﻿namespace BcGov.Jag.AccountManagement.Shared;
 
 /// <summary>
 /// Represents a user

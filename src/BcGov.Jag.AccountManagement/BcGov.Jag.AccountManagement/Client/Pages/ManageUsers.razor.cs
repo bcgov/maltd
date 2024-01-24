@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using BcGov.Jag.AccountManagement.Client.Components;
-using BcGov.Jag.AccountManagement.Client.Data;
+﻿using BcGov.Jag.AccountManagement.Client.Data;
 using BcGov.Jag.AccountManagement.Shared;
 using Microsoft.AspNetCore.Components;
 
