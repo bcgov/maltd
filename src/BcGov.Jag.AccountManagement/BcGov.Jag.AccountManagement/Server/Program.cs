@@ -12,6 +12,8 @@ using Blazored.Toast;
 using System.Security.Claims;
 using BcGov.Jag.AccountManagement.Shared;
 using Microsoft.IdentityModel.Logging;
+using BcGov.Jag.AccountManagement.Server;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 var logger = GetLogger(builder);
@@ -28,6 +30,9 @@ builder.AddTelemetry(logger);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
 
 //uncomment if you need to troubleshoot Identity Model exceptions
 //Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
@@ -131,17 +136,20 @@ else
     app.UseExceptionHandler("/Error");
 }
 
-app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
 
 app.MapRazorPages();
 app.MapControllers();
-app.MapFallbackToFile("index.html");
+
+app.MapRazorComponents<App>()
+.AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(BcGov.Jag.AccountManagement.Client._Imports).Assembly);
 
 app.Run();
 
