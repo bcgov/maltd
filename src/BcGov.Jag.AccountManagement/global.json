@@ -1,7 +1,0 @@
-{
-	"sdk": {
-      "version": "net8.0",
-	   "rollForward": "minor" 
-	}
-  }
-  
