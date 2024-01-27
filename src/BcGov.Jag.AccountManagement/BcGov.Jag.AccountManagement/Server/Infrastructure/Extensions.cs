@@ -17,16 +17,6 @@ public static class Extensions
             return;
         }
 
-        builder.Services.Configure<AspNetCoreInstrumentationOptions>(options =>
-        {
-            options.Filter = AspNetCoreFilter;
-        });
-
-        builder.Services.Configure<HttpClientInstrumentationOptions>(options =>
-        {
-            options.Filter = HttpClientRequestFilter;
-        });
-
         var resourceBuilder = ResourceBuilder
             .CreateDefault()
             .AddService(Diagnostics.Source.Name, serviceInstanceId: Environment.MachineName);
@@ -38,9 +28,12 @@ public static class Extensions
                     .SetResourceBuilder(resourceBuilder)
                     .AddHttpClientInstrumentation(options =>
                     {
-                        options.Filter = HttpClientRequestFilter;
+                        options.FilterHttpRequestMessage = HttpClientRequestFilter;
                     })
-                    .AddAspNetCoreInstrumentation()
+                    .AddAspNetCoreInstrumentation(options =>
+                    {
+                        options.Filter = AspNetCoreFilter;
+                    })
                     .AddSource(Diagnostics.Source.Name)
                     .AddJaegerExporter();
             });
