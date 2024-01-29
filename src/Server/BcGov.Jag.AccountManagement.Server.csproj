@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <UserSecretsId>e53e82a2-d892-417d-8e2e-0b4276d44185</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Models\Dynamics\metadata.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Models\Dynamics\metadata.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.Toast" Version="4.1.0" />
+    <PackageReference Include="FlatFiles" Version="5.0.4" />
+    <PackageReference Include="FluentResults" Version="3.15.2" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.15" />
+    <PackageReference Include="Microsoft.OData.Core" Version="7.20.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.0.0-beta4" />
+    <PackageReference Include="OpenTelemetry" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.0" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Splunk" Version="3.7.0" />
+    <PackageReference Include="Simple.OData.V4.Client" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\BcGov.Jag.AccountManagement.Client.csproj" />
+    <ProjectReference Include="..\Shared\BcGov.Jag.AccountManagement.Shared.csproj" />
+  </ItemGroup>
+
+
+</Project>
