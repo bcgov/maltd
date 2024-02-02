@@ -17,7 +17,7 @@ public static class Extensions
             baseUri = new Uri(baseUri, pathBase);
         }
 
-        var apiUri = new Uri(baseUri, "/api");
+        var apiUri = new Uri(baseUri, "api");
 
         // only send the access token on requests to the API
         builder.Services
