@@ -37,8 +37,8 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        string? audience = builder.Configuration["Jwt:Audience"];
-        string? authority = builder.Configuration["Jwt:Authority"];
+        string? audience = builder.Configuration.GetValue<string>("Jwt:Audience");
+        string? authority = builder.Configuration.GetValue<string>("Jwt:Authority");
 
         options.Authority = authority;
         options.Audience = audience;
