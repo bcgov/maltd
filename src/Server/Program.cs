@@ -162,13 +162,21 @@ app.Run();
 /// <returns></returns>
 static Serilog.ILogger GetLogger(WebApplicationBuilder builder)
 {
-    var configuration = new LoggerConfiguration()
+    LoggerConfiguration configuration = new LoggerConfiguration()
         .Enrich.FromLogContext()
         .WriteTo.Console();
 
     if (builder.Environment.IsDevelopment())
     {
         configuration.WriteTo.Debug();
+    }
+
+    var logLevel = builder.Configuration["LOG_LEVEL"];
+    switch (logLevel)
+    {
+        case "Debug":
+            configuration.MinimumLevel.Debug(); 
+            break;
     }
 
     return configuration.CreateLogger();
