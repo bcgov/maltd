@@ -38,9 +38,12 @@ builder.Services
     .AddJwtBearer(options =>
     {
         string? audience = builder.Configuration["Jwt:Audience"];
+        string? authority = builder.Configuration["Jwt:Authority"];
 
-        options.Authority = builder.Configuration["Jwt:Authority"];
+        options.Authority = authority;
         options.Audience = audience;
+
+        logger.Debug("Using Jwt Bearer authentication for {Authority} {Audience}", authority, audience);
 
         options.Events = new JwtBearerEvents
         {
@@ -72,6 +75,11 @@ builder.Services
                     context.Principal = new(identity);
                 }
 
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = (context) =>
+            {
+                logger.Debug($"Authentication failed: {context.Exception}");
                 return Task.CompletedTask;
             }
         };
