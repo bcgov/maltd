@@ -20,6 +20,6 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./BcGov.Jag.AccountManagement.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-WORKDIR /app
+WORKDIR /opt/app-root/app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BcGov.Jag.AccountManagement.Server.dll"]
