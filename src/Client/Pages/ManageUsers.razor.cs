@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using BcGov.Jag.AccountManagement.Client.Components;
-using BcGov.Jag.AccountManagement.Client.Data;
+﻿using BcGov.Jag.AccountManagement.Client.Data;
 using BcGov.Jag.AccountManagement.Shared;
 using Microsoft.AspNetCore.Components;
 
@@ -30,40 +28,54 @@ public partial class ManageUsers
 
     private IList<ProjectMembershipModel> projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
 
-    private bool? notFound = null;
-
     private bool? successSave = null;
+
+    private string errorMessage = string.Empty;
 
     private async Task OnValidSubmit()
     {
-        notFound = null;
+        errorMessage = string.Empty;
         successSave = null;
         spinning = true;
         await Task.Delay(1);
 
         try
         {
-            var foundUser = await Repository.LookupAsync(searchModel.Username);
-            if (foundUser is not null)
+            var foundUserResult = await Repository.LookupAsync(searchModel.Username);
+
+            if (foundUserResult.IsSuccess)
             {
-                notFound = false;
+                var foundUser = foundUserResult.Value;
                 user = foundUser;
                 projectMembershipRows = user.ToViewModel();
                 projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
             }
             else
             {
-                notFound = true;
-                user = new DetailedUser();
-                projectMembershipRows = Array.Empty<ProjectMembershipModel>();
-                projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
+                errorMessage = foundUserResult.Errors.Count != 0
+                    ? foundUserResult.Errors[0].Message
+                    : "Could not determine the error cause"; // this shouldn't happen
+
+                OnFailure();
             }
+        }
+        catch (Exception exception)
+        {
+            errorMessage = $"Error: {exception.Message}";
+            OnFailure();
         }
         finally
         {
             spinning = false; // ensure we disable spinner even if there is an error
             await Task.Delay(1);
         }
+    }
+
+    private void OnFailure()
+    {
+        user = new DetailedUser();
+        projectMembershipRows = Array.Empty<ProjectMembershipModel>();
+        projectMembershipChanges = Array.Empty<ProjectMembershipModel>();
     }
 
     private async Task SaveChanges()

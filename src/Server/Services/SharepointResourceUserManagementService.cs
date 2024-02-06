@@ -122,7 +122,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         {
             var errorResponse = await e.GetContentAsAsync<SharePointErrorResponse>();
             Logger.Warning(e, "Error adding user to SharePoint group {@Error}", errorResponse);
-            return $"Error occurred adding user to SharePoint site group '{siteGroup.Title}'";
+            return Result.Fail($"Error occurred adding user to SharePoint site group '{siteGroup.Title}'");
         }
     }
     
@@ -144,7 +144,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         if (string.IsNullOrEmpty(user.UserPrincipalName))
         {
             Logger.Information("Cannot locate UPN for for {Username}, cannot remove users access", user.UserName);
-            return "User not found";
+            return Result.Fail("User not found");
         }
         
         // format the SharePoint login name format
@@ -156,7 +156,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         if (siteGroups is null)
         {
             // log
-            return "Could not find site groups";
+            return Result.Fail("Could not find site groups");
         }
 
         StringBuilder response = new StringBuilder();
@@ -191,10 +191,16 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
             {
                 // we dont have access to all site groups
                 Logger.Debug(e, "No access to {@SiteGroup}, unable to remove {Username} access", siteGroup, user.UserName);
+                return Result.Fail($"\"No access to {siteGroup}, unable to remove {user.UserName} access");
             }
         }
 
-        return response.ToString();
+        if (response.Length > 0)
+        {
+            return Result.Fail(response.ToString());
+        }
+
+        return string.Empty;
     }
 
     public override async Task<Result<bool>> UserHasAccessAsync(Shared.User user, CancellationToken cancellationToken)
@@ -230,7 +236,7 @@ public class SharePointResourceUserManagementService : ResourceUserManagementSer
         if (siteGroups is null)
         {
             Logger.Information("Could not get site groups");
-            return false;
+            return Result.Fail("Could not get site groups");
         }
 
         // service account does not have permission to view membership of "Excel Services Viewers"

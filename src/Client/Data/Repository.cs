@@ -1,6 +1,6 @@
 ﻿using BcGov.Jag.AccountManagement.Shared;
+using FluentResults;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Refit;
 using System.Net;
 
 namespace BcGov.Jag.AccountManagement.Client.Data;
@@ -14,29 +14,33 @@ public class Repository : IRepository
         _userApi = userApi ?? throw new ArgumentNullException(nameof(userApi));
     }
 
-    public async Task<DetailedUser?> LookupAsync(string username)
+    public async Task<Result<DetailedUser>> LookupAsync(string username)
     {
         try
         {
             var response = await _userApi.LookupAsync(username).ConfigureAwait(false);
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && response.Content is not null)
             {
                 return response.Content;
             }
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
+            switch (response.StatusCode)
             {
-
-                return null;
+                case HttpStatusCode.NotFound: return Result.Fail("User Not Found");
+                case HttpStatusCode.Unauthorized: return Result.Fail("Not authorized");
+                default:
+                    return Result.Fail(response.StatusCode.ToString());
             }
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
+            return Result.Fail(exception.Message);
         }
-
-        // TODO: handle other error, HttpStatusCode.InternalServerError
-        return null;
+        catch (Exception exception)
+        {
+            return Result.Fail($"Error: {exception.Message}");
+        }
     }
 
     public async Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership)

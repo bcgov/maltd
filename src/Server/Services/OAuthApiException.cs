@@ -33,7 +33,7 @@ public class OAuthClientException : OAuthException
 /// </summary>
 public class InvalidClientOAuthError : FluentResults.Error
 {
-    public InvalidClientOAuthError(OAuthClientException exception, Guid errorId) : base($"{exception.Error.Description}. Check Splunk logs for ErrorId={errorId}")
+    public InvalidClientOAuthError(OAuthClientException exception, Guid errorId) : base($"{exception.Error.Description}. Check logs for ErrorId={errorId}")
     {
         this.Metadata.Add("Code", exception.Error.Code);
         this.Metadata.Add("Resource", exception.Resource);

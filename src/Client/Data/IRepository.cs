@@ -1,4 +1,5 @@
 ﻿using BcGov.Jag.AccountManagement.Shared;
+using FluentResults;
 
 namespace BcGov.Jag.AccountManagement.Client.Data;
 
@@ -7,7 +8,7 @@ namespace BcGov.Jag.AccountManagement.Client.Data;
 /// </summary>
 public interface IRepository
 { 
-    Task<DetailedUser?> LookupAsync(string username);
+    Task<Result<DetailedUser>> LookupAsync(string username);
 
     Task UpdateUserProjectsAsync(string username, IList<ProjectMembershipModel> projectMembership);
 

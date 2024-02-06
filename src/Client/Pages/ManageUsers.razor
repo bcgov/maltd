@@ -7,13 +7,13 @@
     @{
         var className = "form-control ";
         var errorClassName = "invisible";
-        if (notFound is not null && notFound.Value)
+        if (errorMessage != string.Empty)
         {
             className += "input-invalid";
             errorClassName = "visible text-red form-control-sm px-0";
         } 
         void onSubmitClick() {
-            notFound = null;
+            errorMessage = string.Empty;
             className = "form-control ";
             errorClassName = "invisible";
         }
@@ -27,7 +27,7 @@
         </span>
     </div>
     <ValidationMessage For="() => searchModel.Username"></ValidationMessage>
-    <div class="@errorClassName">User Not Found</div>
+    <div class="@errorClassName">@errorMessage</div>
     
     <DataAnnotationsValidator />
 </EditForm>

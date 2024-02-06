@@ -1,40 +1,48 @@
 ﻿<tr>
-    <td class="text-center"><input @ref=inputElement type="checkbox" class="form-check-input" checked="@ProjectChecked" @onchange="OnProjectChange" /></td>
+    @if (RowData.Selectable)
+    {
+        <td class="text-center"><input @ref=inputElement type="checkbox" class="form-check-input" checked="@ProjectChecked" @onchange="OnProjectChange" /></td>
+    }
+    else
+    {
+        <td class="text-center"><input @ref=inputElement type="checkbox" class="form-check-input" checked="@ProjectChecked" disabled="disabled" /></td>
+    }
     <td>@RowData.ProjectName</td>
 
     <td class="text-left">
-        @if (RowData.Dynamics is not null)
+        @if (RowData.DynamicsMessage != string.Empty)
         {
-            if (RowData.DynamicsMessage != string.Empty)
-            {
-                <span style="color:red">@RowData.DynamicsMessage</span>
-            }
-            else
+            <span style="color:red">@RowData.DynamicsMessage</span>
+        }
+        else 
+        {
+            if (RowData.Dynamics is not null)
             {
                 <input type="checkbox" class="form-check-input" checked="@RowData.Dynamics" @onchange="OnDynamicsChange" />
             }
-        }
-        else
-        {
-            <input type="checkbox" class="form-check-input" disabled="disabled" />
+            else
+            {
+                <input type="checkbox" class="form-check-input" disabled="disabled" />
+            }
         }
     </td>
 
     <td class="text-left">
-        @if (RowData.SharePoint is not null)
+        @if (RowData.SharePointMessage != string.Empty)
         {
-            if (RowData.SharePointMessage != string.Empty)
-            {
-                <span style="color:red">@RowData.SharePointMessage</span>
-            }
-            else
-            {
-                <input type="checkbox" class="form-check-input" checked="@RowData.SharePoint" @onchange="OnSharePointChange" />
-            }
+            <span style="color:red">@RowData.SharePointMessage</span>
         }
         else
         {
-            <input type="checkbox" class="form-check-input" disabled="disabled" />
+            if (RowData.SharePoint is not null)
+            {
+                <input type="checkbox" class="form-check-input" checked="@RowData.SharePoint" @onchange="OnSharePointChange" />
+            }
+            else
+            {
+                <input type="checkbox" class="form-check-input" disabled="disabled" />
+            }
+
         }
     </td>
 </tr>

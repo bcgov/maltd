@@ -292,7 +292,7 @@ public class DynamicsResourceUserManagementService : ResourceUserManagementServi
             .ForContext("ErrorId", errorId)
             .Error(exception, "Web request exception, could indicate the api gateway configuration is invalid");
 
-        return Result.Fail($"Request to dynamics failed. Check Splunk logs for ErrorId={errorId}");
+        return Result.Fail($"Request to dynamics failed. Check logs for ErrorId={errorId}");
     }
 
     private Task<IDictionary<string, object>> UpdateSystemUserDisableFlag(IODataClient client, Guid systemUserId, User user, bool isDisabled, CancellationToken cancellationToken)
